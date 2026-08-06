@@ -208,6 +208,35 @@ document.querySelectorAll('[data-live]').forEach((el) => {
   setTimeout(tick, 2500 + Math.random() * 3000);
 });
 
+/* ===== Menú móvil ===== */
+const burger = document.getElementById('navBurger');
+const mobMenu = document.getElementById('mobMenu');
+
+function toggleMenu(open) {
+  burger.classList.toggle('is-open', open);
+  mobMenu.classList.toggle('is-open', open);
+  burger.setAttribute('aria-expanded', open);
+  mobMenu.setAttribute('aria-hidden', !open);
+  document.body.style.overflow = open ? 'hidden' : '';
+
+  if (open) {
+    gsap.fromTo('.mobmenu__link',
+      { y: 34, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out', delay: 0.08 }
+    );
+    gsap.fromTo('.mobmenu__cta',
+      { y: 24, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, delay: 0.38, ease: 'power3.out' }
+    );
+  }
+}
+
+burger.addEventListener('click', () => toggleMenu(!mobMenu.classList.contains('is-open')));
+
+mobMenu.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => toggleMenu(false));
+});
+
 /* ===== FAQ: solo un item abierto a la vez ===== */
 document.querySelectorAll('.faq__item').forEach((item) => {
   item.addEventListener('toggle', () => {

@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body>
 
@@ -33,8 +33,23 @@
         <a href="#faq">FAQ</a>
       </nav>
       <a class="nav__cta" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido%20de%20creatina" target="_blank" rel="noopener">Comprar</a>
+      <button class="nav__burger" id="navBurger" aria-label="Abrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
+
+  <!-- ===== MENÚ MÓVIL ===== -->
+  <div class="mobmenu" id="mobMenu" aria-hidden="true">
+    <nav class="mobmenu__links">
+      <a href="#productos" class="mobmenu__link"><i>01</i>Productos</a>
+      <a href="#beneficios" class="mobmenu__link"><i>02</i>Beneficios</a>
+      <a href="#garantia" class="mobmenu__link"><i>03</i>Garantía</a>
+      <a href="#faq" class="mobmenu__link"><i>04</i>FAQ</a>
+    </nav>
+    <a class="btn btn--primary mobmenu__cta" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido%20de%20creatina" target="_blank" rel="noopener">Comprar por WhatsApp</a>
+    <img src="assets/mascota.png" alt="" class="mobmenu__mascot" aria-hidden="true">
+  </div>
 
   <!-- ===== HERO ===== -->
   <section class="hero">
@@ -79,7 +94,7 @@
   <!-- ===== PRODUCTOS ===== -->
   <section class="products" id="productos">
     <div class="products__inner">
-      <p class="section-eyebrow reveal">Catálogo</p>
+      <p class="section-eyebrow reveal"><b>01</b> Catálogo</p>
       <h2 class="section-title reveal">Dos clásicos.<br><span class="neon-text">Cero dudas</span><span class="accent">.</span></h2>
 
       <div class="products__grid">
@@ -153,7 +168,7 @@
   <!-- ===== BENEFICIOS ===== -->
   <section class="benefits" id="beneficios">
     <div class="benefits__inner">
-      <p class="section-eyebrow reveal">Por qué tomar creatina</p>
+      <p class="section-eyebrow reveal"><b>02</b> Por qué tomar creatina</p>
       <h2 class="section-title reveal">El suplemento más<br><span class="neon-text">estudiado del mundo</span><span class="accent">.</span></h2>
       <div class="benefits__grid">
         <div class="benefit benefit--red reveal">
@@ -183,7 +198,7 @@
   <!-- ===== GARANTÍA / CONFIANZA ===== -->
   <section class="trust" id="garantia">
     <div class="trust__inner">
-      <p class="section-eyebrow reveal">Garantía Revtile</p>
+      <p class="section-eyebrow reveal"><b>03</b> Garantía Revtile</p>
       <h2 class="section-title reveal">Lo original se puede<br><span class="neon-text">comprobar</span><span class="accent">.</span></h2>
       <p class="trust__lead reveal">Sabemos que en Colombia circulan suplementos falsificados. Por eso cada tarro que entregamos pasa por esta verificación:</p>
       <div class="trust__cards">
@@ -242,7 +257,7 @@
   <!-- ===== CÓMO COMPRAR ===== -->
   <section class="how">
     <div class="how__inner">
-      <p class="section-eyebrow reveal">Cómo funciona</p>
+      <p class="section-eyebrow reveal"><b>04</b> Cómo funciona</p>
       <h2 class="section-title reveal">Comprar toma<br><span class="neon-text">menos de un minuto</span><span class="accent">.</span></h2>
       <ol class="steps">
         <li class="step reveal">
@@ -267,7 +282,7 @@
   <!-- ===== FAQ ===== -->
   <section class="faq" id="faq">
     <div class="faq__inner">
-      <p class="section-eyebrow reveal">Preguntas frecuentes</p>
+      <p class="section-eyebrow reveal"><b>05</b> Preguntas frecuentes</p>
       <h2 class="section-title reveal">Resolvemos tus dudas<span class="accent">.</span></h2>
       <div class="faq__list">
         <details class="faq__item reveal">
@@ -340,6 +355,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=2"></script>
 </body>
 </html>
