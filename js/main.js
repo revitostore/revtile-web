@@ -51,17 +51,20 @@ document.querySelectorAll('.hero__giant span').forEach((letter) => {
   letter.addEventListener('touchstart', light, { passive: true });
 });
 
-/* ===== Al hacer scroll: los tarros se acercan suavemente (las letras se quedan) ===== */
-gsap.to('.hero__duo', {
-  scale: 1.06,
-  yPercent: 6,
-  ease: 'none',
-  scrollTrigger: {
-    trigger: '.hero',
-    start: 'top top',
-    end: 'bottom top',
-    scrub: true,
-  },
+/* ===== Al hacer scroll: los tarros se acercan suavemente (solo en pantallas grandes,
+   en móvil el espacio es justo y terminaban montándose sobre el texto) ===== */
+gsap.matchMedia().add('(min-width: 900px)', () => {
+  gsap.to('.hero__duo', {
+    scale: 1.06,
+    yPercent: 6,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '.hero',
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+    },
+  });
 });
 
 /* ===== Movimiento suave de los blobs de color ===== */
