@@ -7,14 +7,16 @@
   <meta name="description" content="Creatinas Optimum Nutrition y MuscleTech 100% originales, importadas y selladas de fábrica. Envío gratis en Bogotá y pedido directo por WhatsApp.">
   <meta name="theme-color" content="#07080d">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="canonical" href="https://revtile.com.co/">
   <meta property="og:title" content="REVTILE — Creatinas 100% originales">
   <meta property="og:description" content="Optimum Nutrition y MuscleTech selladas de fábrica, con lote verificable. Envío gratis en Bogotá. Pide por WhatsApp.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/on.png">
+  <meta property="og:url" content="https://revtile.com.co/">
+  <meta property="og:image" content="https://revtile.com.co/assets/on.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2">
+  <link rel="stylesheet" href="css/styles.css?v=5">
 </head>
 <body>
 
@@ -53,18 +55,41 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero">
-    <p class="hero__eyebrow">⚡ Suplementos 100% originales</p>
-
     <div class="hero__stage">
+      <div class="hero__meta" aria-hidden="true">
+        <span>Suplementos originales</span>
+        <span>BOG · Colombia</span>
+      </div>
       <h1 class="hero__giant" aria-label="REVTILE">
         <span>R</span><span>E</span><span>V</span><span class="neon">T</span><span>I</span><span>L</span><span>E</span>
       </h1>
-      <div class="hero__carousel" id="heroCarousel">
-        <div class="hero__floor" aria-hidden="true"></div>
-        <img src="assets/on.png" alt="Tarro de creatina Optimum Nutrition Micronized Creatine Powder 300g" class="hero__jar is-active">
-        <img src="assets/muscletech.png" alt="Tarro de creatina MuscleTech Platinum Creatine Monohydrate 400g" class="hero__jar">
+      <div class="hero__baseline" aria-hidden="true"></div>
+
+      <div class="hero__duo">
+        <a href="producto-on.html" class="duo__item duo__item--on">
+          <div class="hero__floor" aria-hidden="true"></div>
+          <img src="assets/on.png" alt="Creatina Optimum Nutrition Micronized Creatine Powder 300g">
+          <span class="duo__tag">ON · $120.000</span>
+        </a>
+
+        <div class="duo__seal" aria-hidden="true">
+          <svg viewBox="0 0 120 120" class="duo__seal-ring">
+            <defs>
+              <path id="sealCircle" d="M 60,60 m -46,0 a 46,46 0 1,1 92,0 a 46,46 0 1,1 -92,0"/>
+            </defs>
+            <text>
+              <textPath href="#sealCircle">100% ORIGINAL · SELLADA · VERIFICABLE ·</textPath>
+            </text>
+          </svg>
+          <img src="assets/mascota.png" alt="" class="duo__seal-mascot">
+        </div>
+
+        <a href="producto-mt.html" class="duo__item duo__item--mt">
+          <div class="hero__floor" aria-hidden="true"></div>
+          <img src="assets/muscletech.png" alt="Creatina MuscleTech Platinum Creatine Monohydrate 400g">
+          <span class="duo__tag">MT · $140.000</span>
+        </a>
       </div>
-      <p class="hero__jarname"><span id="jarName">Optimum Nutrition · Micronized Creatine 300g</span></p>
     </div>
 
     <p class="hero__sub">Creatina <strong>original, sellada y verificable</strong>.<br>Pides por WhatsApp y la recibes en tu puerta.</p>
@@ -72,15 +97,7 @@
       <a class="btn btn--primary" href="#productos">Ver productos →</a>
       <a class="btn btn--ghost" href="#garantia">¿Cómo sé que es original?</a>
     </div>
-    <div class="hero__badges">
-      <span>🔒 Selladas de fábrica</span>
-      <span>✈️ Importación directa</span>
-      <span>🚚 Envío gratis en Bogotá</span>
-    </div>
-
-    <div class="hero__scroll-hint" aria-hidden="true">
-      <span></span>
-    </div>
+    <p class="hero__badges">Selladas de fábrica · Importación directa · Envío gratis en Bogotá</p>
   </section>
 
   <!-- ===== TICKER ===== -->
@@ -124,9 +141,11 @@
               </div>
               <span class="product__save">Ahorras $50.000</span>
             </div>
+            <p class="product__serving">≈ <b>$2.000</b> por servicio de 5 g</p>
             <a class="btn btn--primary btn--full" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20pedir%20la%20Creatina%20Optimum%20Nutrition%20(300g)%20a%20%24120.000" target="_blank" rel="noopener">
               Pedir por WhatsApp
             </a>
+            <a class="product__more" href="producto-on.html">Ver ficha completa</a>
           </div>
         </article>
 
@@ -156,9 +175,11 @@
               </div>
               <span class="product__save">Ahorras $60.000</span>
             </div>
+            <p class="product__serving">≈ <b>$1.750</b> por servicio de 5 g — el mejor costo por gramo</p>
             <a class="btn btn--primary btn--full" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20pedir%20la%20MuscleTech%20Platinum%20Creatine%20(400g)%20a%20%24140.000" target="_blank" rel="noopener">
               Pedir por WhatsApp
             </a>
+            <a class="product__more" href="producto-mt.html">Ver ficha completa</a>
           </div>
         </article>
       </div>
@@ -203,23 +224,29 @@
       <p class="trust__lead reveal">Sabemos que en Colombia circulan suplementos falsificados. Por eso cada tarro que entregamos pasa por esta verificación:</p>
       <div class="trust__cards">
         <article class="card reveal">
-          <div class="card__icon">🔒</div>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.4"/></svg>
+          </div>
           <h3 class="card__title">Sello de fábrica intacto</h3>
           <p class="card__text">Todos los tarros llegan sellados de fábrica, con banda de seguridad y sello interno sin romper. Te enviamos fotos antes del despacho.</p>
         </article>
         <article class="card reveal">
-          <div class="card__icon">🔍</div>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.3 15.3 21 21"/></svg>
+          </div>
           <h3 class="card__title">Lote y vencimiento visibles</h3>
           <p class="card__text">Número de lote y fecha de vencimiento impresos por el fabricante, verificables directamente con la marca.</p>
         </article>
         <article class="card reveal">
-          <div class="card__icon">✈️</div>
+          <div class="card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          </div>
           <h3 class="card__title">Importación directa</h3>
           <p class="card__text">Producto importado, sin intermediarios dudosos. Sabes exactamente qué compras y de dónde viene.</p>
         </article>
       </div>
       <div class="gallery reveal">
-        <p class="gallery__hint">📷 Fotos reales de nuestros productos — desliza para ver →</p>
+        <p class="gallery__hint">Fotos reales de nuestros productos — desliza para ver más</p>
         <div class="gallery__track">
           <figure class="gallery__item">
             <img src="assets/galeria/sello-muscletech.jpg" alt="Sello de autenticidad MuscleTech con código QR verificable" loading="lazy">
@@ -346,6 +373,21 @@
     </p>
   </footer>
 
+  <!-- ===== BARRA DE COMPRA FIJA ===== -->
+  <div class="buybar" id="buyBar" aria-hidden="true">
+    <div class="buybar__info">
+      <div class="buybar__thumbs">
+        <img src="assets/on.png" alt="">
+        <img src="assets/muscletech.png" alt="">
+      </div>
+      <div class="buybar__text">
+        <b>Creatinas desde $120.000</b>
+        <span>Envío gratis en Bogotá · Selladas</span>
+      </div>
+    </div>
+    <a class="btn btn--primary buybar__btn" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido%20de%20creatina" target="_blank" rel="noopener">Pedir ahora</a>
+  </div>
+
   <!-- ===== BOTÓN FLOTANTE DE WHATSAPP ===== -->
   <a class="wa-float" id="waFloat" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20tengo%20una%20pregunta%20sobre%20las%20creatinas" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -355,6 +397,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="js/main.js?v=2"></script>
+  <script src="js/main.js?v=5"></script>
 </body>
 </html>
