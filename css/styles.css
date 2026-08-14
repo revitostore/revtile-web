@@ -11,6 +11,8 @@
   --teal-deep: #35626b;
   --lime: #a6e22e;           /* verde de la etiqueta ON */
   --glow-lime: 0 0 18px rgba(166, 226, 46, 0.45), 0 0 46px rgba(166, 226, 46, 0.2);
+  --gold: #ffc24b;           /* dorado de lanzamientos */
+  --glow-gold: 0 0 18px rgba(255, 194, 75, 0.45), 0 0 46px rgba(255, 194, 75, 0.2);
   --whatsapp: #25d366;
   --glow-red: 0 0 18px rgba(228, 28, 52, 0.55), 0 0 46px rgba(228, 28, 52, 0.28);
   --glow-teal: 0 0 18px rgba(45, 226, 230, 0.45), 0 0 46px rgba(45, 226, 230, 0.2);
@@ -611,8 +613,8 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
 
 .products__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 26px;
 }
 
 .product {
@@ -684,6 +686,58 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
   background: rgba(45, 226, 230, 0.1);
   color: var(--teal);
   border: 1px solid rgba(45, 226, 230, 0.55);
+}
+
+.badge--soon {
+  background: rgba(255, 194, 75, 0.12);
+  color: var(--gold);
+  border: 1px solid rgba(255, 194, 75, 0.6);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: soonPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes soonPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 194, 75, 0.25); }
+  50% { box-shadow: 0 0 22px rgba(255, 194, 75, 0.6); }
+}
+
+/* tarjeta de lanzamiento (próximamente) */
+.product--soon::before {
+  background: var(--gold);
+  box-shadow: 0 0 16px rgba(255, 194, 75, 0.7);
+}
+
+.product--soon:hover {
+  border-color: rgba(255, 194, 75, 0.55);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), var(--glow-gold);
+}
+
+.product--soon .product__photo {
+  background: radial-gradient(ellipse at 50% 100%, rgba(255, 194, 75, 0.12), transparent 65%);
+}
+
+.product--soon .product__brand { color: var(--gold); }
+
+.product__tease {
+  color: var(--ink-dim);
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.product__tease b { color: var(--gold); }
+
+.btn--gold {
+  background: var(--gold);
+  color: #1d1405;
+  box-shadow: var(--glow-gold);
+}
+
+.btn--gold:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 26px rgba(255, 194, 75, 0.8), 0 0 70px rgba(255, 194, 75, 0.4);
 }
 
 .product__photo {
@@ -1280,7 +1334,7 @@ body.buybar-on .wa-float { opacity: 0 !important; pointer-events: none !importan
 
   .hero { padding: 104px 20px 48px; min-height: 100svh; }
   .hero__eyebrow { font-size: 11px; letter-spacing: 2px; padding: 7px 14px; }
-  .hero__giant { font-size: clamp(46px, 14vw, 96px); letter-spacing: 1px; }
+  .hero__giant { font-size: clamp(48px, 15.8vw, 104px); letter-spacing: 0.5px; }
   .hero__meta { font-size: 9px; letter-spacing: 2px; }
   .hero__baseline { margin: 6px 0 20px; }
   .hero__duo { gap: 12px; padding: 0 16px; }
@@ -1398,6 +1452,23 @@ body.buybar-on .wa-float { opacity: 0 !important; pointer-events: none !importan
 }
 
 .pp--green .product__brand { color: var(--lime); }
+
+/* acento dorado para lanzamientos */
+.pp--gold .hero__giant span.neon {
+  color: var(--gold);
+  text-shadow: var(--glow-gold);
+  animation: none;
+}
+
+.pp--gold .hero__baseline {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2) 12%, rgba(255, 255, 255, 0.2) 62%, var(--gold) 62%, var(--gold) 78%, transparent 78%);
+}
+
+.pp--gold .pp-jar img {
+  filter: drop-shadow(0 40px 70px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 55px rgba(255, 194, 75, 0.14));
+}
+
+.pp--gold .product__brand { color: var(--gold); }
 
 .pp-jar {
   position: relative;

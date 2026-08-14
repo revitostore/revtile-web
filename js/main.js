@@ -162,24 +162,35 @@ document.querySelectorAll('.product').forEach((card) => {
   });
 });
 
-/* ===== "Personas viendo ahora" (simulado con caminata aleatoria) ===== */
-document.querySelectorAll('[data-live]').forEach((el) => {
-  let count = 6 + Math.floor(Math.random() * 8); // arranca entre 6 y 13
-  el.textContent = count;
+/* ===== "Pidieron creatina en la última hora" (simulado, compartido entre tarjetas)
+   Rango 2-10, con mayor probabilidad entre 3 y 5. Cambia lento: es un dato "por hora". ===== */
+const PESOS_PEDIDOS = [[2, 1], [3, 3], [4, 3.2], [5, 2.8], [6, 1.2], [7, 0.8], [8, 0.5], [9, 0.3], [10, 0.2]];
 
-  const tick = () => {
-    // sube o baja de a 1-2, acotado entre 4 y 19 para que sea creíble
-    const delta = Math.random() < 0.5 ? -1 : 1;
-    count = Math.min(19, Math.max(4, count + delta * (Math.random() < 0.25 ? 2 : 1)));
+function pedidosAleatorios() {
+  const total = PESOS_PEDIDOS.reduce((s, [, w]) => s + w, 0);
+  let r = Math.random() * total;
+  for (const [valor, peso] of PESOS_PEDIDOS) {
+    if ((r -= peso) <= 0) return valor;
+  }
+  return 4;
+}
 
+const liveEls = document.querySelectorAll('[data-live]');
+let pedidos = pedidosAleatorios();
+liveEls.forEach((el) => { el.textContent = pedidos; });
+
+setInterval(() => {
+  // deriva de ±1 con tendencia a volver al rango típico (3-5)
+  let delta = Math.random() < 0.5 ? -1 : 1;
+  if (pedidos >= 6 && Math.random() < 0.7) delta = -1;
+  if (pedidos <= 2) delta = 1;
+  pedidos = Math.min(10, Math.max(2, pedidos + delta));
+
+  liveEls.forEach((el) => {
     gsap.fromTo(el, { scale: 1.25, color: '#34e07a' }, { scale: 1, color: '#f7f8fa', duration: 0.5 });
-    el.textContent = count;
-
-    setTimeout(tick, 3500 + Math.random() * 5000);
-  };
-
-  setTimeout(tick, 2500 + Math.random() * 3000);
-});
+    el.textContent = pedidos;
+  });
+}, 50000 + Math.random() * 40000);
 
 /* ===== Barra de compra fija: visible mientras navegas el catálogo ===== */
 const buyBar = document.getElementById('buyBar');
