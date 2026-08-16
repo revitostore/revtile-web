@@ -259,6 +259,7 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
 }
 
 /* ===== Botones ===== */
+/* sin transición de transform: los botones se mueven con GSAP (efecto magnético) */
 .btn {
   display: inline-block;
   text-decoration: none;
@@ -266,7 +267,7 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
   font-size: 15px;
   padding: 16px 34px;
   border-radius: 99px;
-  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  transition: box-shadow 0.25s, border-color 0.25s;
   text-align: center;
 }
 
@@ -1562,4 +1563,214 @@ body.buybar-on .wa-float { opacity: 0 !important; pointer-events: none !importan
   .pp-buy__inner { padding: 30px 22px; }
   .pp-buy__inner .product__name { font-size: 22px; }
   .pp-section { padding: 70px 20px; }
+}
+
+/* ===== Transiciones entre páginas (View Transitions, mejora progresiva) ===== */
+@view-transition { navigation: auto; }
+
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
+
+.product--on .product__photo img { view-transition-name: jar-on; }
+.product--mt .product__photo img { view-transition-name: jar-mt; }
+.product--soon .product__photo img { view-transition-name: jar-on120; }
+.pp--green .pp-jar img { view-transition-name: jar-on; }
+.pp--teal .pp-jar img { view-transition-name: jar-mt; }
+.pp--gold .pp-jar img { view-transition-name: jar-on120; }
+
+/* ===== Brillo que sigue el cursor (solo escritorio) ===== */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 380px;
+  height: 380px;
+  margin: -190px 0 0 -190px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(228, 28, 52, 0.07), rgba(45, 226, 230, 0.03) 45%, transparent 70%);
+  pointer-events: none;
+  z-index: 4;
+  mix-blend-mode: screen;
+}
+
+@media (hover: none), (max-width: 900px) {
+  .cursor-glow { display: none; }
+}
+
+/* ===== Galería: items de video ===== */
+.gallery__item--video video {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+/* ===== Combo 2 tarros ===== */
+.combo {
+  margin-top: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 26px;
+  flex-wrap: wrap;
+  background: linear-gradient(120deg, rgba(228, 28, 52, 0.1), rgba(45, 226, 230, 0.07));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 30px 34px;
+}
+
+.combo__eyebrow {
+  font-family: 'Unbounded', sans-serif;
+  color: var(--red);
+  text-shadow: var(--glow-red);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.combo__title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+
+.combo__sub { color: var(--ink-dim); font-size: 14.5px; line-height: 1.6; max-width: 520px; }
+
+.combo__btn { white-space: nowrap; }
+
+/* ===== Cupos de lanzamiento ===== */
+.product__cupos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.product__cupos::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 0 rgba(255, 194, 75, 0.6);
+  animation: livePulse 1.8s ease-out infinite;
+}
+
+/* ===== Calculadora ===== */
+.calc { padding: 130px 24px; background: var(--bg-soft); }
+
+.calc__inner { max-width: 760px; margin: 0 auto; }
+
+.calc__box {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  padding: 34px;
+}
+
+.calc__tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+
+.calc__tab {
+  flex: 1;
+  min-width: 110px;
+  background: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  color: var(--ink-dim);
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.calc__tab.is-active {
+  color: var(--ink);
+  border-color: var(--red);
+  box-shadow: var(--glow-red);
+}
+
+.calc__dose {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.calc__dose > span { color: var(--ink-dim); font-size: 14px; font-weight: 600; }
+
+.calc__dose-btns { display: flex; gap: 8px; }
+
+.calc__dosebtn {
+  background: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  color: var(--ink-dim);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 9px 18px;
+  cursor: pointer;
+  transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.calc__dosebtn.is-active {
+  color: var(--ink);
+  border-color: var(--teal);
+  box-shadow: var(--glow-teal);
+}
+
+.calc__result {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.calc__stat {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 20px 10px;
+}
+
+.calc__stat b {
+  display: block;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.calc__stat span { color: var(--ink-dim); font-size: 11.5px; letter-spacing: 0.5px; }
+
+.calc__note { color: var(--ink-dim); font-size: 13.5px; line-height: 1.6; text-align: center; }
+
+.calc__note b { color: var(--teal); }
+
+/* ===== Compartir con el gymbro ===== */
+.final__share { margin-top: 22px; }
+
+/* ===== Mascota chip (fondo claro) ===== */
+.final__mascot { cursor: pointer; }
+
+.duo__seal-mascot { width: 52%; }
+
+.mobmenu__mascot { opacity: 0.35; }
+
+@media (max-width: 900px) {
+  .calc { padding: 84px 20px; }
+  .calc__box { padding: 24px 18px; }
+  .calc__result { gap: 8px; }
+  .calc__stat b { font-size: 20px; }
+  .calc__stat span { font-size: 10px; }
+  .calc__dose { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .combo { padding: 24px 22px; }
+  .combo__title { font-size: 19px; }
+  .combo__btn { width: 100%; text-align: center; }
+  .gallery__item--video video { height: 185px; }
 }

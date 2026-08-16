@@ -73,3 +73,47 @@ ScrollTrigger.create({
   onEnter: () => waFloat.classList.add('is-on'),
   onLeaveBack: () => waFloat.classList.remove('is-on'),
 });
+
+/* ===== Cupos de lanzamiento (edítalos en el HTML: data-cupos-quedan) ===== */
+document.querySelectorAll('[data-cupos-total]').forEach((el) => {
+  const total = parseInt(el.dataset.cuposTotal, 10);
+  const quedan = parseInt(el.dataset.cuposQuedan, 10);
+  el.textContent = quedan >= total
+    ? `Solo ${total} cupos de lanzamiento`
+    : `Quedan ${quedan} de ${total} cupos de lanzamiento`;
+});
+
+/* ===== Escritorio: brillo que sigue el cursor + botones magnéticos =====
+   Se inicia al cargar o al primer movimiento de mouse (por si el ancho se reporta tarde) */
+let fxEscritorioListo = false;
+
+function initFxEscritorio(e) {
+  if (fxEscritorioListo) return;
+  if (e && e.pointerType && e.pointerType !== 'mouse') return;
+  if (!window.matchMedia('(hover: hover) and (min-width: 900px)').matches) return;
+  fxEscritorioListo = true;
+
+  const glow = document.createElement('div');
+  glow.className = 'cursor-glow';
+  document.body.appendChild(glow);
+  window.addEventListener('pointermove', (e) => {
+    gsap.to(glow, { x: e.clientX, y: e.clientY, duration: 0.55, ease: 'power3.out' });
+  });
+
+  document.querySelectorAll('.btn, .nav__cta').forEach((b) => {
+    b.addEventListener('pointermove', (e) => {
+      const r = b.getBoundingClientRect();
+      gsap.to(b, {
+        x: (e.clientX - r.left - r.width / 2) * 0.18,
+        y: (e.clientY - r.top - r.height / 2) * 0.35,
+        duration: 0.3,
+      });
+    });
+    b.addEventListener('pointerleave', () => {
+      gsap.to(b, { x: 0, y: 0, duration: 0.45, ease: 'elastic.out(1, 0.45)' });
+    });
+  });
+}
+
+initFxEscritorio();
+window.addEventListener('pointermove', initFxEscritorio);

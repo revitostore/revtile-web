@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=7">
+  <link rel="stylesheet" href="css/styles.css?v=8">
 </head>
 <body>
 
@@ -53,7 +53,7 @@
       <a href="#faq" class="mobmenu__link"><i>04</i>FAQ</a>
     </nav>
     <a class="btn btn--primary mobmenu__cta" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido%20de%20creatina" target="_blank" rel="noopener">Comprar por WhatsApp</a>
-    <img src="assets/mascota.png" alt="" class="mobmenu__mascot" aria-hidden="true">
+    <img src="assets/mascota-chip.png" alt="" class="mobmenu__mascot" aria-hidden="true">
   </div>
 
   <!-- ===== HERO ===== -->
@@ -84,7 +84,7 @@
               <textPath href="#sealCircle">100% ORIGINAL · SELLADA · VERIFICABLE ·</textPath>
             </text>
           </svg>
-          <img src="assets/mascota.png" alt="" class="duo__seal-mascot">
+          <img src="assets/mascota-chip.png" alt="" class="duo__seal-mascot">
         </div>
 
         <a href="producto-mt.html" class="duo__item duo__item--mt">
@@ -203,7 +203,8 @@
               <li>El doble de servicios por tarro</li>
               <li>Banned Substance Tested</li>
             </ul>
-            <p class="product__tease">Llega con <b>el mejor precio por servicio</b> de toda la tienda. Cupos de lanzamiento limitados.</p>
+            <p class="product__tease">Llega con <b>el mejor precio por servicio</b> de toda la tienda.</p>
+            <p class="product__cupos" data-cupos-total="15" data-cupos-quedan="15"></p>
             <a class="btn btn--gold btn--full" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20apartar%20la%20nueva%20Creatina%20ON%20de%20600g%20(120%20servicios)" target="_blank" rel="noopener">
               Aparta la tuya ahora
             </a>
@@ -211,13 +212,51 @@
           </div>
         </article>
       </div>
+
+      <!-- Combo 2 tarros -->
+      <div class="combo reveal">
+        <div class="combo__text">
+          <p class="combo__eyebrow">Combo Gymbro</p>
+          <h3 class="combo__title">Lleva 2 tarros: <span class="neon-text">$10.000 menos</span> y envío gratis a todo el país</h3>
+          <p class="combo__sub">Mezcla las que quieras: uno para ti y otro para tu gymbro, o te aseguras 4+ meses de creatina sin volver a pedir.</p>
+        </div>
+        <a class="btn btn--ghost combo__btn" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20armar%20el%20combo%20de%202%20tarros" target="_blank" rel="noopener">Armar mi combo →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CALCULADORA ===== -->
+  <section class="calc" id="calculadora">
+    <div class="calc__inner">
+      <p class="section-eyebrow reveal"><b>02</b> Calculadora</p>
+      <h2 class="section-title reveal">¿Cuánto te dura<br><span class="neon-text">un tarro</span>?</h2>
+      <div class="calc__box reveal">
+        <div class="calc__tabs" role="tablist">
+          <button class="calc__tab is-active" data-serv-gramos="300" data-precio="120000">ON · 300 g</button>
+          <button class="calc__tab" data-serv-gramos="400" data-precio="140000">MT · 400 g</button>
+          <button class="calc__tab" data-serv-gramos="600" data-precio="0">ON · 600 g</button>
+        </div>
+        <div class="calc__dose">
+          <span>Tu dosis diaria</span>
+          <div class="calc__dose-btns">
+            <button class="calc__dosebtn" data-g="3">3 g</button>
+            <button class="calc__dosebtn is-active" data-g="5">5 g</button>
+          </div>
+        </div>
+        <div class="calc__result">
+          <div class="calc__stat"><b id="calcDias">60</b><span>días de toma diaria</span></div>
+          <div class="calc__stat"><b id="calcMeses">2</b><span>meses completos</span></div>
+          <div class="calc__stat"><b id="calcDia">$2.000</b><span>te cuesta el día</span></div>
+        </div>
+        <p class="calc__note" id="calcNote"></p>
+      </div>
     </div>
   </section>
 
   <!-- ===== BENEFICIOS ===== -->
   <section class="benefits" id="beneficios">
     <div class="benefits__inner">
-      <p class="section-eyebrow reveal"><b>02</b> Por qué tomar creatina</p>
+      <p class="section-eyebrow reveal"><b>03</b> Por qué tomar creatina</p>
       <h2 class="section-title reveal">El suplemento más<br><span class="neon-text">estudiado del mundo</span><span class="accent">.</span></h2>
       <div class="benefits__grid">
         <div class="benefit benefit--red reveal">
@@ -247,7 +286,7 @@
   <!-- ===== GARANTÍA / CONFIANZA ===== -->
   <section class="trust" id="garantia">
     <div class="trust__inner">
-      <p class="section-eyebrow reveal"><b>03</b> Garantía Revtile</p>
+      <p class="section-eyebrow reveal"><b>04</b> Garantía Revtile</p>
       <h2 class="section-title reveal">Lo original se puede<br><span class="neon-text">comprobar</span><span class="accent">.</span></h2>
       <p class="trust__lead reveal">Sabemos que en Colombia circulan suplementos falsificados. Por eso cada tarro que entregamos pasa por esta verificación:</p>
       <div class="trust__cards">
@@ -274,8 +313,16 @@
         </article>
       </div>
       <div class="gallery reveal">
-        <p class="gallery__hint">Fotos reales de nuestros productos — desliza para ver más</p>
+        <p class="gallery__hint">Fotos y videos reales de nuestros productos — desliza para ver más</p>
         <div class="gallery__track">
+          <figure class="gallery__item gallery__item--video">
+            <video src="assets/video/destapar.mp4" poster="assets/video/destapar.jpg" autoplay muted loop playsinline></video>
+            <figcaption>El sello interno, intacto hasta tus manos</figcaption>
+          </figure>
+          <figure class="gallery__item gallery__item--video">
+            <video src="assets/video/agua.mp4" poster="assets/video/agua.jpg" autoplay muted loop playsinline></video>
+            <figcaption>Así se disuelve la creatina original</figcaption>
+          </figure>
           <figure class="gallery__item">
             <img src="assets/galeria/sello-muscletech.jpg" alt="Sello de autenticidad MuscleTech con código QR verificable" loading="lazy">
             <figcaption>Sello de autenticidad MuscleTech con QR verificable</figcaption>
@@ -312,7 +359,7 @@
   <!-- ===== CÓMO COMPRAR ===== -->
   <section class="how">
     <div class="how__inner">
-      <p class="section-eyebrow reveal"><b>04</b> Cómo funciona</p>
+      <p class="section-eyebrow reveal"><b>05</b> Cómo funciona</p>
       <h2 class="section-title reveal">Comprar toma<br><span class="neon-text">menos de un minuto</span><span class="accent">.</span></h2>
       <ol class="steps">
         <li class="step reveal">
@@ -337,7 +384,7 @@
   <!-- ===== FAQ ===== -->
   <section class="faq" id="faq">
     <div class="faq__inner">
-      <p class="section-eyebrow reveal"><b>05</b> Preguntas frecuentes</p>
+      <p class="section-eyebrow reveal"><b>06</b> Preguntas frecuentes</p>
       <h2 class="section-title reveal">Resolvemos tus dudas<span class="accent">.</span></h2>
       <div class="faq__list">
         <details class="faq__item reveal">
@@ -372,12 +419,13 @@
   <section class="final">
     <div class="final__glow" aria-hidden="true"></div>
     <div class="final__inner">
-      <img src="assets/mascota.png" alt="Mascota de Revtile: una iguana levantando una pesa" class="final__mascot reveal">
+      <img src="assets/mascota-chip.png" alt="Mascota de Revtile: una iguana levantando una pesa" class="final__mascot reveal" id="mascotaFinal">
       <h2 class="final__title reveal">Tu creatina original<br><span class="neon-text">te está esperando</span><span class="accent">.</span></h2>
       <a class="btn btn--primary btn--big reveal" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido%20de%20creatina" target="_blank" rel="noopener">
         Comprar por WhatsApp
       </a>
       <p class="final__note reveal">Respuesta en minutos · Envío gratis en Bogotá</p>
+      <a class="btn btn--ghost final__share reveal" href="https://wa.me/?text=Mira%20REVTILE%20%F0%9F%A6%8E%20creatinas%20100%25%20originales%2C%20selladas%20y%20verificables%2C%20con%20env%C3%ADo%20gratis%20en%20Bogot%C3%A1%20%F0%9F%92%AA%20https%3A%2F%2Frevtile.com.co" target="_blank" rel="noopener">Recomiéndala a tu gymbro 💪</a>
       <div class="social reveal">
         <a class="social__link" href="https://www.instagram.com/revtile.store?igsh=MTMzY2JmajI2N2pwMA%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram de Revtile">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor" stroke="none"/></svg>
@@ -425,6 +473,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="js/main.js?v=7"></script>
+  <script src="js/main.js?v=8"></script>
 </body>
 </html>

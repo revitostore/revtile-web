@@ -250,3 +250,105 @@ document.querySelectorAll('.faq__item').forEach((item) => {
     });
   });
 });
+
+/* ===== Calculadora: ¿cuánto te dura un tarro? ===== */
+const calcBox = document.querySelector('.calc__box');
+if (calcBox) {
+  const fmt = (n) => '$' + n.toLocaleString('es-CO');
+  const state = { gramos: 300, precio: 120000, dosis: 5 };
+
+  function renderCalc() {
+    const dias = Math.floor(state.gramos / state.dosis);
+    const meses = (dias / 30).toFixed(1).replace('.0', '');
+    document.getElementById('calcDias').textContent = dias;
+    document.getElementById('calcMeses').textContent = meses;
+    document.getElementById('calcDia').textContent = state.precio > 0 ? fmt(Math.round(state.precio / dias)) : '—';
+    document.getElementById('calcNote').innerHTML = state.precio > 0
+      ? `Tomando <b>${state.dosis} g diarios</b>, este tarro te acompaña <b>${dias} días seguidos</b> — menos de lo que cuesta una gaseosa al día.`
+      : `Tomando <b>${state.dosis} g diarios</b> te dura <b>${dias} días</b>. El precio de lanzamiento está por confirmar — aparta la tuya y te avisamos primero.`;
+    gsap.fromTo('.calc__stat b', { scale: 1.15 }, { scale: 1, duration: 0.35, ease: 'power2.out' });
+  }
+
+  calcBox.querySelectorAll('.calc__tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      calcBox.querySelectorAll('.calc__tab').forEach((t) => t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      state.gramos = parseInt(tab.dataset.servGramos, 10);
+      state.precio = parseInt(tab.dataset.precio, 10);
+      renderCalc();
+    });
+  });
+
+  calcBox.querySelectorAll('.calc__dosebtn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      calcBox.querySelectorAll('.calc__dosebtn').forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      state.dosis = parseInt(btn.dataset.g, 10);
+      renderCalc();
+    });
+  });
+
+  renderCalc();
+}
+
+/* ===== Cupos de lanzamiento (edítalos en el HTML: data-cupos-quedan) ===== */
+document.querySelectorAll('[data-cupos-total]').forEach((el) => {
+  const total = parseInt(el.dataset.cuposTotal, 10);
+  const quedan = parseInt(el.dataset.cuposQuedan, 10);
+  el.textContent = quedan >= total
+    ? `Solo ${total} cupos de lanzamiento`
+    : `Quedan ${quedan} de ${total} cupos de lanzamiento`;
+});
+
+/* ===== Iguana interactiva: tócala y levanta la pesa ===== */
+const mascotaFinal = document.getElementById('mascotaFinal');
+if (mascotaFinal) {
+  gsap.to(mascotaFinal, {
+    rotate: 3,
+    duration: 2.2,
+    ease: 'sine.inOut',
+    yoyo: true,
+    repeat: -1,
+  });
+  mascotaFinal.addEventListener('click', () => {
+    gsap.timeline()
+      .to(mascotaFinal, { y: -26, scaleY: 1.06, scaleX: 0.96, duration: 0.28, ease: 'power2.out' })
+      .to(mascotaFinal, { y: 0, scaleY: 0.94, scaleX: 1.05, duration: 0.22, ease: 'power2.in' })
+      .to(mascotaFinal, { scaleY: 1, scaleX: 1, duration: 0.35, ease: 'elastic.out(1.2, 0.5)' });
+  });
+}
+
+/* ===== Escritorio: brillo que sigue el cursor + botones magnéticos =====
+   Se inicia al cargar o al primer movimiento de mouse (por si el ancho se reporta tarde) */
+let fxEscritorioListo = false;
+
+function initFxEscritorio(e) {
+  if (fxEscritorioListo) return;
+  if (e && e.pointerType && e.pointerType !== 'mouse') return;
+  if (!window.matchMedia('(hover: hover) and (min-width: 900px)').matches) return;
+  fxEscritorioListo = true;
+
+  const glow = document.createElement('div');
+  glow.className = 'cursor-glow';
+  document.body.appendChild(glow);
+  window.addEventListener('pointermove', (e) => {
+    gsap.to(glow, { x: e.clientX, y: e.clientY, duration: 0.55, ease: 'power3.out' });
+  });
+
+  document.querySelectorAll('.btn, .nav__cta').forEach((b) => {
+    b.addEventListener('pointermove', (e) => {
+      const r = b.getBoundingClientRect();
+      gsap.to(b, {
+        x: (e.clientX - r.left - r.width / 2) * 0.18,
+        y: (e.clientY - r.top - r.height / 2) * 0.35,
+        duration: 0.3,
+      });
+    });
+    b.addEventListener('pointerleave', () => {
+      gsap.to(b, { x: 0, y: 0, duration: 0.45, ease: 'elastic.out(1, 0.45)' });
+    });
+  });
+}
+
+initFxEscritorio();
+window.addEventListener('pointermove', initFxEscritorio);
