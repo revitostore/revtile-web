@@ -462,39 +462,27 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
 .duo__item--on:hover .duo__tag { border-color: var(--lime); box-shadow: var(--glow-lime); }
 .duo__item--mt:hover .duo__tag { border-color: var(--teal); box-shadow: var(--glow-teal); }
 
+/* insignia de la iguana con halo de neón que respira (rojo ↔ petróleo) */
 .duo__seal {
   position: relative;
   align-self: center;
-  width: clamp(96px, 11vw, 132px);
+  width: clamp(74px, 8.5vw, 100px);
   aspect-ratio: 1;
   flex-shrink: 0;
+  border-radius: 50%;
+  animation: sealGlow 4.5s ease-in-out infinite;
 }
 
-.duo__seal-ring {
-  width: 100%;
-  height: 100%;
-  animation: sealSpin 16s linear infinite;
-}
-
-/* el texto se distribuye exacto en el círculo con textLength (escala con el viewBox);
-   nada de letter-spacing en CSS px: no escala y descuadra en móvil */
-.duo__seal-ring text {
-  fill: rgba(247, 248, 250, 0.72);
-  font-family: 'Inter', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-}
-
-@keyframes sealSpin {
-  to { transform: rotate(360deg); }
+@keyframes sealGlow {
+  0%, 100% { box-shadow: 0 0 16px rgba(228, 28, 52, 0.45), 0 0 40px rgba(228, 28, 52, 0.18); }
+  50% { box-shadow: 0 0 16px rgba(45, 226, 230, 0.45), 0 0 40px rgba(45, 226, 230, 0.18); }
 }
 
 .duo__seal-mascot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 44%;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 
 .hero__sub {
@@ -1343,7 +1331,7 @@ body.buybar-on .wa-float { opacity: 0 !important; pointer-events: none !importan
   .duo__item img { height: clamp(82px, 21vw, 112px); }
   .duo__item .hero__floor { bottom: 24px; height: 28px; }
   .duo__tag { font-size: 8.5px; padding: 5px 9px; letter-spacing: 0.8px; margin-top: 9px; white-space: nowrap; }
-  .duo__seal { width: 64px; }
+  .duo__seal { width: 54px; }
   .hero__sub { font-size: 15.5px; margin: 26px 0 24px; }
   .hero__actions { flex-direction: column; width: 100%; max-width: 340px; }
   .hero__actions .btn { width: 100%; padding: 15px 20px; }
@@ -1757,8 +1745,6 @@ body.buybar-on .wa-float { opacity: 0 !important; pointer-events: none !importan
 
 /* ===== Mascota chip (fondo claro) ===== */
 .final__mascot { cursor: pointer; }
-
-.duo__seal-mascot { width: 52%; }
 
 .mobmenu__mascot { opacity: 0.35; }
 
