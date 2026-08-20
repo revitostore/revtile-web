@@ -1211,24 +1211,71 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
   box-shadow: var(--glow-red);
 }
 
-/* ===== Footer ===== */
+/* ===== Footer profesional ===== */
 .footer {
   border-top: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 30px 24px;
-  text-align: center;
+  background: var(--bg-soft);
+  padding: 60px 24px 0;
   color: var(--ink-dim);
-  font-size: 13px;
+  font-size: 14px;
 }
 
-.footer__social { margin-top: 8px; }
+.footer__grid {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: 40px;
+  padding-bottom: 44px;
+}
 
-.footer__social a {
+.footer__logo {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ink);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.footer__tag { line-height: 1.65; max-width: 300px; margin-bottom: 20px; }
+
+.footer__social-row { display: flex; gap: 12px; }
+
+.footer__social-row .social__link { width: 42px; height: 42px; }
+
+.footer__social-row .social__link svg { width: 19px; height: 19px; }
+
+.footer__title {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.footer__col { display: flex; flex-direction: column; gap: 10px; }
+
+.footer__col a, .footer__col span {
   color: var(--ink-dim);
   text-decoration: none;
   transition: color 0.2s;
+  line-height: 1.5;
 }
 
-.footer__social a:hover { color: var(--red); }
+.footer__col a:hover { color: var(--ink); }
+
+.footer__base {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 22px 0 26px;
+  text-align: center;
+  font-size: 12.5px;
+}
+
+.footer__note { margin-top: 6px; color: #6b7288; font-size: 11.5px; }
 
 /* ===== Barra de compra fija ===== */
 .buybar {
@@ -1759,4 +1806,72 @@ body.buybar-on .wa-float { opacity: 0 !important; pointer-events: none !importan
   .combo__title { font-size: 19px; }
   .combo__btn { width: 100%; text-align: center; }
   .gallery__item--video video { height: 185px; }
+}
+
+/* ===== Accesibilidad: foco visible al navegar con teclado ===== */
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ===== Página legal ===== */
+.legal__main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 130px 24px 90px;
+}
+
+.legal__title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.legal__updated { color: var(--ink-dim); font-size: 13px; margin-bottom: 40px; }
+
+.legal__block { margin-bottom: 40px; }
+
+.legal__block h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.legal__block p, .legal__block li {
+  color: var(--ink-dim);
+  font-size: 15px;
+  line-height: 1.75;
+  margin-bottom: 10px;
+}
+
+.legal__block ul { padding-left: 20px; }
+
+.legal__block a { color: var(--teal); text-decoration: none; }
+
+.legal__block a:hover { text-decoration: underline; }
+
+.legal__block b { color: var(--ink); }
+
+/* ===== Página 404 ===== */
+.notfound { min-height: 100svh; }
+
+.notfound__mascot {
+  width: min(180px, 40vw);
+  height: auto;
+  margin-top: 26px;
+  animation: sealGlow 4.5s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+/* ===== Footer en móvil ===== */
+@media (max-width: 900px) {
+  .footer { padding: 44px 20px 0; }
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 30px 20px; padding-bottom: 34px; }
+  .footer__brand { grid-column: 1 / -1; }
+  .footer__col[aria-label="Contacto"] { grid-column: 1 / -1; }
+  .legal__main { padding: 104px 20px 70px; }
 }
