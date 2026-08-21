@@ -8,8 +8,8 @@
                  → Overview → "Project ID" (unas 10 letras/números)
    Mientras un ID diga PENDIENTE, ese servicio NO se carga.
    ============================================================ */
-var GA_ID = 'G-PENDIENTE';
-var CLARITY_ID = 'PENDIENTE';
+var GA_ID = 'G-6F23FS4ZH1';
+var CLARITY_ID = 'y5n8rfjbqw';
 
 (function () {
   // --- Google Analytics 4 ---
