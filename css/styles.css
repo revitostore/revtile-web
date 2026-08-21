@@ -1877,3 +1877,22 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .footer__col[aria-label="Contacto"] { grid-column: 1 / -1; }
   .legal__main { padding: 104px 20px 70px; }
 }
+
+/* ===== Testimonios (capturas de chats reales) ===== */
+.testis { padding: 130px 24px; background: var(--bg-soft); }
+
+.testis__inner { max-width: 1160px; margin: 0 auto; }
+
+.gallery__item--chat { flex: 0 0 min(250px, 66vw); }
+
+.gallery__item--chat img {
+  height: 440px;
+  object-fit: cover;
+  object-position: top;
+}
+
+@media (max-width: 900px) {
+  .testis { padding: 84px 20px; }
+  .gallery__item--chat { flex: 0 0 min(220px, 62vw); }
+  .gallery__item--chat img { height: 390px; }
+}
