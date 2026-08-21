@@ -235,6 +235,7 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
   right: -46px;
   bottom: -30px;
   width: 180px;
+  height: auto; /* sin esto, el atributo height de la imagen la estira */
   opacity: 0.16;
   transform: rotate(-8deg);
   pointer-events: none;
@@ -1164,6 +1165,7 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
 
 .final__mascot {
   width: min(230px, 52vw);
+  height: auto; /* sin esto, el atributo height de la imagen la estira */
   margin-bottom: 26px;
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 30px rgba(228, 28, 52, 0.2));
 }
