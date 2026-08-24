@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haz tu pedido — REVTILE</title>
+  <meta name="description" content="Arma tu pedido de creatina 100% original, paga con Bre-B o Nequi y recíbelo en tu puerta. Envío gratis en Bogotá.">
+  <meta name="theme-color" content="#07080d">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="canonical" href="https://revtile.com.co/pedido.html">
+  <meta property="og:title" content="Haz tu pedido — REVTILE">
+  <meta property="og:description" content="Arma tu pedido, paga con Bre-B/Nequi y recíbelo en tu puerta. Envío gratis en Bogotá.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://revtile.com.co/pedido.html">
+  <meta property="og:image" content="https://revtile.com.co/assets/og-card.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+  <link rel="stylesheet" href="css/styles.css?v=14">
+  <script src="js/analytics.js?v=2" defer></script>
+</head>
+<body class="pp co">
+
+  <div class="blob blob--red" aria-hidden="true"></div>
+  <div class="blob blob--teal" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
+      <a class="pp-back" href="index.html">← Volver a la tienda</a>
+      <a class="nav__cta" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20tengo%20una%20pregunta%20sobre%20mi%20pedido" target="_blank" rel="noopener">Ayuda</a>
+    </div>
+  </header>
+
+  <main class="co__main">
+    <h1 class="co__title">Haz tu pedido<span class="accent">.</span></h1>
+    <p class="co__sub">Sin registros ni contraseñas. Pagas por Bre-B/Nequi y tu pedido sale volando 🦎</p>
+    <p class="co__saved" id="coSaved" hidden>👋 Te recordamos de tu último pedido — tus datos ya están llenos (se guardan solo en tu teléfono). <button type="button" id="coClear">Borrar mis datos</button></p>
+
+    <!-- ===== 01 · PRODUCTO ===== -->
+    <section class="co__card">
+      <p class="section-eyebrow"><b>01</b> Elige tu creatina</p>
+      <div class="co__products" id="coProducts">
+        <button type="button" class="co__prod is-active" data-prod="on">
+          <img src="assets/on.png" alt="ON Micronized Creatine 300 g" width="791" height="927">
+          <span class="co__prod-name">ON Micronized<br>300 g · 60 serv.</span>
+          <span class="co__prod-price">$120.000</span>
+        </button>
+        <button type="button" class="co__prod" data-prod="mt">
+          <img src="assets/muscletech.png" alt="MT Platinum Creatine 400 g" width="293" height="450">
+          <span class="co__prod-name">MT Platinum<br>400 g · 80 serv.</span>
+          <span class="co__prod-price">$140.000</span>
+        </button>
+      </div>
+      <div class="co__qty">
+        <span>Cantidad</span>
+        <div class="co__qty-ctrl">
+          <button type="button" id="qtyMinus" aria-label="Menos">−</button>
+          <b id="qtyVal">1</b>
+          <button type="button" id="qtyPlus" aria-label="Más">+</button>
+        </div>
+      </div>
+      <p class="co__combo" id="coCombo" hidden>🔥 <b>Combo Gymbro aplicado:</b> $10.000 de descuento por llevar 2 o más tarros</p>
+    </section>
+
+    <!-- ===== 02 · ENTREGA ===== -->
+    <section class="co__card">
+      <p class="section-eyebrow"><b>02</b> Datos de entrega</p>
+      <div class="co__grid">
+        <label class="co__field">
+          <span>Tu nombre completo *</span>
+          <input type="text" id="fNombre" autocomplete="name" placeholder="Como aparecerá en el paquete">
+        </label>
+        <label class="co__field">
+          <span>Tu WhatsApp *</span>
+          <input type="tel" id="fTel" autocomplete="tel" placeholder="3XX XXX XXXX">
+        </label>
+        <label class="co__field">
+          <span>Ciudad *</span>
+          <select id="fCiudad">
+            <option value="bogota">Bogotá — envío GRATIS</option>
+            <option value="nacional">Otra ciudad — envío $18.000</option>
+          </select>
+        </label>
+        <label class="co__field" id="fOtraCiudadWrap" hidden>
+          <span>¿Cuál ciudad? *</span>
+          <input type="text" id="fOtraCiudad" placeholder="Ej: Medellín">
+        </label>
+        <label class="co__field co__field--full">
+          <span>Dirección *</span>
+          <input type="text" id="fDir" autocomplete="street-address" placeholder="Ej: Cra 15 # 45-32">
+        </label>
+        <label class="co__field">
+          <span>Tipo de vivienda</span>
+          <select id="fVivienda">
+            <option value="casa">Casa</option>
+            <option value="apartamento">Apartamento / edificio</option>
+            <option value="conjunto">Conjunto residencial</option>
+          </select>
+        </label>
+        <label class="co__field" id="fAptoWrap" hidden>
+          <span>Torre / apto / interior</span>
+          <input type="text" id="fApto" placeholder="Ej: Torre 2, apto 502">
+        </label>
+      </div>
+      <label class="co__check" id="fPorteriaWrap" hidden>
+        <input type="checkbox" id="fPorteria">
+        <span>Autorizo dejar el pedido en <b>portería</b> a mi nombre si no estoy</span>
+      </label>
+
+      <div class="co__map-block">
+        <div class="co__map-head">
+          <span>📍 Verifica tu ubicación (opcional, ayuda al mensajero)</span>
+          <button type="button" class="co__map-btn" id="btnGeo">Ubicar mi dirección en el mapa</button>
+        </div>
+        <div id="coMap" class="co__map" aria-label="Mapa para ajustar el punto de entrega"></div>
+        <p class="co__map-hint" id="mapHint">Arrastra el pin rojo si el punto no queda exacto.</p>
+      </div>
+    </section>
+
+    <!-- ===== 03 · PAGO ===== -->
+    <section class="co__card">
+      <p class="section-eyebrow"><b>03</b> Paga y envía tu pedido</p>
+
+      <div class="co__total">
+        <div class="co__total-lines">
+          <p><span id="resProducto">1× ON Micronized 300 g</span><b id="resSubtotal">$120.000</b></p>
+          <p id="resComboLine" hidden><span>Combo Gymbro</span><b class="co__verde">−$10.000</b></p>
+          <p><span>Envío</span><b id="resEnvio">GRATIS</b></p>
+          <p class="co__total-final"><span>Total a pagar</span><b id="resTotal">$120.000</b></p>
+        </div>
+      </div>
+
+      <div class="co__pay">
+        <div class="co__pay-qr">
+          <img src="assets/breb-qr.jpg" alt="QR Bre-B de Revtile para pagar desde cualquier banco" loading="lazy">
+        </div>
+        <div class="co__pay-info">
+          <p class="co__pay-title">Paga con Bre-B desde cualquier banco</p>
+          <p class="co__pay-text">Desde tu app (Nequi, Bancolombia, Daviplata…) elige <b>enviar con Bre-B</b>, pega nuestra llave y transfiere el total exacto:</p>
+          <button type="button" class="co__key" id="btnLlave">
+            <span class="co__key-num">009 296 8559</span>
+            <span class="co__key-copy" id="llaveEstado">Copiar llave</span>
+          </button>
+          <p class="co__pay-text co__pay-text--small">Titular: <b>Revtile</b> · O escanea el QR si pagas desde otro dispositivo.</p>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn--primary btn--full co__send" id="btnEnviar">
+        Ya pagué → Enviar mi pedido por WhatsApp
+      </button>
+      <p class="co__note">Se abrirá WhatsApp con tu pedido completo — adjunta ahí el comprobante de pago. Verificamos y tu pedido sale el mismo día. 🦎 ¿Prefieres pedir sin pagar aún? <a href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
+      <p class="co__error" id="coError" hidden></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__base" style="border-top: none;">
+      <p>© 2026 REVTILE · <a href="terminos.html" style="color: inherit;">Términos y envíos</a></p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+  <script src="js/checkout.js?v=2"></script>
+</body>
+</html>
