@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=15">
+  <link rel="stylesheet" href="css/styles.css?v=16">
   <script src="js/analytics.js?v=2" defer></script>
 </head>
 <body class="pp co">
@@ -132,6 +132,7 @@
         </div>
         <div id="coMap" class="co__map" aria-label="Mapa para ajustar el punto de entrega"></div>
         <p class="co__map-hint" id="mapHint">Arrastra el pin rojo si el punto no queda exacto.</p>
+        <p class="co__map-dir" id="mapDir" hidden></p>
       </div>
     </section>
 
@@ -140,8 +141,8 @@
       <p class="section-eyebrow"><b>03</b> Paga y envía tu pedido</p>
 
       <div class="co__total">
+        <div class="co__total-lines" id="resItems"></div>
         <div class="co__total-lines">
-          <p><span id="resProducto">1× ON Micronized 300 g</span><b id="resSubtotal">$120.000</b></p>
           <p id="resComboLine" hidden><span>Combo Gymbro</span><b class="co__verde" id="resComboVal">−$10.000</b></p>
           <p><span>Envío</span><b id="resEnvio">GRATIS</b></p>
           <p class="co__total-final"><span>Total a pagar</span><b id="resTotal">$120.000</b></p>
@@ -159,14 +160,23 @@
             <span class="co__key-num">009 296 8559</span>
             <span class="co__key-copy" id="llaveEstado">Copiar llave</span>
           </button>
-          <p class="co__pay-text co__pay-text--small">✓ Al pagar, el titular aparecerá como <b>REV*** DAV*** VIL***</b> (Revtile) — así confirmas que somos nosotros. O escanea el QR si pagas desde otro dispositivo.</p>
+          <div class="co__titular">
+            <span class="co__titular-check">✓</span>
+            <div class="co__titular-info">
+              <small>Al pagar, el titular debe aparecer como</small>
+              <b>REV*** DAV*** VIL***</b>
+              <small>Ese somos nosotros (Revtile) — verifícalo antes de enviar</small>
+            </div>
+          </div>
+          <p class="co__pay-text co__pay-text--small">¿Pagas desde otro dispositivo? Escanea el QR.</p>
         </div>
       </div>
 
       <button type="button" class="btn btn--primary btn--full co__send" id="btnEnviar">
         Ya pagué → Enviar mi pedido por WhatsApp
       </button>
-      <p class="co__note">Se abrirá WhatsApp con tu pedido completo — adjunta ahí el comprobante de pago. Verificamos y tu pedido sale el mismo día. 🦎 ¿Prefieres pedir sin pagar aún? <a href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
+      <p class="co__ok" id="coOk" hidden></p>
+      <p class="co__note">Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día. 🦎 ¿Prefieres pedir sin pagar aún? <a href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
       <p class="co__error" id="coError" hidden></p>
     </section>
   </main>
@@ -176,6 +186,26 @@
       <p>© 2026 REVTILE · <a href="terminos.html" class="co__foot-link">Términos y envíos</a></p>
     </div>
   </footer>
+
+  <!-- Registro de pedidos (Netlify Forms): copia de seguridad de cada pedido con su ID -->
+  <form name="pedidos" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input name="bot-field">
+    <input name="id">
+    <input name="fecha">
+    <input name="items">
+    <input name="combo">
+    <input name="envio">
+    <input name="total">
+    <input name="nombre">
+    <input name="telefono">
+    <input name="ciudad">
+    <input name="direccion">
+    <input name="vivienda">
+    <input name="apto">
+    <input name="porteria">
+    <input name="direccion_mapa">
+    <input name="maps_link">
+  </form>
 
   <!-- Barra fija: total siempre visible + atajo que copia la llave y baja al pago -->
   <div class="co__bar">
@@ -187,6 +217,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <script src="js/checkout.js?v=4"></script>
+  <script src="js/checkout.js?v=5"></script>
 </body>
 </html>

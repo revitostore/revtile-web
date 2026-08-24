@@ -16,7 +16,7 @@ const WHATSAPP = '573214569600';
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
-const state = { cant: { on: 1, mt: 0, on120: 0 }, lat: null, lng: null };
+const state = { cant: { on: 1, mt: 0, on120: 0 }, lat: null, lng: null, dirMapa: null };
 
 /* --- Producto preseleccionado por URL (?producto=mt) --- */
 function aplicarParamProducto() {
@@ -93,10 +93,9 @@ function render() {
     $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de tarros)`;
   }
 
-  $('resProducto').textContent = items.length
-    ? items.map((i) => `${i.c}× ${i.corto}`).join(' + ')
-    : 'Elige al menos un tarro';
-  $('resSubtotal').textContent = fmt(subtotal);
+  $('resItems').innerHTML = items.length
+    ? items.map((i) => `<p><span>${i.c}× ${i.nombre}</span><b>${fmt(i.valor)}</b></p>`).join('')
+    : '<p><span>Elige al menos un tarro</span><b>—</b></p>';
   $('resComboLine').hidden = combo === 0;
   $('resComboVal').textContent = '−' + fmt(combo);
   $('resEnvio').innerHTML = esBogota
@@ -132,9 +131,49 @@ try {
     state.lat = pos.lat.toFixed(6);
     state.lng = pos.lng.toFixed(6);
     $('mapHint').textContent = '📍 Punto de entrega ajustado — irá en tu pedido.';
+    direccionDelPin(state.lat, state.lng);
   });
 } catch (e) {
   document.querySelector('.co__map-block').hidden = true; // si el mapa falla, el pedido sigue funcionando
+}
+
+/* normaliza nomenclatura colombiana para que el buscador la entienda */
+function normalizarDireccion(d) {
+  return d
+    .replace(/[#º°]/g, ' ')
+    .replace(/\bn[oº]?\.?(?=\s|\d)/gi, ' ')
+    .replace(/\b(cra|kra|kr|cr)\.?\b/gi, 'Carrera')
+    .replace(/\b(cll|cl)\.?\b/gi, 'Calle')
+    .replace(/\bav\.?\b/gi, 'Avenida')
+    .replace(/\b(tv|trans)\.?\b/gi, 'Transversal')
+    .replace(/\b(dg|diag)\.?\b/gi, 'Diagonal')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+async function buscarNominatim(q) {
+  const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&q=' + encodeURIComponent(q));
+  const data = await r.json();
+  return data.length ? data[0] : null;
+}
+
+/* direccion que el mapa reconoce en el punto del pin (para corroborar) */
+async function direccionDelPin(lat, lng) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&lat=${lat}&lon=${lng}`);
+    const data = await r.json();
+    if (data && data.address) {
+      const a = data.address;
+      const partes = [
+        [a.road, a.house_number].filter(Boolean).join(' '),
+        a.neighbourhood || a.suburb,
+        a.city || a.town || a.municipality,
+      ].filter(Boolean);
+      state.dirMapa = partes.join(', ');
+      $('mapDir').hidden = false;
+      $('mapDir').innerHTML = '🗺 Según el mapa, el pin está en: <b>' + state.dirMapa + '</b> — si no coincide con tu dirección, ajusta el pin.';
+    }
+  } catch (e) { /* sin reverse: no pasa nada */ }
 }
 
 $('btnGeo').addEventListener('click', async () => {
@@ -144,18 +183,20 @@ $('btnGeo').addEventListener('click', async () => {
   if (!dir) { mostrarError('Escribe primero tu dirección para ubicarla en el mapa.'); return; }
   $('btnGeo').textContent = 'Buscando…';
   try {
-    const q = encodeURIComponent(dir + ', ' + (ciudad || 'Bogotá') + ', Colombia');
-    const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + q);
-    const data = await r.json();
-    if (data.length) {
-      const { lat, lon } = data[0];
-      mapa.setView([lat, lon], 17);
-      pin.setLatLng([lat, lon]);
-      state.lat = parseFloat(lat).toFixed(6);
-      state.lng = parseFloat(lon).toFixed(6);
+    const norm = normalizarDireccion(dir);
+    const zona = (ciudad || 'Bogotá') + ', Colombia';
+    // intento 1: direccion completa; intento 2: sin la placa final (ej. "45-32" -> "45")
+    let hit = await buscarNominatim(norm + ', ' + zona);
+    if (!hit) hit = await buscarNominatim(norm.replace(/(\d+)\s*-\s*\d+\s*$/, '$1') + ', ' + zona);
+    if (hit) {
+      mapa.setView([hit.lat, hit.lon], 17);
+      pin.setLatLng([hit.lat, hit.lon]);
+      state.lat = parseFloat(hit.lat).toFixed(6);
+      state.lng = parseFloat(hit.lon).toFixed(6);
       $('mapHint').textContent = '📍 ¿Quedó bien el pin? Arrástralo si hay que afinarlo.';
+      direccionDelPin(state.lat, state.lng);
     } else {
-      $('mapHint').textContent = 'No encontramos esa dirección — mueve el pin a mano hasta tu punto.';
+      $('mapHint').textContent = 'No encontramos esa dirección exacta — acerca el mapa y pon el pin a mano en tu punto.';
     }
   } catch (e) {
     $('mapHint').textContent = 'No se pudo buscar — mueve el pin a mano hasta tu punto.';
@@ -234,7 +275,7 @@ function mostrarError(msg) {
   setTimeout(() => { el.hidden = true; }, 6000);
 }
 
-$('btnEnviar').addEventListener('click', () => {
+$('btnEnviar').addEventListener('click', async () => {
   const { items, tarros, combo, pares, esBogota, envio, total } = calcular();
   const nombre = $('fNombre').value.trim();
   const tel = $('fTel').value.trim();
@@ -252,26 +293,79 @@ $('btnEnviar').addEventListener('click', () => {
   const vivienda = $('fVivienda').value;
   const apto = $('fApto').value.trim();
   const porteria = $('fPorteria').checked;
+  const mapsLink = state.lat ? `https://www.google.com/maps?q=${state.lat},${state.lng}` : '';
 
-  const lineas = ['🦎 *PEDIDO REVTILE*', ''];
-  items.forEach((i) => lineas.push(`▪ ${i.c}× ${i.nombre} — ${fmt(i.valor)}`));
-  if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
-  lineas.push(
-    `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio)),
-    `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`,
-    '',
-    `👤 ${nombre}`,
-    `📱 ${tel}`,
-    `📍 ${dir}, ${ciudad}`,
-  );
-  if (vivienda !== 'casa') {
-    lineas.push(`🏢 ${vivienda === 'conjunto' ? 'Conjunto' : 'Apartamento'}${apto ? ' — ' + apto : ''}`);
-    lineas.push(porteria ? '✅ Autorizo dejar en portería a mi nombre' : '🔔 Entregar en persona (no dejar en portería)');
+  /* ID unico de pedido: RV- + fecha base36 + azar (ej. RV-K8M2X) */
+  const id = 'RV-' + (Date.now().toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)).toUpperCase();
+
+  const boton = $('btnEnviar');
+  boton.disabled = true;
+  boton.textContent = 'Registrando tu pedido…';
+
+  /* registro del pedido completo en el sistema (Netlify Forms) */
+  let registrado = false;
+  try {
+    const datos = new URLSearchParams({
+      'form-name': 'pedidos',
+      id,
+      fecha: new Date().toLocaleString('es-CO'),
+      items: items.map((i) => `${i.c}x ${i.nombre} = ${fmt(i.valor)}`).join(' | '),
+      combo: combo ? `-${fmt(combo)} (${pares} pares)` : 'no',
+      envio: envio === 0 ? 'Bogota GRATIS' : fmt(envio),
+      total: fmt(total),
+      nombre,
+      telefono: tel,
+      ciudad,
+      direccion: dir,
+      vivienda,
+      apto,
+      porteria: porteria ? 'si' : 'no',
+      direccion_mapa: state.dirMapa || '',
+      maps_link: mapsLink,
+    });
+    const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: datos.toString() });
+    registrado = r.ok;
+  } catch (e) { registrado = false; }
+
+  boton.disabled = false;
+  boton.textContent = 'Ya pagué → Enviar mi pedido por WhatsApp';
+
+  let lineas;
+  if (registrado) {
+    $('coOk').hidden = false;
+    $('coOk').textContent = `✅ Pedido ${id} registrado con todos tus datos — ahora adjunta el comprobante en WhatsApp.`;
+    lineas = [
+      `🦎 *PEDIDO REVTILE ${id}*`,
+      '',
+      ...items.map((i) => `▪ ${i.c}× ${i.corto}`),
+      `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`,
+      `👤 ${nombre}`,
+      '',
+      'Mi pedido quedó registrado con todos los datos ✅',
+      'Adjunto mi comprobante de pago 👇',
+    ];
+  } else {
+    lineas = [`🦎 *PEDIDO REVTILE ${id}*`, ''];
+    items.forEach((i) => lineas.push(`▪ ${i.c}× ${i.nombre} — ${fmt(i.valor)}`));
+    if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
+    lineas.push(
+      `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio)),
+      `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`,
+      '',
+      `👤 ${nombre}`,
+      `📱 ${tel}`,
+      `📍 ${dir}, ${ciudad}`,
+    );
+    if (state.dirMapa) lineas.push(`🗺 Según el mapa: ${state.dirMapa}`);
+    if (vivienda !== 'casa') {
+      lineas.push(`🏢 ${vivienda === 'conjunto' ? 'Conjunto' : 'Apartamento'}${apto ? ' — ' + apto : ''}`);
+      lineas.push(porteria ? '✅ Autorizo dejar en portería a mi nombre' : '🔔 Entregar en persona (no dejar en portería)');
+    }
+    if (mapsLink) lineas.push(`🗺 Punto exacto: ${mapsLink}`);
+    lineas.push('', 'Adjunto mi comprobante de pago 👇');
   }
-  if (state.lat) lineas.push(`🗺 Punto exacto: https://www.google.com/maps?q=${state.lat},${state.lng}`);
-  lineas.push('', 'Adjunto mi comprobante de pago 👇');
 
-  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total });
+  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total, registrado });
 
   window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
 });
