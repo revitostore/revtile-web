@@ -2164,3 +2164,119 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .co__key { justify-content: center; }
   .co__map { height: 220px; }
 }
+
+/* ===== Checkout v2: multi-producto, pin propio y barra de pago ===== */
+.co__products--3 { grid-template-columns: repeat(3, 1fr); }
+
+.co__prod { position: relative; }
+
+.co__prod--nuevo { border-color: rgba(255, 194, 75, 0.5); }
+
+.co__nuevo {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: var(--gold);
+  color: #1d1405;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 5px 12px;
+  border-radius: 99px;
+  box-shadow: var(--glow-gold);
+  animation: soonPulse 2.4s ease-in-out infinite;
+}
+
+.co__prod--nuevo.is-active { border-color: var(--gold); box-shadow: var(--glow-gold); }
+
+.co__step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.co__step button {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  background: none;
+  color: var(--ink);
+  font-size: 17px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.co__step button:hover { border-color: var(--red); }
+
+.co__step-val { font-family: 'Unbounded', sans-serif; font-size: 16px; min-width: 20px; text-align: center; }
+
+.co__prod:not(.is-active) img { opacity: 0.45; filter: grayscale(0.5); }
+
+.co__prod img { transition: opacity 0.25s, filter 0.25s; }
+
+/* envío tachado */
+#resEnvio s { color: var(--ink-dim); margin-right: 6px; }
+
+/* pin propio del mapa (CSS puro, sin imágenes externas) */
+.co__pin { background: none; border: none; }
+
+.co__pin-dot {
+  width: 26px; height: 26px;
+  background: var(--red);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.55);
+  margin: 0 auto;
+}
+
+.co__pin-punta {
+  width: 0; height: 0;
+  margin: -3px auto 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 13px solid var(--red);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+/* barra fija de pago */
+.co__bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(13, 15, 23, 0.94);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+}
+
+.co__bar-total { display: flex; flex-direction: column; line-height: 1.2; }
+
+.co__bar-total span { color: var(--ink-dim); font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; }
+
+.co__bar-total b { font-family: 'Unbounded', sans-serif; font-size: 19px; }
+
+.co__bar-btn { padding: 13px 30px; font-size: 15px; white-space: nowrap; }
+
+.co__main { padding-bottom: 130px; }
+
+@media (max-width: 640px) {
+  .co__products--3 { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .co__prod { padding: 12px 6px; }
+  .co__prod img { height: 74px; }
+  .co__prod-name { font-size: 11px; }
+  .co__prod-price { font-size: 12.5px; }
+  .co__step { gap: 8px; }
+  .co__step button { width: 30px; height: 30px; }
+  .co__nuevo { font-size: 8.5px; padding: 4px 9px; right: 4px; }
+}
+
+/* enlaces del pie del checkout y combo banner: sin estilos inline (CSP) */
+.footer__base--solo { border-top: none; }
+.co__foot-link { color: inherit; }
+.product__cupos--centrado { justify-content: center; }

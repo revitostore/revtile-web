@@ -1,25 +1,30 @@
-/* ===== Checkout Revtile: pedido + pago Bre-B + envío por WhatsApp ===== */
+/* ===== Checkout Revtile: pedido multi-producto + pago Bre-B + envío por WhatsApp ===== */
 
 /* --- Configuración (edita aquí precios y tarifas) --- */
 const PRODUCTOS = {
-  on: { nombre: 'ON Micronized Creatine 300 g', precio: 120000 },
-  mt: { nombre: 'MT Platinum Creatine 400 g', precio: 140000 },
+  on: { nombre: 'ON Micronized Creatine 300 g', corto: 'ON 300g', precio: 120000 },
+  mt: { nombre: 'MT Platinum Creatine 400 g', corto: 'MT 400g', precio: 140000 },
+  on120: { nombre: 'ON Micronized Creatine 600 g (120 serv.)', corto: 'ON 600g', precio: 170000 },
 };
 const ENVIO_BOGOTA = 0;
+const ENVIO_BOGOTA_TACHADO = 20000;  // se muestra tachado para evidenciar el gratis
 const ENVIO_NACIONAL = 18000;
-const COMBO_DESCUENTO = 10000;   // al llevar 2+ tarros
+const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
 
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
-const state = { prod: 'on', cant: 1, lat: null, lng: null };
+const state = { cant: { on: 1, mt: 0, on120: 0 }, lat: null, lng: null };
 
 /* --- Producto preseleccionado por URL (?producto=mt) --- */
 function aplicarParamProducto() {
   const param = new URLSearchParams(location.search).get('producto');
-  if (param && PRODUCTOS[param]) state.prod = param;
+  if (param && PRODUCTOS[param]) {
+    Object.keys(state.cant).forEach((k) => { state.cant[k] = 0; });
+    state.cant[param] = 1;
+  }
 }
 aplicarParamProducto();
 
@@ -27,23 +32,21 @@ aplicarParamProducto();
 window.addEventListener('pageshow', (e) => {
   if (!e.persisted) return;
   aplicarParamProducto();
-  document.querySelectorAll('.co__prod').forEach((b) => b.classList.toggle('is-active', b.dataset.prod === state.prod));
   render();
 });
 
-/* --- Selección de producto --- */
-document.querySelectorAll('.co__prod').forEach((btn) => {
-  btn.classList.toggle('is-active', btn.dataset.prod === state.prod);
-  btn.addEventListener('click', () => {
-    state.prod = btn.dataset.prod;
-    document.querySelectorAll('.co__prod').forEach((b) => b.classList.toggle('is-active', b === btn));
+/* --- Steppers de cantidad por producto --- */
+document.querySelectorAll('.co__prod').forEach((card) => {
+  const prod = card.dataset.prod;
+  card.querySelector('.co__step-minus').addEventListener('click', () => {
+    state.cant[prod] = Math.max(0, state.cant[prod] - 1);
+    render();
+  });
+  card.querySelector('.co__step-plus').addEventListener('click', () => {
+    state.cant[prod] = Math.min(10, state.cant[prod] + 1);
     render();
   });
 });
-
-/* --- Cantidad --- */
-$('qtyMinus').addEventListener('click', () => { state.cant = Math.max(1, state.cant - 1); render(); });
-$('qtyPlus').addEventListener('click', () => { state.cant = Math.min(10, state.cant + 1); render(); });
 
 /* --- Campos condicionales --- */
 $('fCiudad').addEventListener('change', () => {
@@ -59,41 +62,83 @@ $('fVivienda').addEventListener('change', () => {
 
 /* --- Totales --- */
 function calcular() {
-  const p = PRODUCTOS[state.prod];
-  const subtotal = p.precio * state.cant;
-  const combo = state.cant >= 2 ? COMBO_DESCUENTO : 0;
-  const envio = $('fCiudad').value === 'bogota' ? ENVIO_BOGOTA : ENVIO_NACIONAL;
-  return { p, subtotal, combo, envio, total: subtotal - combo + envio };
+  let subtotal = 0;
+  let tarros = 0;
+  const items = [];
+  for (const [k, c] of Object.entries(state.cant)) {
+    if (c > 0) {
+      subtotal += PRODUCTOS[k].precio * c;
+      tarros += c;
+      items.push({ k, c, nombre: PRODUCTOS[k].nombre, corto: PRODUCTOS[k].corto, valor: PRODUCTOS[k].precio * c });
+    }
+  }
+  const pares = Math.floor(tarros / 2);
+  const combo = pares * COMBO_POR_PAR;
+  const esBogota = $('fCiudad').value === 'bogota';
+  const envio = esBogota ? ENVIO_BOGOTA : ENVIO_NACIONAL;
+  return { items, tarros, subtotal, pares, combo, esBogota, envio, total: subtotal - combo + envio };
 }
 
 function render() {
-  const { p, subtotal, combo, envio, total } = calcular();
-  $('qtyVal').textContent = state.cant;
+  const { items, tarros, subtotal, pares, combo, esBogota, envio, total } = calcular();
+
+  document.querySelectorAll('.co__prod').forEach((card) => {
+    const c = state.cant[card.dataset.prod];
+    card.querySelector('.co__step-val').textContent = c;
+    card.classList.toggle('is-active', c > 0);
+  });
+
   $('coCombo').hidden = combo === 0;
-  $('resProducto').textContent = state.cant + '× ' + p.nombre;
+  if (combo > 0) {
+    $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de tarros)`;
+  }
+
+  $('resProducto').textContent = items.length
+    ? items.map((i) => `${i.c}× ${i.corto}`).join(' + ')
+    : 'Elige al menos un tarro';
   $('resSubtotal').textContent = fmt(subtotal);
   $('resComboLine').hidden = combo === 0;
-  $('resEnvio').textContent = envio === 0 ? 'GRATIS' : fmt(envio);
+  $('resComboVal').textContent = '−' + fmt(combo);
+  $('resEnvio').innerHTML = esBogota
+    ? `<s>${fmt(ENVIO_BOGOTA_TACHADO)}</s> <span class="co__verde">GRATIS</span>`
+    : fmt(envio);
   $('resTotal').textContent = fmt(total);
+  $('barTotal').textContent = fmt(total);
 }
 
 /* --- Mapa (OpenStreetMap + Leaflet, pin arrastrable) --- */
 const BOGOTA = [4.6482, -74.0779];
-const mapa = L.map('coMap', { scrollWheelZoom: false }).setView(BOGOTA, 12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap',
-}).addTo(mapa);
+let mapa = null;
+let pin = null;
 
-const pin = L.marker(BOGOTA, { draggable: true }).addTo(mapa);
-pin.on('dragend', () => {
-  const pos = pin.getLatLng();
-  state.lat = pos.lat.toFixed(6);
-  state.lng = pos.lng.toFixed(6);
-  $('mapHint').textContent = '📍 Punto de entrega ajustado — irá en tu pedido.';
-});
+try {
+  mapa = L.map('coMap', { scrollWheelZoom: false }).setView(BOGOTA, 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap',
+  }).addTo(mapa);
+
+  // pin propio (divIcon): sin imágenes externas, no depende de la CSP
+  const iconoPin = L.divIcon({
+    className: 'co__pin',
+    html: '<div class="co__pin-dot"></div><div class="co__pin-punta"></div>',
+    iconSize: [30, 40],
+    iconAnchor: [15, 40],
+  });
+
+  pin = L.marker(BOGOTA, { draggable: true, icon: iconoPin }).addTo(mapa);
+  pin.on('dragend', () => {
+    const pos = pin.getLatLng();
+    state.lat = pos.lat.toFixed(6);
+    state.lng = pos.lng.toFixed(6);
+    $('mapHint').textContent = '📍 Punto de entrega ajustado — irá en tu pedido.';
+  });
+} catch (e) {
+  document.querySelector('.co__map-block').hidden = true; // si el mapa falla, el pedido sigue funcionando
+}
 
 $('btnGeo').addEventListener('click', async () => {
+  if (!mapa) return;
   const dir = $('fDir').value.trim();
   const ciudad = $('fCiudad').value === 'bogota' ? 'Bogotá' : $('fOtraCiudad').value.trim();
   if (!dir) { mostrarError('Escribe primero tu dirección para ubicarla en el mapa.'); return; }
@@ -119,14 +164,26 @@ $('btnGeo').addEventListener('click', async () => {
 });
 
 /* --- Copiar llave Bre-B --- */
-$('btnLlave').addEventListener('click', async () => {
+async function copiarLlave() {
   try {
     await navigator.clipboard.writeText(LLAVE_BREB);
     $('llaveEstado').textContent = '¡Copiada! ✓';
+    setTimeout(() => { $('llaveEstado').textContent = 'Copiar llave'; }, 2500);
+    return true;
   } catch (e) {
     $('llaveEstado').textContent = LLAVE_BREB;
+    return false;
   }
-  setTimeout(() => { $('llaveEstado').textContent = 'Copiar llave'; }, 2500);
+}
+
+$('btnLlave').addEventListener('click', copiarLlave);
+
+/* --- Barra fija "Ir a pagar": copia la llave y baja directo al pago --- */
+$('btnIrPagar').addEventListener('click', async () => {
+  const ok = await copiarLlave();
+  $('barPagarTxt').textContent = ok ? 'Llave copiada ✓ — pégala en tu app' : 'Ir a pagar';
+  document.getElementById('pago').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => { $('barPagarTxt').textContent = 'Ir a pagar ↓'; }, 3500);
 });
 
 /* --- Perfil recordado (solo en este navegador) --- */
@@ -178,12 +235,13 @@ function mostrarError(msg) {
 }
 
 $('btnEnviar').addEventListener('click', () => {
+  const { items, tarros, combo, pares, esBogota, envio, total } = calcular();
   const nombre = $('fNombre').value.trim();
   const tel = $('fTel').value.trim();
   const dir = $('fDir').value.trim();
-  const esBogota = $('fCiudad').value === 'bogota';
   const ciudad = esBogota ? 'Bogotá' : $('fOtraCiudad').value.trim();
 
+  if (tarros === 0) return mostrarError('Elige al menos un tarro (paso 01).');
   if (!nombre) return mostrarError('Falta tu nombre completo (paso 02).');
   if (!/^3\d{9}$/.test(tel.replace(/\D/g, ''))) return mostrarError('Revisa tu número de WhatsApp: deben ser 10 dígitos empezando por 3.');
   if (!ciudad) return mostrarError('Falta la ciudad (paso 02).');
@@ -191,17 +249,13 @@ $('btnEnviar').addEventListener('click', () => {
 
   guardarPerfil();
 
-  const { p, combo, envio, total } = calcular();
   const vivienda = $('fVivienda').value;
   const apto = $('fApto').value.trim();
   const porteria = $('fPorteria').checked;
 
-  const lineas = [
-    '🦎 *PEDIDO REVTILE*',
-    '',
-    `▪ ${state.cant}× ${p.nombre}`,
-  ];
-  if (combo) lineas.push('▪ Combo Gymbro: −' + fmt(combo));
+  const lineas = ['🦎 *PEDIDO REVTILE*', ''];
+  items.forEach((i) => lineas.push(`▪ ${i.c}× ${i.nombre} — ${fmt(i.valor)}`));
+  if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
   lineas.push(
     `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio)),
     `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`,
@@ -217,7 +271,7 @@ $('btnEnviar').addEventListener('click', () => {
   if (state.lat) lineas.push(`🗺 Punto exacto: https://www.google.com/maps?q=${state.lat},${state.lng}`);
   lineas.push('', 'Adjunto mi comprobante de pago 👇');
 
-  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { producto: state.prod, cantidad: state.cant, total });
+  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total });
 
   window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
 });
