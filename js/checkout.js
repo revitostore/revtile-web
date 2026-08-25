@@ -18,6 +18,33 @@ const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
 const state = { cant: { on: 1, mt: 0, on120: 0 }, lat: null, lng: null, dirMapa: null };
 
+/* --- Blindaje anti-fallos --- */
+const ENVIO_COOLDOWN_MS = 20000;      // minimo entre pedidos distintos
+const IDEMPOTENCIA_MS = 10 * 60000;   // mismo pedido en <10 min => mismo ID, sin duplicar registro
+let enviando = false;
+let ultimoEnvioTs = 0;
+
+function hashPedido(nombre, tel, dir, total) {
+  return JSON.stringify([state.cant, nombre, tel, dir, total]);
+}
+
+function pedidoPrevio(hash) {
+  try {
+    const p = JSON.parse(sessionStorage.getItem('revtile_ultimo_pedido'));
+    if (p && p.hash === hash && Date.now() - p.ts < IDEMPOTENCIA_MS) return p;
+  } catch (e) { /* nada */ }
+  return null;
+}
+
+function recordarPedido(hash, id) {
+  try { sessionStorage.setItem('revtile_ultimo_pedido', JSON.stringify({ hash, id, ts: Date.now() })); } catch (e) { /* nada */ }
+}
+
+function abrirWhatsApp(url) {
+  const w = window.open(url, '_blank');
+  if (!w) location.href = url; // popup bloqueado: misma pestana
+}
+
 /* --- Producto preseleccionado por URL (?producto=mt) --- */
 function aplicarParamProducto() {
   const param = new URLSearchParams(location.search).get('producto');
@@ -176,8 +203,10 @@ async function direccionDelPin(lat, lng) {
   } catch (e) { /* sin reverse: no pasa nada */ }
 }
 
+let geoOcupado = false;
 $('btnGeo').addEventListener('click', async () => {
-  if (!mapa) return;
+  if (!mapa || geoOcupado) return;
+  geoOcupado = true;
   const dir = $('fDir').value.trim();
   const ciudad = $('fCiudad').value === 'bogota' ? 'Bogotá' : $('fOtraCiudad').value.trim();
   if (!dir) { mostrarError('Escribe primero tu dirección para ubicarla en el mapa.'); return; }
@@ -202,6 +231,7 @@ $('btnGeo').addEventListener('click', async () => {
     $('mapHint').textContent = 'No se pudo buscar — mueve el pin a mano hasta tu punto.';
   }
   $('btnGeo').textContent = 'Ubicar mi dirección en el mapa';
+  geoOcupado = false;
 });
 
 /* --- Copiar llave Bre-B --- */
@@ -295,16 +325,38 @@ $('btnEnviar').addEventListener('click', async () => {
   const porteria = $('fPorteria').checked;
   const mapsLink = state.lat ? `https://www.google.com/maps?q=${state.lat},${state.lng}` : '';
 
+  /* candado: nunca dos envios en paralelo */
+  if (enviando) return;
+
+  /* idempotencia: mismo pedido repetido => mismo ID, sin duplicar el registro */
+  const hash = hashPedido(nombre, tel, dir, total);
+  const previo = pedidoPrevio(hash);
+  if (previo) {
+    $('coOk').hidden = false;
+    $('coOk').textContent = `✅ Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp para el comprobante.`;
+    abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(
+      `🦎 *PEDIDO REVTILE ${previo.id}*\n\n*Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})\n👤 ${nombre}\n\nAdjunto mi comprobante de pago 👇`));
+    return;
+  }
+
+  /* enfriamiento entre pedidos distintos (frena bots y clics compulsivos) */
+  if (Date.now() - ultimoEnvioTs < ENVIO_COOLDOWN_MS) {
+    return mostrarError('Acabas de enviar un pedido — espera unos segundos antes de enviar otro.');
+  }
+
   /* ID unico de pedido: RV- + fecha base36 + azar (ej. RV-K8M2X) */
   const id = 'RV-' + (Date.now().toString(36).slice(-3) + Math.random().toString(36).slice(2, 4)).toUpperCase();
 
+  enviando = true;
   const boton = $('btnEnviar');
   boton.disabled = true;
   boton.textContent = 'Registrando tu pedido…';
 
-  /* registro del pedido completo en el sistema (Netlify Forms) */
+  /* registro del pedido completo en el sistema (Netlify Forms), con timeout de 6 s */
   let registrado = false;
   try {
+    const cortar = new AbortController();
+    const timer = setTimeout(() => cortar.abort(), 6000);
     const datos = new URLSearchParams({
       'form-name': 'pedidos',
       id,
@@ -323,10 +375,14 @@ $('btnEnviar').addEventListener('click', async () => {
       direccion_mapa: state.dirMapa || '',
       maps_link: mapsLink,
     });
-    const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: datos.toString() });
+    const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: datos.toString(), signal: cortar.signal });
+    clearTimeout(timer);
     registrado = r.ok;
   } catch (e) { registrado = false; }
 
+  enviando = false;
+  ultimoEnvioTs = Date.now();
+  recordarPedido(hash, id);
   boton.disabled = false;
   boton.textContent = 'Ya pagué → Enviar mi pedido por WhatsApp';
 
@@ -367,7 +423,7 @@ $('btnEnviar').addEventListener('click', async () => {
 
   if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total, registrado });
 
-  window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
+  abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n')));
 });
 
 /* --- Init --- */

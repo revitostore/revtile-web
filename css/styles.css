@@ -2166,9 +2166,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 }
 
 /* ===== Checkout v2: multi-producto, pin propio y barra de pago ===== */
-.co__products--3 { grid-template-columns: repeat(3, 1fr); }
+.co__products--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-.co__prod { position: relative; }
+.co__prod { position: relative; min-width: 0; }
 
 .co__prod--nuevo { border-color: rgba(255, 194, 75, 0.5); }
 
@@ -2339,4 +2339,31 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   color: #7ceea6;
   font-size: 14px;
   font-weight: 600;
+}
+
+/* ===== Checkout movil: pasada fina ===== */
+@media (max-width: 640px) {
+  .co__main { padding: 96px 14px 120px; }
+  .co__title { font-size: 26px; }
+  .co__sub { font-size: 14px; }
+  .co__card { padding: 20px 14px; border-radius: 18px; margin-bottom: 14px; }
+  /* iOS hace zoom si los inputs tienen menos de 16px */
+  .co__field input, .co__field select { font-size: 16px; padding: 12px 12px; }
+  .co__total { padding: 12px 12px; }
+  .co__total-lines p { font-size: 13px; gap: 10px; }
+  .co__total-lines p span { flex: 1; min-width: 0; }
+  .co__total-final b { font-size: 18px; }
+  .co__pay-qr img { width: 150px; }
+  .co__key { padding: 12px 14px; gap: 10px; }
+  .co__key-num { font-size: 15.5px; }
+  .co__titular { padding: 12px; gap: 10px; }
+  .co__titular-info b { font-size: 14px; }
+  .co__send { font-size: 15px; padding: 16px 20px; }
+  .co__map { height: 200px; }
+  .co__map-head { flex-direction: column; align-items: stretch; }
+  .co__map-btn { width: 100%; padding: 11px; }
+  .co__bar { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); }
+  .co__bar-total b { font-size: 17px; }
+  .co__bar-btn { padding: 12px 22px; font-size: 14px; }
+  .co__saved { font-size: 12.5px; }
 }
