@@ -1,4 +1,30 @@
+# Buscadores tradicionales
 User-agent: *
+Allow: /
+
+# Rastreadores de asistentes de IA: bienvenidos
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: meta-externalagent
 Allow: /
 
 Sitemap: https://revtile.com.co/sitemap.xml
