@@ -138,28 +138,32 @@ export async function onRequest(context) {
       if (!tk.ok) return json({ ok: false, paso: 'token', status: tk.status, respuesta: tkTexto.slice(0, 600) });
       let token;
       try { token = JSON.parse(tkTexto).access_token; } catch (e) { return json({ ok: false, paso: 'token-parse', respuesta: tkTexto.slice(0, 600) }); }
-      /* sondeo: probar los endpoints candidatos y reportar qué responde cada uno */
+      /* sondeo profundo: envío completo + sub-endpoints de tracking/eventos */
       const g = encodeURIComponent(guia);
-      const c = encodeURIComponent(carrier);
-      const candidatos = [
-        `https://pro.skydropx.com/api/v1/tracking?tracking_number=${g}&carrier_code=${c}`,
-        `https://pro.skydropx.com/api/v1/trackings?tracking_number=${g}`,
-        `https://pro.skydropx.com/api/v1/shipments?tracking_number=${g}`,
-        `https://pro.skydropx.com/api/v1/shipments?page=1&per_page=3`,
-        `https://app.skydropx.com/api/v1/tracking?tracking_number=${g}&carrier_code=${c}`,
-      ];
-      const reporte = [];
-      for (const u of candidatos) {
+      const auth = { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token };
+      const pedir = async (u, corte) => {
         try {
-          const r = await fetch(u, { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } });
+          const r = await fetch(u, { headers: auth });
           const texto = await r.text();
           const esHtml = texto.trimStart().startsWith('<');
-          reporte.push({ url: u, status: r.status, tipo: esHtml ? 'html (ruta inexistente)' : 'json', muestra: esHtml ? '' : texto.slice(0, 700) });
-        } catch (e) {
-          reporte.push({ url: u, error: String(e.message || e) });
-        }
+          return { url: u, status: r.status, tipo: esHtml ? 'html (ruta inexistente)' : 'json', muestra: esHtml ? '' : texto.slice(0, corte) };
+        } catch (e) { return { url: u, error: String(e.message || e) }; }
+      };
+      const reporte = [];
+      let idEnvio = null;
+      try {
+        const rl = await fetch(`https://pro.skydropx.com/api/v1/shipments?tracking_number=${g}`, { headers: auth });
+        const textoLista = await rl.text();
+        reporte.push({ url: 'shipments?tracking_number', status: rl.status, muestra: textoLista.slice(0, 4000) });
+        idEnvio = JSON.parse(textoLista).data[0].id;
+      } catch (e) { /* sin id: solo la lista */ }
+      if (idEnvio) {
+        const base = `https://pro.skydropx.com/api/v1/shipments/${idEnvio}`;
+        reporte.push(await pedir(base, 2500));
+        reporte.push(await pedir(base + '/tracking', 2000));
+        reporte.push(await pedir(base + '/events', 2000));
       }
-      return json({ ok: true, paso: 'sondeo', reporte });
+      return json({ ok: true, paso: 'sondeo2', reporte });
     }
 
     return json({ ok: false, error: 'Ruta no encontrada' }, 404);
