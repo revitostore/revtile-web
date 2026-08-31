@@ -69,6 +69,18 @@ export async function onRequestGet({ request, env }) {
 
     const skydropx = await trackingSkydropx(env, p.guia);
 
+    /* sincronización automática: si la transportadora ya avanzó, el estado interno
+       avanza solo (nunca retrocede, y nunca toca un pedido cancelado) */
+    const MAPA_SKY = { picked_up: 'despachado', in_transit: 'despachado', out_for_delivery: 'despachado', delivered: 'entregado' };
+    const ORDEN = ['nuevo', 'verificado', 'despachado', 'entregado'];
+    const estadoSky = skydropx && MAPA_SKY[skydropx.estado];
+    if (estadoSky && p.estado !== 'cancelado' && ORDEN.indexOf(estadoSky) > ORDEN.indexOf(p.estado)) {
+      p.estado = estadoSky;
+      try {
+        await env.DB.prepare('UPDATE pedidos SET estado = ? WHERE id = ?').bind(estadoSky, id).run();
+      } catch (e) { /* si no se pudo persistir, igual se muestra actualizado */ }
+    }
+
     return json({
       ok: true,
       id: p.id,
