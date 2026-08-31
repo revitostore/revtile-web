@@ -5,7 +5,7 @@ const $ = (id) => document.getElementById(id);
 const ORDEN = ['nuevo', 'verificado', 'despachado', 'entregado'];
 const BADGES = {
   nuevo: ['Recibido', 'teal'],
-  verificado: ['Pago verificado', 'lima'],
+  verificado: ['Confirmado', 'lima'], // en anticipado se cambia a "Pago verificado" al pintar
   despachado: ['En camino', 'gold'],
   entregado: ['Entregado ✓', 'lima'],
   cancelado: ['Cancelado', 'rojo'],
@@ -37,7 +37,15 @@ function pintar(p) {
   $('rasResId').textContent = p.id;
   $('rasResFecha').textContent = fechaBonita(p.creado_en);
 
-  const [txt, color] = BADGES[p.estado] || BADGES.nuevo;
+  /* la etapa "verificado" habla distinto según el método: en contraentrega no hay pago aún */
+  const esCE = p.metodo_pago === 'contraentrega';
+  $('rasVerifTitulo').textContent = esCE ? 'Pedido confirmado' : 'Pago verificado';
+  $('rasVerifTxt').textContent = esCE
+    ? 'Confirmamos tu pedido y los datos de entrega — pagas al recibir'
+    : 'Confirmamos tu pago Bre-B';
+
+  let [txt, color] = BADGES[p.estado] || BADGES.nuevo;
+  if (p.estado === 'verificado' && !esCE) txt = 'Pago verificado';
   const badge = $('rasResBadge');
   badge.textContent = txt;
   badge.className = 'ras__badge ras__badge--' + color;
