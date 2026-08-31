@@ -1,4 +1,4 @@
-/* ===== Checkout Revtile: pedido multi-producto + pago Bre-B + envío por WhatsApp ===== */
+/* ===== Checkout Revtile: pedido multi-producto + contraentrega o pago Bre-B con entrega programada ===== */
 
 /* --- Configuración (edita aquí precios y tarifas) --- */
 const PRODUCTOS = {
@@ -6,17 +6,23 @@ const PRODUCTOS = {
   mt: { nombre: 'MT Platinum Creatine 400 g', corto: 'MT 400g', precio: 140000 },
   on120: { nombre: 'ON Micronized Creatine 600 g (120 serv.)', corto: 'ON 600g', precio: 170000 },
 };
-const ENVIO_BOGOTA = 0;
-const ENVIO_BOGOTA_TACHADO = 20000;  // se muestra tachado para evidenciar el gratis
-const ENVIO_NACIONAL = 18000;
+const RECARGO_CE_NACIONAL = 5000;    // único cobro de envío: contraentrega fuera de Bogotá
+const TACHADO_BOGOTA = 20000;        // tarifas "de antes", tachadas para evidenciar el gratis
+const TACHADO_NACIONAL = 18000;
 const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
+const HORAS_ENTREGA = ['9:00 a.m.', '10:00 a.m.', '11:00 a.m.', '12:00 m.', '1:00 p.m.', '2:00 p.m.', '3:00 p.m.', '4:00 p.m.', '5:00 p.m.', '6:00 p.m.'];
 
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
-const state = { cant: { on: 1, mt: 0, on120: 0 }, lat: null, lng: null, dirMapa: null };
+const state = {
+  cant: { on: 1, mt: 0, on120: 0 },
+  pago: 'anticipado',                // 'anticipado' | 'contraentrega'
+  dia: null, diaISO: null, hora: '', // entrega programada (solo Bogotá + anticipado)
+  lat: null, lng: null, dirMapa: null,
+};
 
 /* --- Blindaje anti-fallos --- */
 const ENVIO_COOLDOWN_MS = 20000;      // minimo entre pedidos distintos
@@ -25,7 +31,7 @@ let enviando = false;
 let ultimoEnvioTs = 0;
 
 function hashPedido(nombre, tel, dir, total) {
-  return JSON.stringify([state.cant, nombre, tel, dir, total]);
+  return JSON.stringify([state.cant, state.pago, state.diaISO, state.hora, nombre, tel, dir, total]);
 }
 
 function pedidoPrevio(hash) {
@@ -87,6 +93,58 @@ $('fVivienda').addEventListener('change', () => {
   $('fPorteriaWrap').hidden = !esApto;
 });
 
+/* --- Método de pago (tarjetas) --- */
+document.querySelectorAll('.co__metodo').forEach((card) => {
+  card.addEventListener('click', () => {
+    state.pago = card.dataset.pago;
+    render();
+  });
+});
+
+/* --- Entrega programada: días (Lun–Sáb) y hora --- */
+const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+function construirAgenda() {
+  const cont = $('coDias');
+  if (!cont) return;
+  cont.innerHTML = '';
+  const hoy = new Date();
+  let d = new Date(hoy);
+  let creados = 0;
+  let manana = true;
+  while (creados < 6) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() === 0) { manana = false; continue; } // domingos no
+    const etiqueta = `${DIAS_CORTOS[d.getDay()]} ${d.getDate()} ${MESES_CORTOS[d.getMonth()]}`;
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; // fecha local, no UTC
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'co__dia';
+    chip.innerHTML = `<small>${manana ? 'Mañana' : DIAS_CORTOS[d.getDay()].toUpperCase()}</small><b>${d.getDate()} ${MESES_CORTOS[d.getMonth()]}</b>`;
+    chip.dataset.etiqueta = etiqueta;
+    chip.dataset.iso = iso;
+    chip.addEventListener('click', () => {
+      state.dia = etiqueta;
+      state.diaISO = iso;
+      cont.querySelectorAll('.co__dia').forEach((c) => c.classList.toggle('is-active', c === chip));
+    });
+    cont.appendChild(chip);
+    if (creados === 0) { chip.classList.add('is-active'); state.dia = etiqueta; state.diaISO = iso; } // primer día preseleccionado
+    creados++;
+    manana = false;
+  }
+  const selHora = $('fHora');
+  HORAS_ENTREGA.forEach((h) => {
+    const op = document.createElement('option');
+    op.value = h;
+    op.textContent = h;
+    selHora.appendChild(op);
+  });
+  selHora.addEventListener('change', () => { state.hora = selHora.value; });
+}
+construirAgenda();
+
 /* --- Totales --- */
 function calcular() {
   let subtotal = 0;
@@ -102,12 +160,14 @@ function calcular() {
   const pares = Math.floor(tarros / 2);
   const combo = pares * COMBO_POR_PAR;
   const esBogota = $('fCiudad').value === 'bogota';
-  const envio = esBogota ? ENVIO_BOGOTA : ENVIO_NACIONAL;
-  return { items, tarros, subtotal, pares, combo, esBogota, envio, total: subtotal - combo + envio };
+  const esCE = state.pago === 'contraentrega';
+  const envio = (!esBogota && esCE) ? RECARGO_CE_NACIONAL : 0;
+  const programado = esBogota && !esCE; // entrega con día y hora a elección
+  return { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, total: subtotal - combo + envio };
 }
 
 function render() {
-  const { items, tarros, subtotal, pares, combo, esBogota, envio, total } = calcular();
+  const { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, total } = calcular();
 
   document.querySelectorAll('.co__prod').forEach((card) => {
     const c = state.cant[card.dataset.prod];
@@ -120,14 +180,40 @@ function render() {
     $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de tarros)`;
   }
 
+  /* tarjetas de método */
+  document.querySelectorAll('.co__metodo').forEach((card) => {
+    card.classList.toggle('is-active', card.dataset.pago === state.pago);
+  });
+  $('mAntDetalle').textContent = esBogota
+    ? 'Envío GRATIS · tú eliges el día y la hora de entrega ⚡'
+    : 'Envío GRATIS a tu ciudad · sale en el día';
+  $('mCEDetalle').textContent = esBogota
+    ? 'Pagas al recibir · entrega en 2-3 días hábiles · envío GRATIS'
+    : `Pagas al recibir · 2-3 días hábiles · recargo de ${fmt(RECARGO_CE_NACIONAL)}`;
+
+  /* agenda de entrega programada */
+  $('coProg').hidden = !programado;
+
+  /* bloques de pago */
+  $('payAnticipado').hidden = esCE;
+  $('payCE').hidden = !esCE;
+  $('btnEnviar').textContent = esCE
+    ? 'Confirmar mi pedido contraentrega por WhatsApp'
+    : 'Ya pagué → Enviar mi pedido por WhatsApp';
+  $('barPagarTxt').textContent = esCE ? 'Confirmar pedido ↓' : 'Ir a pagar ↓';
+  $('coNota').innerHTML = esCE
+    ? 'Tu pedido queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. Pagas cuando lo recibas en tu puerta. 🦎'
+    : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día. 🦎';
+
+  /* factura */
   $('resItems').innerHTML = items.length
     ? items.map((i) => `<p><span>${i.c}× ${i.nombre}</span><b>${fmt(i.valor)}</b></p>`).join('')
     : '<p><span>Elige al menos un tarro</span><b>—</b></p>';
   $('resComboLine').hidden = combo === 0;
   $('resComboVal').textContent = '−' + fmt(combo);
-  $('resEnvio').innerHTML = esBogota
-    ? `<s>${fmt(ENVIO_BOGOTA_TACHADO)}</s> <span class="co__verde">GRATIS</span>`
-    : fmt(envio);
+  $('resEnvio').innerHTML = envio === 0
+    ? `<s>${fmt(esBogota ? TACHADO_BOGOTA : TACHADO_NACIONAL)}</s> <span class="co__verde">GRATIS</span>`
+    : fmt(envio) + ' <small>(contraentrega)</small>';
   $('resTotal').textContent = fmt(total);
   $('barTotal').textContent = fmt(total);
 }
@@ -249,8 +335,12 @@ async function copiarLlave() {
 
 $('btnLlave').addEventListener('click', copiarLlave);
 
-/* --- Barra fija "Ir a pagar": copia la llave y baja directo al pago --- */
+/* --- Barra fija: anticipado copia la llave y baja al pago; contraentrega baja a confirmar --- */
 $('btnIrPagar').addEventListener('click', async () => {
+  if (state.pago === 'contraentrega') {
+    $('btnEnviar').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
   const ok = await copiarLlave();
   $('barPagarTxt').textContent = ok ? 'Llave copiada ✓ — pégala en tu app' : 'Ir a pagar';
   document.getElementById('pago').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -306,7 +396,7 @@ function mostrarError(msg) {
 }
 
 $('btnEnviar').addEventListener('click', async () => {
-  const { items, tarros, combo, pares, esBogota, envio, total } = calcular();
+  const { items, tarros, subtotal, combo, pares, esBogota, esCE, programado, envio, total } = calcular();
   const nombre = $('fNombre').value.trim();
   const tel = $('fTel').value.trim();
   const dir = $('fDir').value.trim();
@@ -317,6 +407,7 @@ $('btnEnviar').addEventListener('click', async () => {
   if (!/^3\d{9}$/.test(tel.replace(/\D/g, ''))) return mostrarError('Revisa tu número de WhatsApp: deben ser 10 dígitos empezando por 3.');
   if (!ciudad) return mostrarError('Falta la ciudad (paso 02).');
   if (!dir) return mostrarError('Falta la dirección de entrega (paso 02).');
+  if (programado && !state.hora) return mostrarError('Elige la hora de tu entrega programada (paso 04) ⚡');
 
   guardarPerfil();
 
@@ -333,9 +424,11 @@ $('btnEnviar').addEventListener('click', async () => {
   const previo = pedidoPrevio(hash);
   if (previo) {
     $('coOk').hidden = false;
-    $('coOk').textContent = `✅ Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp para el comprobante.`;
-    abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(
-      `🦎 *PEDIDO REVTILE ${previo.id}*\n\n*Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})\n👤 ${nombre}\n\nAdjunto mi comprobante de pago 👇`));
+    $('coOk').textContent = `✅ Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp.`;
+    const txtPrevio = esCE
+      ? `🦎 *PEDIDO REVTILE ${previo.id}* (contraentrega)\n\n*Total a pagar al recibir: ${fmt(total)}*\n👤 ${nombre}\n\nConfirmo mi pedido 👇`
+      : `🦎 *PEDIDO REVTILE ${previo.id}*\n\n*Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})\n👤 ${nombre}\n\nAdjunto mi comprobante de pago 👇`;
+    abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(txtPrevio));
     return;
   }
 
@@ -352,30 +445,38 @@ $('btnEnviar').addEventListener('click', async () => {
   boton.disabled = true;
   boton.textContent = 'Registrando tu pedido…';
 
-  /* registro del pedido completo en el sistema (Netlify Forms), con timeout de 6 s */
+  /* registro del pedido en nuestro sistema (API propia + D1), con timeout de 6 s */
   let registrado = false;
   try {
     const cortar = new AbortController();
     const timer = setTimeout(() => cortar.abort(), 6000);
-    const datos = new URLSearchParams({
-      'form-name': 'pedidos',
-      id,
-      fecha: new Date().toLocaleString('es-CO'),
-      items: items.map((i) => `${i.c}x ${i.nombre} = ${fmt(i.valor)}`).join(' | '),
-      combo: combo ? `-${fmt(combo)} (${pares} pares)` : 'no',
-      envio: envio === 0 ? 'Bogota GRATIS' : fmt(envio),
-      total: fmt(total),
-      nombre,
-      telefono: tel,
-      ciudad,
-      direccion: dir,
-      vivienda,
-      apto,
-      porteria: porteria ? 'si' : 'no',
-      direccion_mapa: state.dirMapa || '',
-      maps_link: mapsLink,
+    const r = await fetch('/api/pedido', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: cortar.signal,
+      body: JSON.stringify({
+        id,
+        web: $('fWeb') ? $('fWeb').value : '', // honeypot
+        metodo_pago: esCE ? 'contraentrega' : 'anticipado',
+        entrega_dia: programado ? state.diaISO : null,
+        entrega_hora: programado ? state.hora : null,
+        items: items.map((i) => ({ k: i.k, c: i.c, nombre: i.nombre, valor: i.valor })),
+        subtotal,
+        combo,
+        envio,
+        total,
+        nombre,
+        telefono: tel.replace(/\D/g, ''),
+        ciudad,
+        direccion: dir,
+        vivienda,
+        apto,
+        porteria,
+        direccion_mapa: state.dirMapa || '',
+        lat: state.lat,
+        lng: state.lng,
+      }),
     });
-    const r = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: datos.toString(), signal: cortar.signal });
     clearTimeout(timer);
     registrado = r.ok;
   } catch (e) { registrado = false; }
@@ -384,29 +485,40 @@ $('btnEnviar').addEventListener('click', async () => {
   ultimoEnvioTs = Date.now();
   recordarPedido(hash, id);
   boton.disabled = false;
-  boton.textContent = 'Ya pagué → Enviar mi pedido por WhatsApp';
+
+  const lineaEntrega = programado
+    ? `📦 Entrega programada: *${state.dia} · ${state.hora}*`
+    : '📦 Entrega en 2-3 días hábiles';
+  const lineaTotal = esCE
+    ? `▪ *Total a pagar al recibir: ${fmt(total)}* (contraentrega)`
+    : `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`;
+  const cierre = esCE ? 'Confirmo mi pedido contraentrega ✅' : 'Adjunto mi comprobante de pago 👇';
 
   let lineas;
   if (registrado) {
     $('coOk').hidden = false;
-    $('coOk').textContent = `✅ Pedido ${id} registrado con todos tus datos — ahora adjunta el comprobante en WhatsApp.`;
+    $('coOk').textContent = esCE
+      ? `✅ Pedido ${id} registrado — confírmalo en WhatsApp y pagas al recibir.`
+      : `✅ Pedido ${id} registrado con todos tus datos — ahora adjunta el comprobante en WhatsApp.`;
     lineas = [
-      `🦎 *PEDIDO REVTILE ${id}*`,
+      `🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`,
       '',
       ...items.map((i) => `▪ ${i.c}× ${i.corto}`),
-      `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`,
+      lineaTotal,
+      lineaEntrega,
       `👤 ${nombre}`,
       '',
       'Mi pedido quedó registrado con todos los datos ✅',
-      'Adjunto mi comprobante de pago 👇',
+      cierre,
     ];
   } else {
-    lineas = [`🦎 *PEDIDO REVTILE ${id}*`, ''];
+    lineas = [`🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`, ''];
     items.forEach((i) => lineas.push(`▪ ${i.c}× ${i.nombre} — ${fmt(i.valor)}`));
     if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
     lineas.push(
-      `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio)),
-      `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`,
+      `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio) + ' (contraentrega)'),
+      lineaTotal,
+      lineaEntrega,
       '',
       `👤 ${nombre}`,
       `📱 ${tel}`,
@@ -418,10 +530,12 @@ $('btnEnviar').addEventListener('click', async () => {
       lineas.push(porteria ? '✅ Autorizo dejar en portería a mi nombre' : '🔔 Entregar en persona (no dejar en portería)');
     }
     if (mapsLink) lineas.push(`🗺 Punto exacto: ${mapsLink}`);
-    lineas.push('', 'Adjunto mi comprobante de pago 👇');
+    lineas.push('', cierre);
   }
 
-  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total, registrado });
+  boton.textContent = esCE ? 'Confirmar mi pedido contraentrega por WhatsApp' : 'Ya pagué → Enviar mi pedido por WhatsApp';
+
+  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total, registrado, metodo: esCE ? 'contraentrega' : 'anticipado' });
 
   abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n')));
 });

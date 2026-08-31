@@ -21,6 +21,8 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+[hidden] { display: none !important; } /* que ningún display del CSS le gane al atributo hidden */
+
 html { scroll-behavior: smooth; overflow-x: hidden; }
 
 ::selection { background: var(--red); color: #fff; }
@@ -2466,4 +2468,138 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   .aprende { padding: 84px 20px; }
   .aprende__grid { grid-template-columns: 1fr; gap: 14px; }
   .guia .legal__block h2 { font-size: 19px; }
+}
+
+/* ===== Checkout: método de pago (contraentrega vs anticipado) ===== */
+.co__metodos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.co__metodo {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px 16px 18px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--ink);
+  text-align: left;
+  font-family: inherit;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.co__metodo b { font-size: 15px; font-weight: 800; line-height: 1.3; }
+
+.co__metodo-det { font-size: 13px; color: var(--ink-dim); line-height: 1.5; }
+
+.co__metodo-tag {
+  position: absolute;
+  top: -11px;
+  left: 14px;
+  background: var(--gold);
+  color: #1c1503;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.co__metodo.is-active { border-color: rgba(255, 255, 255, 0.55); }
+
+.co__metodo--premium.is-active {
+  border-color: var(--gold);
+  box-shadow: var(--glow-gold);
+  background: rgba(255, 194, 75, 0.06);
+}
+
+.co__metodo--premium.is-active .co__metodo-det { color: var(--ink); }
+
+/* ===== Checkout: entrega programada (Bogotá + anticipado) ===== */
+.co__prog {
+  background: rgba(255, 194, 75, 0.06);
+  border: 1px solid rgba(255, 194, 75, 0.35);
+  border-radius: 16px;
+  padding: 18px 16px;
+  margin-bottom: 22px;
+}
+
+.co__prog-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.co__prog-title span {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-dim);
+  letter-spacing: 0.3px;
+}
+
+.co__prog-sub { font-size: 13.5px; color: var(--ink-dim); margin: 8px 0 14px; line-height: 1.5; }
+
+.co__dias {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.co__dia {
+  flex: 0 0 auto;
+  min-width: 82px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.co__dia small { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; color: var(--ink-dim); text-transform: uppercase; }
+
+.co__dia b { font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 700; }
+
+.co__dia.is-active { border-color: var(--gold); box-shadow: var(--glow-gold); background: rgba(255, 194, 75, 0.08); }
+
+.co__dia.is-active small { color: var(--gold); }
+
+.co__field--hora { max-width: 260px; }
+
+/* ===== Checkout: caja contraentrega ===== */
+.co__ce {
+  background: rgba(45, 226, 230, 0.05);
+  border: 1px solid rgba(45, 226, 230, 0.3);
+  border-radius: 16px;
+  padding: 20px 18px;
+  margin-bottom: 4px;
+}
+
+.co__ce-title { font-family: 'Unbounded', sans-serif; font-size: 15px; font-weight: 700; color: var(--teal); margin-bottom: 8px; }
+
+.co__ce-text { font-size: 14px; color: var(--ink-dim); line-height: 1.65; }
+
+.co__ce-text b { color: var(--ink); }
+
+@media (max-width: 640px) {
+  .co__metodos { grid-template-columns: 1fr; gap: 16px; }
+  .co__field--hora { max-width: none; }
 }

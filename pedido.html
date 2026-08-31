@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Haz tu pedido — REVTILE</title>
-  <meta name="description" content="Arma tu pedido de creatina 100% original, paga con Bre-B o Nequi y recíbelo en tu puerta. Envío gratis en Bogotá.">
+  <meta name="description" content="Arma tu pedido de creatina 100% original. Envío GRATIS en toda Colombia, contraentrega disponible, y en Bogotá eliges el día y la hora de tu entrega.">
   <meta name="theme-color" content="#07080d">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://revtile.com.co/pedido.html">
   <meta property="og:title" content="Haz tu pedido — REVTILE">
-  <meta property="og:description" content="Arma tu pedido, paga con Bre-B/Nequi y recíbelo en tu puerta. Envío gratis en Bogotá.">
+  <meta property="og:description" content="Envío GRATIS en toda Colombia. Paga contraentrega o anticipado — en Bogotá eliges el día y la hora de tu entrega.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://revtile.com.co/pedido.html">
   <meta property="og:image" content="https://revtile.com.co/assets/og-card.jpg">
@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=18">
+  <link rel="stylesheet" href="css/styles.css?v=19">
   <script src="js/analytics.js?v=2" defer></script>
 </head>
 <body class="pp co">
@@ -38,7 +38,7 @@
 
   <main class="co__main">
     <h1 class="co__title">Haz tu pedido<span class="accent">.</span></h1>
-    <p class="co__sub">Sin registros ni contraseñas. Pagas por Bre-B/Nequi y tu pedido sale volando 🦎</p>
+    <p class="co__sub">Sin registros ni contraseñas. Envío GRATIS en toda Colombia y pagas como prefieras 🦎</p>
     <p class="co__saved" id="coSaved" hidden>👋 Te recordamos de tu último pedido — tus datos ya están llenos (se guardan solo en tu teléfono). <button type="button" id="coClear">Borrar mis datos</button></p>
 
     <!-- ===== 01 · PRODUCTO ===== -->
@@ -96,7 +96,7 @@
           <span>Ciudad *</span>
           <select id="fCiudad">
             <option value="bogota">Bogotá — envío GRATIS 🎉</option>
-            <option value="nacional">Otra ciudad — envío $18.000</option>
+            <option value="nacional">Otra ciudad — envío GRATIS 🎉</option>
           </select>
         </label>
         <label class="co__field" id="fOtraCiudadWrap" hidden>
@@ -136,9 +136,38 @@
       </div>
     </section>
 
-    <!-- ===== 03 · PAGO ===== -->
+    <!-- ===== 03 · MÉTODO DE PAGO ===== -->
+    <section class="co__card">
+      <p class="section-eyebrow"><b>03</b> ¿Cómo quieres pagar?</p>
+      <div class="co__metodos">
+        <button type="button" class="co__metodo co__metodo--premium is-active" data-pago="anticipado">
+          <span class="co__metodo-tag">⚡ Recomendado</span>
+          <b>Pago anticipado · Bre-B / Nequi</b>
+          <span class="co__metodo-det" id="mAntDetalle">Envío GRATIS · tú eliges el día y la hora de entrega ⚡</span>
+        </button>
+        <button type="button" class="co__metodo" data-pago="contraentrega">
+          <b>🚚 Contraentrega</b>
+          <span class="co__metodo-det" id="mCEDetalle">Pagas al recibir · entrega en 2-3 días hábiles</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== 04 · PAGO Y ENVÍO ===== -->
     <section class="co__card" id="pago">
-      <p class="section-eyebrow"><b>03</b> Paga y envía tu pedido</p>
+      <p class="section-eyebrow"><b>04</b> Paga y envía tu pedido</p>
+
+      <!-- Entrega programada: solo Bogotá + pago anticipado -->
+      <div class="co__prog" id="coProg">
+        <p class="co__prog-title">⚡ Tu entrega programada <span>exclusiva por pagar anticipado</span></p>
+        <p class="co__prog-sub">Elige el día (lunes a sábado) y la hora en que quieres tu creatina en la puerta:</p>
+        <div class="co__dias" id="coDias"></div>
+        <label class="co__field co__field--hora">
+          <span>¿A qué hora? *</span>
+          <select id="fHora">
+            <option value="">Elige la hora…</option>
+          </select>
+        </label>
+      </div>
 
       <div class="co__total">
         <div class="co__total-lines" id="resItems"></div>
@@ -149,7 +178,7 @@
         </div>
       </div>
 
-      <div class="co__pay">
+      <div class="co__pay" id="payAnticipado">
         <div class="co__pay-qr">
           <img src="assets/breb-qr.jpg" alt="QR Bre-B de Revtile para pagar desde cualquier banco" loading="lazy">
         </div>
@@ -172,12 +201,20 @@
         </div>
       </div>
 
+      <!-- Contraentrega: sin pago ahora -->
+      <div class="co__ce" id="payCE" hidden>
+        <p class="co__ce-title">🚚 Pagas al recibir, en la puerta de tu casa</p>
+        <p class="co__ce-text">No pagas nada ahora. Confirma tu pedido por WhatsApp, lo despachamos y <b>pagas en efectivo o transferencia cuando lo tengas en tus manos</b>. Entrega en 2-3 días hábiles con guía de seguimiento.</p>
+      </div>
+
       <button type="button" class="btn btn--primary btn--full co__send" id="btnEnviar">
         Ya pagué → Enviar mi pedido por WhatsApp
       </button>
       <p class="co__ok" id="coOk" hidden></p>
-      <p class="co__note">Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día. 🦎 ¿Prefieres pedir sin pagar aún? <a href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
+      <p class="co__note" id="coNota">Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día. 🦎</p>
+      <p class="co__note">¿Prefieres pedir hablando con un humano? <a href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
       <p class="co__error" id="coError" hidden></p>
+      <input type="text" id="fWeb" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" placeholder="web">
     </section>
   </main>
 
@@ -186,26 +223,6 @@
       <p>© 2026 REVTILE · <a href="terminos.html" class="co__foot-link">Términos y envíos</a></p>
     </div>
   </footer>
-
-  <!-- Registro de pedidos (Netlify Forms): copia de seguridad de cada pedido con su ID -->
-  <form name="pedidos" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
-    <input name="bot-field">
-    <input name="id">
-    <input name="fecha">
-    <input name="items">
-    <input name="combo">
-    <input name="envio">
-    <input name="total">
-    <input name="nombre">
-    <input name="telefono">
-    <input name="ciudad">
-    <input name="direccion">
-    <input name="vivienda">
-    <input name="apto">
-    <input name="porteria">
-    <input name="direccion_mapa">
-    <input name="maps_link">
-  </form>
 
   <!-- Barra fija: total siempre visible + atajo que copia la llave y baja al pago -->
   <div class="co__bar">
@@ -217,6 +234,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <script src="js/checkout.js?v=6"></script>
+  <script src="js/checkout.js?v=7"></script>
 </body>
 </html>
