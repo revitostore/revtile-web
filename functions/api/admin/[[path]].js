@@ -45,18 +45,7 @@ export async function onRequest(context) {
     if (!env.ADMIN_KEY && !permitidos.length) {
       return json({ ok: false, error: 'Panel no configurado (falta ADMIN_KEY o ADMIN_EMAILS)' }, 503);
     }
-    /* diagnóstico visible solo para quien ya pasó Access */
-    return json({
-      ok: false,
-      error: 'Acceso denegado',
-      debug: {
-        correo_visto: correoAccess || '(ninguno)',
-        emails_configurados: permitidos.length,
-        llave_configurada: !!env.ADMIN_KEY,
-        headers_cf: [...request.headers.keys()].filter((h) => h.startsWith('cf-')),
-        cookie_access: /CF_Authorization=/.test(request.headers.get('cookie') || ''),
-      },
-    }, 401);
+    return json({ ok: false, error: 'Acceso denegado' }, 401);
   }
 
   const ruta = (params.path || []).join('/');
