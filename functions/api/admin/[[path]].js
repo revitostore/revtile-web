@@ -122,50 +122,6 @@ export async function onRequest(context) {
       return json({ ok: true, codigo });
     }
 
-    /* --- Prueba de conexión Skydropx (solo equipo): /api/admin/skydropx?guia=X&carrier=Y --- */
-    if (ruta === 'skydropx' && request.method === 'GET') {
-      if (!env.SKYDROPX_CLIENT_ID || !env.SKYDROPX_CLIENT_SECRET) {
-        return json({ ok: false, paso: 'secrets', detalle: 'Faltan SKYDROPX_CLIENT_ID y/o SKYDROPX_CLIENT_SECRET en Pages (o falta Retry deployment tras agregarlos)' });
-      }
-      const guia = url.searchParams.get('guia') || '';
-      const carrier = url.searchParams.get('carrier') || '';
-      const tk = await fetch('https://pro.skydropx.com/api/v1/oauth/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ client_id: env.SKYDROPX_CLIENT_ID, client_secret: env.SKYDROPX_CLIENT_SECRET, grant_type: 'client_credentials' }),
-      });
-      const tkTexto = await tk.text();
-      if (!tk.ok) return json({ ok: false, paso: 'token', status: tk.status, respuesta: tkTexto.slice(0, 600) });
-      let token;
-      try { token = JSON.parse(tkTexto).access_token; } catch (e) { return json({ ok: false, paso: 'token-parse', respuesta: tkTexto.slice(0, 600) }); }
-      /* sondeo profundo: envío completo + sub-endpoints de tracking/eventos */
-      const g = encodeURIComponent(guia);
-      const auth = { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token };
-      const pedir = async (u, corte) => {
-        try {
-          const r = await fetch(u, { headers: auth });
-          const texto = await r.text();
-          const esHtml = texto.trimStart().startsWith('<');
-          return { url: u, status: r.status, tipo: esHtml ? 'html (ruta inexistente)' : 'json', muestra: esHtml ? '' : texto.slice(0, corte) };
-        } catch (e) { return { url: u, error: String(e.message || e) }; }
-      };
-      const reporte = [];
-      let idEnvio = null;
-      try {
-        const rl = await fetch(`https://pro.skydropx.com/api/v1/shipments?tracking_number=${g}`, { headers: auth });
-        const textoLista = await rl.text();
-        reporte.push({ url: 'shipments?tracking_number', status: rl.status, muestra: textoLista.slice(0, 4000) });
-        idEnvio = JSON.parse(textoLista).data[0].id;
-      } catch (e) { /* sin id: solo la lista */ }
-      if (idEnvio) {
-        const base = `https://pro.skydropx.com/api/v1/shipments/${idEnvio}`;
-        reporte.push(await pedir(base, 2500));
-        reporte.push(await pedir(base + '/tracking', 2000));
-        reporte.push(await pedir(base + '/events', 2000));
-      }
-      return json({ ok: true, paso: 'sondeo2', reporte });
-    }
-
     return json({ ok: false, error: 'Ruta no encontrada' }, 404);
   } catch (e) {
     return json({ ok: false, error: 'Error del sistema: ' + (e.message || 'desconocido') }, 500);

@@ -9,9 +9,11 @@ const json = (data, status = 200) =>
   });
 
 /* Rastreo en vivo vía Skydropx PRO (opcional: requiere secrets SKYDROPX_CLIENT_ID y
-   SKYDROPX_CLIENT_SECRET en el proyecto Pages). Si no están o falla, se ignora. */
-async function trackingSkydropx(env, guia, transportadora) {
-  if (!env.SKYDROPX_CLIENT_ID || !env.SKYDROPX_CLIENT_SECRET || !guia || !transportadora) return null;
+   SKYDROPX_CLIENT_SECRET en el proyecto Pages). Si no están o falla, se ignora.
+   Endpoint real verificado: GET /api/v1/shipments?tracking_number=... — el estado
+   vive en el paquete incluido (tracking_status_display_name, tracking_url_provider). */
+async function trackingSkydropx(env, guia) {
+  if (!env.SKYDROPX_CLIENT_ID || !env.SKYDROPX_CLIENT_SECRET || !guia) return null;
   try {
     const tk = await fetch('https://pro.skydropx.com/api/v1/oauth/token', {
       method: 'POST',
@@ -24,13 +26,26 @@ async function trackingSkydropx(env, guia, transportadora) {
     });
     if (!tk.ok) return null;
     const { access_token } = await tk.json();
-    const g = encodeURIComponent(guia);
     const r = await fetch(
-      `https://pro.skydropx.com/api/v1/shipments/tracking/${g}?tracking_number=${g}&carrier_name=${encodeURIComponent(transportadora)}`,
+      'https://pro.skydropx.com/api/v1/shipments?tracking_number=' + encodeURIComponent(guia),
       { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + access_token } }
     );
     if (!r.ok) return null;
-    return await r.json();
+    const data = await r.json();
+    const envio = data.data && data.data[0];
+    if (!envio) return null;
+    const incl = data.included || [];
+    const paquete = incl.find((i) => i.type === 'package' && i.attributes && i.attributes.tracking_number === guia)
+      || incl.find((i) => i.type === 'package');
+    const a = (paquete && paquete.attributes) || {};
+    const s = envio.attributes || {};
+    return {
+      estado: a.tracking_status || null,
+      estado_nombre: a.tracking_status_display_name || null,
+      url: a.tracking_url_provider || null,
+      dias_estimados: s.estimated_delivery_days != null ? s.estimated_delivery_days : null,
+      actualizado: s.updated_at || null,
+    };
   } catch (e) {
     return null;
   }
@@ -52,7 +67,7 @@ export async function onRequestGet({ request, env }) {
     let items = [];
     try { items = JSON.parse(p.items).map((i) => ({ c: i.c, nombre: i.nombre })); } catch (e) { /* nada */ }
 
-    const skydropx = await trackingSkydropx(env, p.guia, p.transportadora);
+    const skydropx = await trackingSkydropx(env, p.guia);
 
     return json({
       ok: true,

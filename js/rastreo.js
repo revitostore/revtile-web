@@ -68,9 +68,24 @@ function pintar(p) {
     $('rasGuia').hidden = false;
     $('rasGuiaNum').textContent = p.guia;
     $('rasGuiaEmp').textContent = t ? t.nombre : (p.transportadora || 'transportadora');
+
+    /* estado en vivo (Skydropx) dentro de la caja de la guía */
+    const vivo = $('rasVivo');
+    if (skyEstado) {
+      vivo.hidden = false;
+      const dias = p.skydropx && p.skydropx.dias_estimados;
+      $('rasVivoTxt').innerHTML = `<b>${skyEstado}</b>` + (dias ? ` · entrega estimada: ${dias} día${dias > 1 ? 's' : ''} hábil${dias > 1 ? 'es' : ''}` : '');
+    } else {
+      vivo.hidden = true;
+    }
+
+    /* enlace de rastreo: el que reporta Skydropx (exacto) o el del mapa de transportadoras */
     const link = $('rasGuiaLink');
-    if (t) { link.href = t.url(encodeURIComponent(p.guia)); link.hidden = false; }
+    const urlSky = p.skydropx && p.skydropx.url;
+    if (urlSky) { link.href = urlSky; link.hidden = false; }
+    else if (t) { link.href = t.url(encodeURIComponent(p.guia)); link.hidden = false; }
     else { link.hidden = true; }
+
     $('rasDespachadoTxt').textContent = skyEstado
       ? `En vivo desde la transportadora: ${skyEstado}`
       : 'Tu creatina va en camino con guía ' + p.guia;
@@ -86,7 +101,7 @@ function pintar(p) {
   $('rasWa').href = 'https://wa.me/573214569600?text=' + encodeURIComponent(`Hola Revtile 🦎, pregunta sobre mi pedido ${p.id}`);
 }
 
-/* la respuesta de Skydropx puede variar: buscamos un estado en las rutas típicas, con cuidado */
+/* estado en vivo que devuelve nuestra API desde Skydropx (ya viene compacto) */
 const ESTADOS_SKY = {
   created: 'Guía creada', queued: 'En cola', picked_up: 'Recogido por la transportadora',
   in_transit: 'En tránsito', out_for_delivery: 'En reparto — ¡llega hoy!',
@@ -94,11 +109,9 @@ const ESTADOS_SKY = {
 };
 function extraerEstadoSkydropx(s) {
   if (!s || typeof s !== 'object') return null;
-  const cand = s.tracking_status || s.status
-    || (s.data && (s.data.tracking_status || s.data.status))
-    || (s.data && s.data.attributes && (s.data.attributes.tracking_status || s.data.attributes.status));
-  if (typeof cand !== 'string' || !cand || cand === 'queued') return null;
-  return ESTADOS_SKY[cand] || cand.replace(/_/g, ' ');
+  if (s.estado_nombre) return s.estado_nombre;
+  if (typeof s.estado === 'string' && s.estado) return ESTADOS_SKY[s.estado] || s.estado.replace(/_/g, ' ');
+  return null;
 }
 
 function mostrarError(msg) {

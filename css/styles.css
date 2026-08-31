@@ -2739,6 +2739,10 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 
 .ras__info--guia b { color: var(--teal); }
 
+.ras__vivo { margin-top: 8px; }
+
+.ras__vivo b { color: var(--lime); }
+
 .ras__guia-btn { margin-top: 10px; font-size: 13.5px; padding: 9px 16px; }
 
 .ras__items { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px; font-size: 14px; color: var(--ink-dim); }
