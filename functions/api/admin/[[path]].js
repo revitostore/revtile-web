@@ -138,12 +138,28 @@ export async function onRequest(context) {
       if (!tk.ok) return json({ ok: false, paso: 'token', status: tk.status, respuesta: tkTexto.slice(0, 600) });
       let token;
       try { token = JSON.parse(tkTexto).access_token; } catch (e) { return json({ ok: false, paso: 'token-parse', respuesta: tkTexto.slice(0, 600) }); }
+      /* sondeo: probar los endpoints candidatos y reportar qué responde cada uno */
       const g = encodeURIComponent(guia);
-      const r = await fetch(
-        `https://pro.skydropx.com/api/v1/shipments/tracking/${g}?tracking_number=${g}&carrier_name=${encodeURIComponent(carrier)}`,
-        { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } }
-      );
-      return json({ ok: true, paso: 'tracking', status: r.status, respuesta: (await r.text()).slice(0, 1500) });
+      const c = encodeURIComponent(carrier);
+      const candidatos = [
+        `https://pro.skydropx.com/api/v1/tracking?tracking_number=${g}&carrier_code=${c}`,
+        `https://pro.skydropx.com/api/v1/trackings?tracking_number=${g}`,
+        `https://pro.skydropx.com/api/v1/shipments?tracking_number=${g}`,
+        `https://pro.skydropx.com/api/v1/shipments?page=1&per_page=3`,
+        `https://app.skydropx.com/api/v1/tracking?tracking_number=${g}&carrier_code=${c}`,
+      ];
+      const reporte = [];
+      for (const u of candidatos) {
+        try {
+          const r = await fetch(u, { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token } });
+          const texto = await r.text();
+          const esHtml = texto.trimStart().startsWith('<');
+          reporte.push({ url: u, status: r.status, tipo: esHtml ? 'html (ruta inexistente)' : 'json', muestra: esHtml ? '' : texto.slice(0, 700) });
+        } catch (e) {
+          reporte.push({ url: u, error: String(e.message || e) });
+        }
+      }
+      return json({ ok: true, paso: 'sondeo', reporte });
     }
 
     return json({ ok: false, error: 'Ruta no encontrada' }, 404);
