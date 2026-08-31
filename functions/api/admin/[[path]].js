@@ -23,8 +23,20 @@ const ESTADOS = ['nuevo', 'verificado', 'despachado', 'entregado', 'cancelado'];
 export async function onRequest(context) {
   const { request, env, params } = context;
 
-  /* candado doble: correo autenticado por Access, o llave de respaldo */
-  const correoAccess = (request.headers.get('cf-access-authenticated-user-email') || '').toLowerCase();
+  /* candado doble: correo autenticado por Access, o llave de respaldo.
+     El correo puede venir en el header directo o dentro del JWT de Access
+     (solo confiamos en él porque Access bloquea esta ruta en el borde). */
+  let correoAccess = (request.headers.get('cf-access-authenticated-user-email') || '').toLowerCase();
+  if (!correoAccess) {
+    const jwt = request.headers.get('cf-access-jwt-assertion')
+      || (request.headers.get('cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1];
+    if (jwt) {
+      try {
+        const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        correoAccess = String(payload.email || '').toLowerCase();
+      } catch (e) { /* token ilegible: seguimos sin correo */ }
+    }
+  }
   const permitidos = (env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
   const porAccess = !!correoAccess && permitidos.length > 0 && permitidos.includes(correoAccess);
   const porClave = !!env.ADMIN_KEY && request.headers.get('x-admin-key') === env.ADMIN_KEY;
@@ -37,7 +49,13 @@ export async function onRequest(context) {
     return json({
       ok: false,
       error: 'Acceso denegado',
-      debug: { correo_visto: correoAccess || '(ninguno)', emails_configurados: permitidos.length, llave_configurada: !!env.ADMIN_KEY },
+      debug: {
+        correo_visto: correoAccess || '(ninguno)',
+        emails_configurados: permitidos.length,
+        llave_configurada: !!env.ADMIN_KEY,
+        headers_cf: [...request.headers.keys()].filter((h) => h.startsWith('cf-')),
+        cookie_access: /CF_Authorization=/.test(request.headers.get('cookie') || ''),
+      },
     }, 401);
   }
 
