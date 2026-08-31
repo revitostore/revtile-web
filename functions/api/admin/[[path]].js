@@ -1,6 +1,11 @@
 /* ===== API de administración Revtile =====
-   Protegida con la clave ADMIN_KEY (variable secreta del proyecto Pages).
-   El panel (admin.html) manda la clave en el header 'x-admin-key'.
+   Dos formas de entrar (el centro de mando gestion.html las prueba en orden):
+   1. Cloudflare Access: si /gestion.html y /api/admin/* están detrás de una app de
+      Access, Cloudflare ya autenticó el correo y manda el header
+      'cf-access-authenticated-user-email'. ADMIN_EMAILS (lista separada por comas)
+      limita qué correos mandan. ⚠️ ADMIN_EMAILS solo debe definirse cuando Access
+      esté activo sobre AMBAS rutas (sin Access, ese header podría falsificarse).
+   2. Llave de respaldo: header 'x-admin-key' igual a la variable secreta ADMIN_KEY.
 
    GET  /api/admin/pedidos?estado=nuevo&q=ana   → lista de pedidos (máx 200)
    POST /api/admin/pedido   {id, estado?, guia?, transportadora?, nota?} → actualizar
@@ -18,10 +23,17 @@ const ESTADOS = ['nuevo', 'verificado', 'despachado', 'entregado', 'cancelado'];
 export async function onRequest(context) {
   const { request, env, params } = context;
 
-  /* candado: sin ADMIN_KEY configurada, el panel está cerrado del todo */
-  if (!env.ADMIN_KEY) return json({ ok: false, error: 'Panel no configurado (falta ADMIN_KEY)' }, 503);
-  if (request.headers.get('x-admin-key') !== env.ADMIN_KEY) {
-    return json({ ok: false, error: 'Clave incorrecta' }, 401);
+  /* candado doble: correo autenticado por Access, o llave de respaldo */
+  const correoAccess = (request.headers.get('cf-access-authenticated-user-email') || '').toLowerCase();
+  const permitidos = (env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
+  const porAccess = !!correoAccess && permitidos.length > 0 && permitidos.includes(correoAccess);
+  const porClave = !!env.ADMIN_KEY && request.headers.get('x-admin-key') === env.ADMIN_KEY;
+
+  if (!porAccess && !porClave) {
+    if (!env.ADMIN_KEY && !permitidos.length) {
+      return json({ ok: false, error: 'Panel no configurado (falta ADMIN_KEY o ADMIN_EMAILS)' }, 503);
+    }
+    return json({ ok: false, error: 'Acceso denegado' }, 401);
   }
 
   const ruta = (params.path || []).join('/');

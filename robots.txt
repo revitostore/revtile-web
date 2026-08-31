@@ -31,5 +31,5 @@ Sitemap: https://revtile.com.co/sitemap.xml
 
 # Zonas privadas
 User-agent: *
-Disallow: /admin.html
+Disallow: /gestion.html
 Disallow: /api/

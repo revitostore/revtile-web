@@ -1,4 +1,5 @@
-/* ===== Panel de administración Revtile ===== */
+/* ===== Centro de mando Revtile =====
+   Acceso: Cloudflare Access (correo) si está activo, o llave de respaldo (ADMIN_KEY). */
 
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => '$' + Number(n || 0).toLocaleString('es-CO');
@@ -19,7 +20,7 @@ let pedidos = [];
 async function api(ruta, opciones = {}) {
   const r = await fetch('/api/admin/' + ruta, {
     ...opciones,
-    headers: { 'Content-Type': 'application/json', 'x-admin-key': clave, ...(opciones.headers || {}) },
+    headers: { 'Content-Type': 'application/json', ...(clave ? { 'x-admin-key': clave } : {}), ...(opciones.headers || {}) },
   });
   const data = await r.json().catch(() => ({ ok: false, error: 'Respuesta inválida' }));
   if (r.status === 401) throw new Error('CLAVE');
@@ -34,28 +35,42 @@ function mostrarError(msg) {
   setTimeout(() => { el.hidden = true; }, 5000);
 }
 
-/* --- Login --- */
+/* --- Apertura del panel --- */
+const MESES_L = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const DIAS_L = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+async function abrirPanel() {
+  $('admLogin').hidden = true;
+  $('admPanel').hidden = false;
+  $('admSalir').hidden = !clave; // con Access no hay sesión local que cerrar
+  const hoy = new Date();
+  $('admFecha').textContent = `${DIAS_L[hoy.getDay()]} ${hoy.getDate()} de ${MESES_L[hoy.getMonth()]} · vamos con toda 🦎`;
+  await cargar();
+  await cargarCupones();
+}
+
 async function entrar(k) {
   clave = k;
   try {
     await api('pedidos');
-    localStorage.setItem(KEY_STORAGE, clave);
-    $('admLogin').hidden = true;
-    $('admPanel').hidden = false;
-    $('admSalir').hidden = false;
-    await cargar();
-    await cargarCupones();
+    if (clave) localStorage.setItem(KEY_STORAGE, clave);
+    await abrirPanel();
+    return true;
   } catch (e) {
     clave = '';
-    const el = $('admLoginError');
-    el.textContent = e.message === 'CLAVE' ? 'Clave incorrecta.' : 'No se pudo conectar: ' + e.message;
-    el.hidden = false;
-    setTimeout(() => { el.hidden = true; }, 5000);
+    return e.message === 'CLAVE' ? false : null; // null = error de sistema
   }
 }
 
-$('admEntrar').addEventListener('click', () => entrar($('admKey').value.trim()));
-$('admKey').addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar($('admKey').value.trim()); });
+$('admEntrar').addEventListener('click', async () => {
+  const ok = await entrar($('admKey').value.trim());
+  if (ok === true) return;
+  const el = $('admLoginError');
+  el.textContent = ok === false ? 'Llave incorrecta.' : 'No se pudo conectar con el sistema.';
+  el.hidden = false;
+  setTimeout(() => { el.hidden = true; }, 5000);
+});
+$('admKey').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('admEntrar').click(); });
 $('admSalir').addEventListener('click', () => {
   localStorage.removeItem(KEY_STORAGE);
   location.reload();
@@ -206,6 +221,13 @@ $('cuCrear').addEventListener('click', async () => {
   } catch (e) { mostrarError(e.message); }
 });
 
-/* --- Init: sesión recordada --- */
-const guardada = localStorage.getItem(KEY_STORAGE);
-if (guardada) entrar(guardada);
+/* --- Init ---
+   1) Si Cloudflare Access ya autenticó (entraste con tu correo), el panel abre directo.
+   2) Si no, probamos la llave recordada.
+   3) Si nada funciona, se muestra la pantalla de llave. */
+(async () => {
+  if (await entrar('') === true) return;                 // modo Access: sin llave
+  const guardada = localStorage.getItem(KEY_STORAGE);
+  if (guardada && await entrar(guardada) === true) return;
+  $('admLogin').hidden = false;
+})();

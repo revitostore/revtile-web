@@ -28,7 +28,7 @@ async function avisarPedido(env, d) {
       <hr style="border-color:#2a2f45">
       <p>👤 <b>${d.nombre}</b><br>📱 <a href="https://wa.me/57${d.telefono}" style="color:#2de2e6">${d.telefono}</a><br>📍 ${d.direccion}, ${d.ciudad}</p>
       <p>📦 ${entrega}</p>
-      <p><a href="https://revtile.com.co/admin.html" style="color:#ffc24b">Abrir panel de pedidos →</a></p>
+      <p><a href="https://revtile.com.co/gestion.html" style="color:#ffc24b">Abrir el centro de mando →</a></p>
     </div>`;
   try {
     await fetch('https://api.resend.com/emails', {
