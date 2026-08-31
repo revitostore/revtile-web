@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel — REVTILE</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#07080d">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=20">
+</head>
+<body class="pp co adm">
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span> <small class="adm__tag">panel</small></a>
+      <button type="button" class="nav__cta adm__salir" id="admSalir" hidden>Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="co__main adm__main">
+
+    <!-- Login -->
+    <section class="co__card adm__login" id="admLogin">
+      <h1 class="co__title" style="font-size:28px">Panel de pedidos<span class="accent">.</span></h1>
+      <p class="co__sub">Solo para el equipo Revtile 🦎</p>
+      <div class="ras__buscar">
+        <input type="password" id="admKey" placeholder="Clave de administración" autocomplete="current-password">
+        <button type="button" class="btn btn--primary" id="admEntrar">Entrar</button>
+      </div>
+      <p class="co__error" id="admLoginError" hidden></p>
+    </section>
+
+    <!-- Panel -->
+    <div id="admPanel" hidden>
+
+      <div class="adm__stats" id="admStats">
+        <div class="adm__stat"><b id="stHoy">—</b><span>pedidos hoy</span></div>
+        <div class="adm__stat adm__stat--alerta"><b id="stNuevos">—</b><span>por gestionar</span></div>
+        <div class="adm__stat"><b id="stMes">—</b><span>ventas del mes</span></div>
+      </div>
+
+      <section class="co__card">
+        <div class="adm__filtros">
+          <select id="admEstado">
+            <option value="">Todos los estados</option>
+            <option value="nuevo">🔴 Nuevos</option>
+            <option value="verificado">🟡 Verificados</option>
+            <option value="despachado">📦 Despachados</option>
+            <option value="entregado">✅ Entregados</option>
+            <option value="cancelado">✖ Cancelados</option>
+          </select>
+          <input type="search" id="admBuscar" placeholder="Buscar: ID, nombre, teléfono, ciudad…">
+          <button type="button" class="btn btn--ghost adm__refrescar" id="admRefrescar">↻</button>
+        </div>
+        <div class="adm__lista" id="admLista"><p class="adm__vacio">Cargando…</p></div>
+      </section>
+
+      <section class="co__card">
+        <p class="section-eyebrow"><b>🎟</b> Cupones</p>
+        <div class="adm__cupon-form">
+          <input type="text" id="cuCodigo" placeholder="CÓDIGO" maxlength="20">
+          <select id="cuTipo">
+            <option value="porcentaje">% de descuento</option>
+            <option value="fijo">$ fijos de descuento</option>
+          </select>
+          <input type="number" id="cuValor" placeholder="Valor (10 ó 10000)" min="1">
+          <input type="number" id="cuMaxUsos" placeholder="Máx. usos (vacío = ∞)" min="1">
+          <input type="number" id="cuMinTotal" placeholder="Compra mínima $" min="0">
+          <button type="button" class="btn btn--primary" id="cuCrear">Guardar cupón</button>
+        </div>
+        <div class="adm__cupones" id="admCupones"></div>
+      </section>
+
+      <p class="co__note">Los cambios de estado se reflejan al instante en la página de <a href="rastreo.html" target="_blank">rastreo</a> del cliente.</p>
+    </div>
+
+    <p class="co__error" id="admError" hidden></p>
+  </main>
+
+  <script src="js/admin.js?v=1"></script>
+</body>
+</html>

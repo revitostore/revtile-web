@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=19">
+  <link rel="stylesheet" href="css/styles.css?v=20">
   <script src="js/analytics.js?v=2" defer></script>
 </head>
 <body class="pp co">
@@ -169,10 +169,17 @@
         </label>
       </div>
 
+      <div class="co__cupon">
+        <input type="text" id="fCupon" placeholder="¿Tienes un cupón? Escríbelo aquí" autocomplete="off" spellcheck="false" maxlength="20">
+        <button type="button" class="btn btn--ghost" id="btnCupon">Aplicar</button>
+      </div>
+      <p class="co__cupon-msg" id="cuponMsg" hidden></p>
+
       <div class="co__total">
         <div class="co__total-lines" id="resItems"></div>
         <div class="co__total-lines">
           <p id="resComboLine" hidden><span>Combo Gymbro</span><b class="co__verde" id="resComboVal">−$10.000</b></p>
+          <p id="resCuponLine" hidden><span id="resCuponTxt">Cupón</span><b class="co__verde" id="resCuponVal">−$0</b></p>
           <p><span>Envío</span><b id="resEnvio">GRATIS</b></p>
           <p class="co__total-final"><span>Total a pagar</span><b id="resTotal">$120.000</b></p>
         </div>
@@ -234,6 +241,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <script src="js/checkout.js?v=7"></script>
+  <script src="js/checkout.js?v=8"></script>
 </body>
 </html>

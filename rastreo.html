@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rastrea tu pedido — REVTILE</title>
+  <meta name="description" content="Consulta el estado de tu pedido REVTILE en tiempo real con tu número de pedido RV.">
+  <meta name="theme-color" content="#07080d">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="canonical" href="https://revtile.com.co/rastreo.html">
+  <meta property="og:title" content="Rastrea tu pedido — REVTILE">
+  <meta property="og:description" content="Consulta el estado de tu pedido de creatina con tu número RV.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://revtile.com.co/rastreo.html">
+  <meta property="og:image" content="https://revtile.com.co/assets/og-card.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=20">
+  <script src="js/analytics.js?v=2" defer></script>
+</head>
+<body class="pp co">
+
+  <div class="blob blob--red" aria-hidden="true"></div>
+  <div class="blob blob--teal" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
+      <a class="pp-back" href="index.html">← Volver a la tienda</a>
+      <a class="nav__cta" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20tengo%20una%20pregunta%20sobre%20mi%20pedido" target="_blank" rel="noopener">Ayuda</a>
+    </div>
+  </header>
+
+  <main class="co__main ras__main">
+    <h1 class="co__title">Rastrea tu pedido<span class="accent">.</span></h1>
+    <p class="co__sub">Escribe tu número de pedido (está en tu mensaje de WhatsApp, empieza por RV-)</p>
+
+    <section class="co__card">
+      <div class="ras__buscar">
+        <input type="text" id="rasId" placeholder="RV-XXXXX" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn btn--primary" id="rasBtn">Rastrear</button>
+      </div>
+      <p class="co__error" id="rasError" hidden></p>
+    </section>
+
+    <section class="co__card" id="rasResultado" hidden>
+      <div class="ras__head">
+        <div>
+          <p class="ras__id" id="rasResId">RV-XXXXX</p>
+          <p class="ras__fecha" id="rasResFecha"></p>
+        </div>
+        <span class="ras__badge" id="rasResBadge">Recibido</span>
+      </div>
+
+      <div class="ras__timeline" id="rasTimeline">
+        <div class="ras__paso" data-paso="nuevo">
+          <span class="ras__punto"></span>
+          <div><b>Pedido recibido</b><small>Quedó registrado en nuestro sistema</small></div>
+        </div>
+        <div class="ras__paso" data-paso="verificado">
+          <span class="ras__punto"></span>
+          <div><b>Pago verificado</b><small>Confirmamos tu pago o tu contraentrega</small></div>
+        </div>
+        <div class="ras__paso" data-paso="despachado">
+          <span class="ras__punto"></span>
+          <div><b>Despachado</b><small id="rasDespachadoTxt">Tu creatina va en camino</small></div>
+        </div>
+        <div class="ras__paso" data-paso="entregado">
+          <span class="ras__punto"></span>
+          <div><b>Entregado</b><small>¡A romperla en el gym! 🦎</small></div>
+        </div>
+      </div>
+
+      <div class="ras__info" id="rasProg" hidden>
+        <p>⚡ <b>Entrega programada:</b> <span id="rasProgTxt"></span></p>
+      </div>
+
+      <div class="ras__info ras__info--guia" id="rasGuia" hidden>
+        <p>📦 Guía de envío: <b id="rasGuiaNum"></b> (<span id="rasGuiaEmp"></span>)</p>
+        <a class="btn btn--ghost ras__guia-btn" id="rasGuiaLink" href="#" target="_blank" rel="noopener">Rastrear con la transportadora ↗</a>
+      </div>
+
+      <div class="ras__items" id="rasItems"></div>
+
+      <p class="co__note">¿Dudas con tu pedido? <a id="rasWa" href="https://wa.me/573214569600" target="_blank" rel="noopener">Escríbenos por WhatsApp</a> con tu número de pedido a la mano.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__base footer__base--solo">
+      <p>© 2026 REVTILE · <a href="terminos.html" class="co__foot-link">Términos y envíos</a></p>
+    </div>
+  </footer>
+
+  <script src="js/rastreo.js?v=1"></script>
+</body>
+</html>

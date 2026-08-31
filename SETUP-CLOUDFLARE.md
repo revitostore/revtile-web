@@ -42,6 +42,24 @@ El código ya está listo. Estos pasos se hacen UNA sola vez en el panel de Clou
    `SELECT id, nombre, total, metodo_pago, creado_en FROM pedidos ORDER BY creado_en DESC LIMIT 5;`
 3. Debe aparecer el pedido de prueba. Listo ✅
 
+## 6. Sistema v2: rastreo, panel admin, cupones y avisos
+
+Pasos únicos tras el deploy del sistema v2:
+
+1. **Migrar la base**: D1 → `revtile-db` → Console → pegar TODO `db/schema-v2.sql` → Execute.
+2. **Clave del panel admin**: proyecto Pages → **Settings** → **Variables and Secrets** →
+   **Add** → tipo **Secret** → nombre `ADMIN_KEY` → valor: una clave larga que solo tú sepas
+   (ej. 20+ caracteres). Guardar → **Retry deployment**.
+   Luego el panel vive en https://revtile.com.co/admin.html
+3. **(Opcional) Aviso por email de cada pedido**: crear cuenta gratis en https://resend.com
+   (100 correos/día gratis), copiar la API key y agregar en Variables and Secrets:
+   - `RESEND_KEY` (secret) = la API key
+   - `NOTIF_EMAIL` (texto) = tu correo (ej. oscivaramtin@gmail.com)
+   Con el dominio verificado en Resend se puede agregar `NOTIF_FROM` = `REVTILE <pedidos@revtile.com.co>`.
+4. **(Opcional) Rastreo en vivo Skydropx**: si tu cuenta Skydropx PRO tiene API
+   (Conexiones → API), agregar secrets `SKYDROPX_CLIENT_ID` y `SKYDROPX_CLIENT_SECRET`.
+   Sin esto, el rastreo muestra el estado interno + enlace a la transportadora (funciona igual).
+
 ## Notas
 
 - Netlify puede quedarse conectado al repo sin problema (sus deploys están pausados);

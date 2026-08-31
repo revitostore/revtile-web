@@ -21,6 +21,7 @@ const state = {
   cant: { on: 1, mt: 0, on120: 0 },
   pago: 'anticipado',                // 'anticipado' | 'contraentrega'
   dia: null, diaISO: null, hora: '', // entrega programada (solo Bogotá + anticipado)
+  cupon: null,                       // {codigo, tipo, valor} validado por la API
   lat: null, lng: null, dirMapa: null,
 };
 
@@ -31,7 +32,7 @@ let enviando = false;
 let ultimoEnvioTs = 0;
 
 function hashPedido(nombre, tel, dir, total) {
-  return JSON.stringify([state.cant, state.pago, state.diaISO, state.hora, nombre, tel, dir, total]);
+  return JSON.stringify([state.cant, state.pago, state.diaISO, state.hora, state.cupon && state.cupon.codigo, nombre, tel, dir, total]);
 }
 
 function pedidoPrevio(hash) {
@@ -101,6 +102,50 @@ document.querySelectorAll('.co__metodo').forEach((card) => {
   });
 });
 
+/* --- Cupón de descuento --- */
+let cuponOcupado = false;
+$('btnCupon').addEventListener('click', async () => {
+  if (cuponOcupado) return;
+  const codigo = $('fCupon').value.trim().toUpperCase();
+  const msg = $('cuponMsg');
+  if (state.cupon) { // ya hay uno: el botón funciona como "quitar"
+    state.cupon = null;
+    $('fCupon').value = '';
+    $('fCupon').disabled = false;
+    $('btnCupon').textContent = 'Aplicar';
+    msg.hidden = true;
+    render();
+    return;
+  }
+  if (!/^[A-Z0-9]{3,20}$/.test(codigo)) {
+    msg.hidden = false; msg.className = 'co__cupon-msg is-mal'; msg.textContent = 'Escribe un código válido (sin espacios).';
+    return;
+  }
+  cuponOcupado = true;
+  $('btnCupon').textContent = '…';
+  try {
+    const { subtotal, combo } = calcular();
+    const r = await fetch(`/api/cupon?codigo=${encodeURIComponent(codigo)}&total=${subtotal - combo}`);
+    const data = await r.json();
+    if (data.ok) {
+      state.cupon = { codigo: data.codigo, tipo: data.tipo, valor: data.valor };
+      $('fCupon').disabled = true;
+      $('btnCupon').textContent = 'Quitar';
+      msg.hidden = false; msg.className = 'co__cupon-msg is-bien';
+      msg.textContent = `🎟 ¡Cupón ${data.codigo} aplicado! Ahorras ${fmt(data.descuento)}.`;
+    } else {
+      $('btnCupon').textContent = 'Aplicar';
+      msg.hidden = false; msg.className = 'co__cupon-msg is-mal'; msg.textContent = data.error || 'Ese cupón no sirve.';
+    }
+  } catch (e) {
+    $('btnCupon').textContent = 'Aplicar';
+    msg.hidden = false; msg.className = 'co__cupon-msg is-mal'; msg.textContent = 'No pudimos validar el cupón — intenta de nuevo.';
+  }
+  cuponOcupado = false;
+  render();
+});
+$('fCupon').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('btnCupon').click(); });
+
 /* --- Entrega programada: días (Lun–Sáb) y hora --- */
 const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
 const MESES_CORTOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -163,11 +208,19 @@ function calcular() {
   const esCE = state.pago === 'contraentrega';
   const envio = (!esBogota && esCE) ? RECARGO_CE_NACIONAL : 0;
   const programado = esBogota && !esCE; // entrega con día y hora a elección
-  return { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, total: subtotal - combo + envio };
+  /* cupón: se recalcula sobre subtotal − combo (el servidor re-valida al registrar) */
+  let descuento = 0;
+  if (state.cupon) {
+    const base = subtotal - combo;
+    descuento = state.cupon.tipo === 'porcentaje'
+      ? Math.round((base * state.cupon.valor) / 100)
+      : Math.min(state.cupon.valor, base);
+  }
+  return { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, descuento, total: subtotal - combo - descuento + envio };
 }
 
 function render() {
-  const { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, total } = calcular();
+  const { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, descuento, total } = calcular();
 
   document.querySelectorAll('.co__prod').forEach((card) => {
     const c = state.cant[card.dataset.prod];
@@ -211,6 +264,11 @@ function render() {
     : '<p><span>Elige al menos un tarro</span><b>—</b></p>';
   $('resComboLine').hidden = combo === 0;
   $('resComboVal').textContent = '−' + fmt(combo);
+  $('resCuponLine').hidden = descuento === 0;
+  if (descuento > 0) {
+    $('resCuponTxt').textContent = 'Cupón ' + state.cupon.codigo;
+    $('resCuponVal').textContent = '−' + fmt(descuento);
+  }
   $('resEnvio').innerHTML = envio === 0
     ? `<s>${fmt(esBogota ? TACHADO_BOGOTA : TACHADO_NACIONAL)}</s> <span class="co__verde">GRATIS</span>`
     : fmt(envio) + ' <small>(contraentrega)</small>';
@@ -396,7 +454,7 @@ function mostrarError(msg) {
 }
 
 $('btnEnviar').addEventListener('click', async () => {
-  const { items, tarros, subtotal, combo, pares, esBogota, esCE, programado, envio, total } = calcular();
+  const { items, tarros, subtotal, combo, pares, esBogota, esCE, programado, envio, descuento, total } = calcular();
   const nombre = $('fNombre').value.trim();
   const tel = $('fTel').value.trim();
   const dir = $('fDir').value.trim();
@@ -463,6 +521,7 @@ $('btnEnviar').addEventListener('click', async () => {
         items: items.map((i) => ({ k: i.k, c: i.c, nombre: i.nombre, valor: i.valor })),
         subtotal,
         combo,
+        cupon: state.cupon ? state.cupon.codigo : null,
         envio,
         total,
         nombre,
@@ -493,6 +552,7 @@ $('btnEnviar').addEventListener('click', async () => {
     ? `▪ *Total a pagar al recibir: ${fmt(total)}* (contraentrega)`
     : `▪ *Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})`;
   const cierre = esCE ? 'Confirmo mi pedido contraentrega ✅' : 'Adjunto mi comprobante de pago 👇';
+  const lineaRastreo = `🔎 Sigue tu pedido: revtile.com.co/rastreo?id=${id}`;
 
   let lineas;
   if (registrado) {
@@ -504,8 +564,10 @@ $('btnEnviar').addEventListener('click', async () => {
       `🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`,
       '',
       ...items.map((i) => `▪ ${i.c}× ${i.corto}`),
+      ...(descuento ? [`▪ Cupón ${state.cupon.codigo}: −${fmt(descuento)}`] : []),
       lineaTotal,
       lineaEntrega,
+      lineaRastreo,
       `👤 ${nombre}`,
       '',
       'Mi pedido quedó registrado con todos los datos ✅',
@@ -515,6 +577,7 @@ $('btnEnviar').addEventListener('click', async () => {
     lineas = [`🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`, ''];
     items.forEach((i) => lineas.push(`▪ ${i.c}× ${i.nombre} — ${fmt(i.valor)}`));
     if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
+    if (descuento) lineas.push(`▪ Cupón ${state.cupon.codigo}: −${fmt(descuento)}`);
     lineas.push(
       `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio) + ' (contraentrega)'),
       lineaTotal,
