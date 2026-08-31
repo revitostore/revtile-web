@@ -47,10 +47,14 @@ El código ya está listo. Estos pasos se hacen UNA sola vez en el panel de Clou
 Pasos únicos tras el deploy del sistema v2:
 
 1. **Migrar la base**: D1 → `revtile-db` → Console → pegar TODO `db/schema-v2.sql` → Execute.
-2. **Clave del panel admin**: proyecto Pages → **Settings** → **Variables and Secrets** →
-   **Add** → tipo **Secret** → nombre `ADMIN_KEY` → valor: una clave larga que solo tú sepas
-   (ej. 20+ caracteres). Guardar → **Retry deployment**.
-   Luego el panel vive en https://revtile.com.co/admin.html
+2. **Acceso al centro de mando** (https://revtile.com.co/gestion.html):
+   - **Opcion A (activa): Cloudflare Access** — app en Zero Trust con destinos
+     `revtile.com.co/gestion.html` y `revtile.com.co/api/admin/*`, policy Allow →
+     Emails → revitostore@gmail.com; variable `ADMIN_EMAILS` = revitostore@gmail.com
+     en Pages + Retry deployment. Entras con codigo al correo, sin contrasenas.
+   - **Opcion B (respaldo): Secret `ADMIN_KEY`** = clave larga; el panel la pide una vez.
+   - En el celular: abrir gestion.html → "Agregar a pantalla de inicio" = app instalada.
+
 3. **(Opcional) Aviso por email de cada pedido**: crear cuenta gratis en https://resend.com
    (100 correos/día gratis), copiar la API key y agregar en Variables and Secrets:
    - `RESEND_KEY` (secret) = la API key

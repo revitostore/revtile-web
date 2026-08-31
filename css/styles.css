@@ -288,6 +288,9 @@ section, .ticker, .nav, .footer { position: relative; z-index: 1; }
 .btn--ghost {
   color: var(--ink);
   border: 1.5px solid rgba(45, 226, 230, 0.5);
+  background: none; /* los <button> traen fondo gris del navegador */
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .btn--ghost:hover {
@@ -2621,6 +2624,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .co__cupon input::placeholder { text-transform: none; color: var(--ink-dim); }
 
 .co__cupon input:focus { outline: none; border-color: var(--gold); }
+
+.co__cupon .btn--ghost {
+  border-color: rgba(255, 194, 75, 0.55);
+  color: var(--gold);
+  font-size: 14px;
+  padding: 12px 26px;
+}
+
+.co__cupon .btn--ghost:hover { border-color: var(--gold); box-shadow: var(--glow-gold); }
 
 .co__cupon-msg { font-size: 13.5px; margin-bottom: 14px; }
 
