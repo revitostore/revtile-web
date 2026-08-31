@@ -59,6 +59,9 @@ function pintar(p) {
     $('rasProg').hidden = true;
   }
 
+  /* estado en vivo desde Skydropx (si la API respondió algo legible) */
+  const skyEstado = extraerEstadoSkydropx(p.skydropx);
+
   /* guía de transportadora */
   if (p.guia) {
     const t = TRANSPORTADORAS[(p.transportadora || '').toLowerCase()] || null;
@@ -68,7 +71,9 @@ function pintar(p) {
     const link = $('rasGuiaLink');
     if (t) { link.href = t.url(encodeURIComponent(p.guia)); link.hidden = false; }
     else { link.hidden = true; }
-    $('rasDespachadoTxt').textContent = 'Tu creatina va en camino con guía ' + p.guia;
+    $('rasDespachadoTxt').textContent = skyEstado
+      ? `En vivo desde la transportadora: ${skyEstado}`
+      : 'Tu creatina va en camino con guía ' + p.guia;
   } else {
     $('rasGuia').hidden = true;
   }
@@ -79,6 +84,21 @@ function pintar(p) {
     .join('') + `<p class="ras__total">Total: <b>$${Number(p.total).toLocaleString('es-CO')}</b>${p.metodo_pago === 'contraentrega' ? ' (pagas al recibir)' : ''}</p>`;
 
   $('rasWa').href = 'https://wa.me/573214569600?text=' + encodeURIComponent(`Hola Revtile 🦎, pregunta sobre mi pedido ${p.id}`);
+}
+
+/* la respuesta de Skydropx puede variar: buscamos un estado en las rutas típicas, con cuidado */
+const ESTADOS_SKY = {
+  created: 'Guía creada', queued: 'En cola', picked_up: 'Recogido por la transportadora',
+  in_transit: 'En tránsito', out_for_delivery: 'En reparto — ¡llega hoy!',
+  delivered: 'Entregado ✓', exception: 'Novedad en el envío', returned: 'Devuelto',
+};
+function extraerEstadoSkydropx(s) {
+  if (!s || typeof s !== 'object') return null;
+  const cand = s.tracking_status || s.status
+    || (s.data && (s.data.tracking_status || s.data.status))
+    || (s.data && s.data.attributes && (s.data.attributes.tracking_status || s.data.attributes.status));
+  if (typeof cand !== 'string' || !cand || cand === 'queued') return null;
+  return ESTADOS_SKY[cand] || cand.replace(/_/g, ' ');
 }
 
 function mostrarError(msg) {

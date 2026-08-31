@@ -24,8 +24,9 @@ async function trackingSkydropx(env, guia, transportadora) {
     });
     if (!tk.ok) return null;
     const { access_token } = await tk.json();
+    const g = encodeURIComponent(guia);
     const r = await fetch(
-      `https://pro.skydropx.com/api/v1/shipments/tracking/${encodeURIComponent(guia)}/${encodeURIComponent(transportadora)}`,
+      `https://pro.skydropx.com/api/v1/shipments/tracking/${g}?tracking_number=${g}&carrier_name=${encodeURIComponent(transportadora)}`,
       { headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + access_token } }
     );
     if (!r.ok) return null;
