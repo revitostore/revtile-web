@@ -35,9 +35,13 @@
   var main = $('#ppMain');
   var thumbs = $$('.pp-gal__thumb');
   if (main && thumbs.length) {
+    var fuenteWebp = document.getElementById('ppMain-webp');
     var mostrar = function (btn) {
       thumbs.forEach(function (t) { t.classList.remove('is-active'); });
       btn.classList.add('is-active');
+      /* si la foto tiene version WebP, el <source> tiene que cambiar tambien:
+         si no, el navegador seguiria mostrando la primera */
+      if (fuenteWebp) fuenteWebp.srcset = btn.dataset.src.replace(/\.(png|jpe?g)$/i, '.webp');
       main.src = btn.dataset.src;
       main.alt = btn.dataset.alt || '';
     };

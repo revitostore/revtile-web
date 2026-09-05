@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/on.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/on.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=30">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
@@ -68,15 +68,15 @@
       <!-- Galería -->
       <div class="pp-gal">
         <figure class="pp-gal__main">
-          <img id="ppMain" width="800" height="800" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" fetchpriority="high">
+          <picture><source id="ppMain-webp" srcset="assets/on.webp" type="image/webp"><img id="ppMain" width="800" height="800" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" fetchpriority="high"></picture>
         </figure>
-        <div class="pp-gal__thumbs" role="group" aria-label="Fotos del producto">
-          <button class="pp-gal__thumb is-active" data-src="assets/on.png" data-alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" aria-label="Ver foto 1: Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g"><img src="assets/on.png" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/sello-on.jpg" data-alt="Sello interno de fábrica de Optimum Nutrition intacto" aria-label="Ver foto 2: Sello interno de fábrica de Optimum Nutrition intacto"><img src="assets/galeria/sello-on.jpg" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/detalle-1.jpg" data-alt="Lote y fecha de vencimiento impresos por el fabricante en la base del tarro" aria-label="Ver foto 3: Lote y fecha de vencimiento impresos por el fabricante en la base del tarro"><img src="assets/galeria/detalle-1.jpg" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/polvo-on.jpg" data-alt="Polvo de creatina micronizada, fino y blanco" aria-label="Ver foto 4: Polvo de creatina micronizada, fino y blanco"><img src="assets/galeria/polvo-on.jpg" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/mezcla-on.jpg" data-alt="Creatina disolviéndose en un vaso de agua" aria-label="Ver foto 5: Creatina disolviéndose en un vaso de agua"><img src="assets/galeria/mezcla-on.jpg" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/detalle-2.jpg" data-alt="Interior de la tapa del envase original, Made in USA" aria-label="Ver foto 6: Interior de la tapa del envase original, Made in USA"><img src="assets/galeria/detalle-2.jpg" alt="" loading="lazy"></button>
+        <div class="pp-gal__thumbs" tabindex="0" role="group" aria-label="Fotos del producto">
+          <button class="pp-gal__thumb is-active" data-src="assets/on.png" data-alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" aria-label="Ver foto 1: Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g"><picture><source srcset="assets/on.webp" type="image/webp"><img src="assets/on.png" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/sello-on.jpg" data-alt="Sello interno de fábrica de Optimum Nutrition intacto" aria-label="Ver foto 2: Sello interno de fábrica de Optimum Nutrition intacto"><picture><source srcset="assets/galeria/sello-on.webp" type="image/webp"><img src="assets/galeria/sello-on.jpg" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/detalle-1.jpg" data-alt="Lote y fecha de vencimiento impresos por el fabricante en la base del tarro" aria-label="Ver foto 3: Lote y fecha de vencimiento impresos por el fabricante en la base del tarro"><picture><source srcset="assets/galeria/detalle-1.webp" type="image/webp"><img src="assets/galeria/detalle-1.jpg" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/polvo-on.jpg" data-alt="Polvo de creatina micronizada, fino y blanco" aria-label="Ver foto 4: Polvo de creatina micronizada, fino y blanco"><picture><source srcset="assets/galeria/polvo-on.webp" type="image/webp"><img src="assets/galeria/polvo-on.jpg" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/mezcla-on.jpg" data-alt="Creatina disolviéndose en un vaso de agua" aria-label="Ver foto 5: Creatina disolviéndose en un vaso de agua"><picture><source srcset="assets/galeria/mezcla-on.webp" type="image/webp"><img src="assets/galeria/mezcla-on.jpg" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/detalle-2.jpg" data-alt="Interior de la tapa del envase original, Made in USA" aria-label="Ver foto 6: Interior de la tapa del envase original, Made in USA"><picture><source srcset="assets/galeria/detalle-2.webp" type="image/webp"><img src="assets/galeria/detalle-2.jpg" alt="" loading="lazy"></picture></button>
         </div>
       </div>
 
@@ -263,7 +263,7 @@
       <p class="section-eyebrow reveal">También disponible</p>
       <div class="products__grid" style="margin-top:16px">
         <article class="product reveal">
-          <div class="product__photo"><img src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" loading="lazy"></div>
+          <div class="product__photo"><picture><source srcset="assets/muscletech.webp" type="image/webp"><img src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" loading="lazy"></picture></div>
           <div class="product__info">
             <p class="product__brand">MuscleTech</p>
             <h3 class="product__name"><a class="product__link" href="producto-mt.html">Platinum Creatine Monohydrate</a></h3>
@@ -274,7 +274,7 @@
           </div>
         </article>
         <article class="product reveal">
-          <div class="product__photo"><img src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy"></div>
+          <div class="product__photo"><picture><source srcset="assets/on120.webp" type="image/webp"><img src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy"></picture></div>
           <div class="product__info">
             <p class="product__brand">Optimum Nutrition</p>
             <h3 class="product__name"><a class="product__link" href="producto-on120.html">Micronized Creatine Powder</a></h3>

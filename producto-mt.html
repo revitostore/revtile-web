@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/muscletech.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/muscletech.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=30">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
@@ -68,12 +68,12 @@
       <!-- Galería -->
       <div class="pp-gal">
         <figure class="pp-gal__main">
-          <img id="ppMain" width="800" height="800" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" fetchpriority="high">
+          <picture><source id="ppMain-webp" srcset="assets/muscletech.webp" type="image/webp"><img id="ppMain" width="800" height="800" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" fetchpriority="high"></picture>
         </figure>
-        <div class="pp-gal__thumbs" role="group" aria-label="Fotos del producto">
-          <button class="pp-gal__thumb is-active" data-src="assets/muscletech.png" data-alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" aria-label="Ver foto 1: Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g"><img src="assets/muscletech.png" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/sello-muscletech.jpg" data-alt="Sello de autenticidad de MuscleTech con código QR verificable" aria-label="Ver foto 2: Sello de autenticidad de MuscleTech con código QR verificable"><img src="assets/galeria/sello-muscletech.jpg" alt="" loading="lazy"></button>
-          <button class="pp-gal__thumb" data-src="assets/galeria/tarro-muscletech.jpg" data-alt="Tarro de MuscleTech Platinum Creatine sellado de fábrica" aria-label="Ver foto 3: Tarro de MuscleTech Platinum Creatine sellado de fábrica"><img src="assets/galeria/tarro-muscletech.jpg" alt="" loading="lazy"></button>
+        <div class="pp-gal__thumbs" tabindex="0" role="group" aria-label="Fotos del producto">
+          <button class="pp-gal__thumb is-active" data-src="assets/muscletech.png" data-alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" aria-label="Ver foto 1: Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g"><picture><source srcset="assets/muscletech.webp" type="image/webp"><img src="assets/muscletech.png" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/sello-muscletech.jpg" data-alt="Sello de autenticidad de MuscleTech con código QR verificable" aria-label="Ver foto 2: Sello de autenticidad de MuscleTech con código QR verificable"><picture><source srcset="assets/galeria/sello-muscletech.webp" type="image/webp"><img src="assets/galeria/sello-muscletech.jpg" alt="" loading="lazy"></picture></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/tarro-muscletech.jpg" data-alt="Tarro de MuscleTech Platinum Creatine sellado de fábrica" aria-label="Ver foto 3: Tarro de MuscleTech Platinum Creatine sellado de fábrica"><picture><source srcset="assets/galeria/tarro-muscletech.webp" type="image/webp"><img src="assets/galeria/tarro-muscletech.jpg" alt="" loading="lazy"></picture></button>
         </div>
       </div>
 
@@ -259,7 +259,7 @@
       <p class="section-eyebrow reveal">También disponible</p>
       <div class="products__grid" style="margin-top:16px">
         <article class="product reveal">
-          <div class="product__photo"><img src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" loading="lazy"></div>
+          <div class="product__photo"><picture><source srcset="assets/on.webp" type="image/webp"><img src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" loading="lazy"></picture></div>
           <div class="product__info">
             <p class="product__brand">Optimum Nutrition</p>
             <h3 class="product__name"><a class="product__link" href="producto-on.html">Micronized Creatine Powder</a></h3>
@@ -270,7 +270,7 @@
           </div>
         </article>
         <article class="product reveal">
-          <div class="product__photo"><img src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy"></div>
+          <div class="product__photo"><picture><source srcset="assets/on120.webp" type="image/webp"><img src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy"></picture></div>
           <div class="product__info">
             <p class="product__brand">Optimum Nutrition</p>
             <h3 class="product__name"><a class="product__link" href="producto-on120.html">Micronized Creatine Powder</a></h3>

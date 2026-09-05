@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/on.png" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/on.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=30">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
@@ -114,7 +114,7 @@
       <a href="#faq" class="mobmenu__link"><i>04</i>Preguntas</a>
     </nav>
     <a class="btn btn--primary mobmenu__cta" href="pedido.html">Hacer mi pedido</a>
-    <img width="640" height="640" src="assets/mascota-chip.png" alt="" class="mobmenu__mascot" aria-hidden="true">
+    <picture><source srcset="assets/mascota-chip.webp" type="image/webp"><img width="640" height="640" src="assets/mascota-chip.png" alt="" class="mobmenu__mascot" aria-hidden="true"></picture>
   </div>
 
   <main id="contenido">
@@ -139,11 +139,11 @@
 
       <div class="hero__art">
         <a class="hero__jar" href="producto-on.html">
-          <img width="791" height="927" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" fetchpriority="high">
+          <picture><source srcset="assets/on.webp" type="image/webp"><img width="791" height="927" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" fetchpriority="high"></picture>
           <span>ON · 300 g</span>
         </a>
         <a class="hero__jar" href="producto-mt.html">
-          <img width="293" height="450" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g">
+          <picture><source srcset="assets/muscletech.webp" type="image/webp"><img width="293" height="450" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g"></picture>
           <span>MT · 400 g</span>
         </a>
       </div>
@@ -171,7 +171,7 @@
         <article class="product reveal">
           <span class="product__flag product__flag--quiet">Para empezar</span>
           <div class="product__photo">
-            <img width="791" height="927" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" loading="lazy">
+            <picture><source srcset="assets/on.webp" type="image/webp"><img width="791" height="927" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" loading="lazy"></picture>
           </div>
           <div class="product__info">
             <p class="product__brand">Optimum Nutrition</p>
@@ -196,7 +196,7 @@
         <article class="product reveal">
           <span class="product__flag product__flag--quiet">Equilibrio</span>
           <div class="product__photo">
-            <img width="293" height="450" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" loading="lazy">
+            <picture><source srcset="assets/muscletech.webp" type="image/webp"><img width="293" height="450" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" loading="lazy"></picture>
           </div>
           <div class="product__info">
             <p class="product__brand">MuscleTech</p>
@@ -221,7 +221,7 @@
         <article class="product reveal">
           <span class="product__flag">Mejor precio por servicio</span>
           <div class="product__photo">
-            <img width="524" height="885" src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy">
+            <picture><source srcset="assets/on120.webp" type="image/webp"><img width="524" height="885" src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy"></picture>
           </div>
           <div class="product__info">
             <p class="product__brand">Optimum Nutrition</p>
@@ -334,7 +334,7 @@
 
       <div class="gallery reveal">
         <p class="gallery__hint">Fotos y videos reales de nuestros tarros — desliza para ver más</p>
-        <div class="gallery__track">
+        <div class="gallery__track" tabindex="0" role="group" aria-label="Galería de fotos, desplázate con las flechas">
           <figure class="gallery__item gallery__item--video">
             <video src="assets/video/destapar.mp4" poster="assets/video/destapar.jpg" muted loop playsinline preload="none"></video>
             <button class="gallery__play" aria-label="Reproducir video: el sello interno intacto"><span aria-hidden="true">▶</span></button>
@@ -346,35 +346,35 @@
             <figcaption>Cómo se comporta la micronizada en agua</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/sello-muscletech.jpg" alt="Sello de autenticidad de MuscleTech con código QR verificable" loading="lazy">
+            <picture><source srcset="assets/galeria/sello-muscletech.webp" type="image/webp"><img src="assets/galeria/sello-muscletech.jpg" alt="Sello de autenticidad de MuscleTech con código QR verificable" loading="lazy"></picture>
             <figcaption>Sello de autenticidad MuscleTech con QR</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/sello-on.jpg" alt="Sello interno de fábrica de Optimum Nutrition intacto" loading="lazy">
+            <picture><source srcset="assets/galeria/sello-on.webp" type="image/webp"><img src="assets/galeria/sello-on.jpg" alt="Sello interno de fábrica de Optimum Nutrition intacto" loading="lazy"></picture>
             <figcaption>Sello interno de fábrica intacto</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/detalle-1.jpg" alt="Lote y fecha de vencimiento impresos por el fabricante en la base del tarro" loading="lazy">
+            <picture><source srcset="assets/galeria/detalle-1.webp" type="image/webp"><img src="assets/galeria/detalle-1.jpg" alt="Lote y fecha de vencimiento impresos por el fabricante en la base del tarro" loading="lazy"></picture>
             <figcaption>Lote y vencimiento impresos por el fabricante</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/on120-tarro.jpg" alt="Tarro de Optimum Nutrition Micronized Creatine de 600 g sellado" loading="lazy">
+            <picture><source srcset="assets/galeria/on120-tarro.webp" type="image/webp"><img src="assets/galeria/on120-tarro.jpg" alt="Tarro de Optimum Nutrition Micronized Creatine de 600 g sellado" loading="lazy"></picture>
             <figcaption>La ON 600 g — 120 servicios, sellada</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/on120-sello.jpg" alt="Sello interno de aluminio intacto del tarro de 600 g, Made in USA" loading="lazy">
+            <picture><source srcset="assets/galeria/on120-sello.webp" type="image/webp"><img src="assets/galeria/on120-sello.jpg" alt="Sello interno de aluminio intacto del tarro de 600 g, Made in USA" loading="lazy"></picture>
             <figcaption>ON 600 g: sello interno intacto</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/detalle-2.jpg" alt="Interior de la tapa del envase original, Made in USA" loading="lazy">
+            <picture><source srcset="assets/galeria/detalle-2.webp" type="image/webp"><img src="assets/galeria/detalle-2.jpg" alt="Interior de la tapa del envase original, Made in USA" loading="lazy"></picture>
             <figcaption>Envase original — Made in USA</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/polvo-on.jpg" alt="Polvo de creatina micronizada cayendo del scoop al tarro" loading="lazy">
+            <picture><source srcset="assets/galeria/polvo-on.webp" type="image/webp"><img src="assets/galeria/polvo-on.jpg" alt="Polvo de creatina micronizada cayendo del scoop al tarro" loading="lazy"></picture>
             <figcaption>Micronizada: polvo fino, blanco y sin grumos</figcaption>
           </figure>
           <figure class="gallery__item">
-            <img src="assets/galeria/tarro-muscletech.jpg" alt="Tarro de MuscleTech Platinum Creatine sellado" loading="lazy">
+            <picture><source srcset="assets/galeria/tarro-muscletech.webp" type="image/webp"><img src="assets/galeria/tarro-muscletech.jpg" alt="Tarro de MuscleTech Platinum Creatine sellado" loading="lazy"></picture>
             <figcaption>MuscleTech Platinum sellada de fábrica</figcaption>
           </figure>
         </div>
@@ -400,25 +400,25 @@
       <p class="section-lead reveal">Capturas reales de nuestros chats, con los datos personales cubiertos. Ningún testimonio está escrito por nosotros.</p>
 
       <div class="gallery reveal">
-        <div class="gallery__track">
+        <div class="gallery__track" tabindex="0" role="group" aria-label="Galería de fotos, desplázate con las flechas">
           <figure class="gallery__item gallery__item--chat">
-            <img src="assets/testimonios/testimonio-1.jpg" alt="Captura de chat: cliente recibiendo su MuscleTech con el repartidor" loading="lazy">
+            <picture><source srcset="assets/testimonios/testimonio-1.webp" type="image/webp"><img src="assets/testimonios/testimonio-1.jpg" alt="Captura de chat: cliente recibiendo su MuscleTech con el repartidor" loading="lazy"></picture>
             <figcaption>Entrega MuscleTech · con el repartidor en la puerta</figcaption>
           </figure>
           <figure class="gallery__item gallery__item--chat">
-            <img src="assets/testimonios/testimonio-2.jpg" alt="Captura de chat: cliente enviando video de su creatina al recibirla" loading="lazy">
+            <picture><source srcset="assets/testimonios/testimonio-2.webp" type="image/webp"><img src="assets/testimonios/testimonio-2.jpg" alt="Captura de chat: cliente enviando video de su creatina al recibirla" loading="lazy"></picture>
             <figcaption>Video del tarro recién entregado · ON 300 g</figcaption>
           </figure>
           <figure class="gallery__item gallery__item--chat">
-            <img src="assets/testimonios/testimonio-3.jpg" alt="Captura de chat: cliente con su MuscleTech en mano agradeciendo" loading="lazy">
+            <picture><source srcset="assets/testimonios/testimonio-3.webp" type="image/webp"><img src="assets/testimonios/testimonio-3.jpg" alt="Captura de chat: cliente con su MuscleTech en mano agradeciendo" loading="lazy"></picture>
             <figcaption>«Muchísimas gracias» · MuscleTech en mano</figcaption>
           </figure>
           <figure class="gallery__item gallery__item--chat">
-            <img src="assets/testimonios/testimonio-4.jpg" alt="Captura de chat: cliente agradeciendo tras recibir su creatina" loading="lazy">
+            <picture><source srcset="assets/testimonios/testimonio-4.webp" type="image/webp"><img src="assets/testimonios/testimonio-4.jpg" alt="Captura de chat: cliente agradeciendo tras recibir su creatina" loading="lazy"></picture>
             <figcaption>Entrega con asesoría incluida</figcaption>
           </figure>
           <figure class="gallery__item gallery__item--chat">
-            <img src="assets/testimonios/testimonio-5.jpg" alt="Captura de chat: cliente confirmando la entrega de su creatina con fotos del tarro" loading="lazy">
+            <picture><source srcset="assets/testimonios/testimonio-5.webp" type="image/webp"><img src="assets/testimonios/testimonio-5.jpg" alt="Captura de chat: cliente confirmando la entrega de su creatina con fotos del tarro" loading="lazy"></picture>
             <figcaption>«Ya lo recibí, todo súper» · ON recién entregada</figcaption>
           </figure>
         </div>
@@ -551,7 +551,7 @@
   <!-- ===== CIERRE ===== -->
   <section class="final">
     <div class="final__inner">
-      <img width="640" height="640" src="assets/mascota-chip.png" alt="" class="final__mascot reveal" aria-hidden="true">
+      <picture><source srcset="assets/mascota-chip.webp" type="image/webp"><img width="640" height="640" src="assets/mascota-chip.png" alt="" class="final__mascot reveal" aria-hidden="true"></picture>
       <h2 class="final__title reveal">Compra. Verifica.<br><span class="neon-text">Entrena</span><span class="accent">.</span></h2>
       <a class="btn btn--primary btn--big reveal" href="pedido.html">Hacer mi pedido <span class="btn__arrow" aria-hidden="true">→</span></a>
       <p class="final__note reveal">Envío gratis en toda Colombia · Respondemos por WhatsApp en minutos</p>
@@ -632,8 +632,8 @@
   <div class="buybar" id="buyBar" aria-hidden="true">
     <div class="buybar__info">
       <div class="buybar__thumbs">
-        <img width="791" height="927" src="assets/on.png" alt="" loading="lazy">
-        <img width="293" height="450" src="assets/muscletech.png" alt="" loading="lazy">
+        <picture><source srcset="assets/on.webp" type="image/webp"><img width="791" height="927" src="assets/on.png" alt="" loading="lazy"></picture>
+        <picture><source srcset="assets/muscletech.webp" type="image/webp"><img width="293" height="450" src="assets/muscletech.png" alt="" loading="lazy"></picture>
       </div>
       <div class="buybar__text">
         <b>Desde $120.000</b>

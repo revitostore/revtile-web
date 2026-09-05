@@ -213,7 +213,7 @@ function ficha(p) {
         <figure class="pp-gal__main">
           <img id="ppMain" width="800" height="800" src="${c.galeria[0][0]}" alt="${c.galeria[0][1]}" fetchpriority="high">
         </figure>
-        <div class="pp-gal__thumbs" role="group" aria-label="Fotos del producto">
+        <div class="pp-gal__thumbs" tabindex="0" role="group" aria-label="Fotos del producto">
 ${c.galeria.map(([src, alt], i) => `          <button class="pp-gal__thumb${i === 0 ? ' is-active' : ''}" data-src="${src}" data-alt="${alt}" aria-label="Ver foto ${i + 1}: ${alt}"><img src="${src}" alt="" loading="lazy"></button>`).join('\n')}
         </div>
       </div>
