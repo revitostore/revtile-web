@@ -1352,7 +1352,11 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .benefit { padding-right: 0; }
   .gallery__item { flex-basis: 78vw; }
   .social-proof { gap: var(--s3); }
+  .buybar { padding: 10px var(--gutter); gap: 10px; }
+  .buybar__text b { white-space: nowrap; font-size: 14px; }
   .buybar__text span { display: none; }
+  .buybar__thumbs img + img { display: none; }
+  .buybar__btn { padding: 0 16px; font-size: 14px; }
   .footer__grid { grid-template-columns: 1fr; gap: var(--s3); }
 }
 
@@ -2371,3 +2375,41 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .ras__buscar { flex-direction: column; }
   .co__cupon { flex-direction: column; }
 }
+
+/* =====================================================================
+   Ajustes finales — armoniza los bloques heredados con el sistema nuevo.
+   Va al final a propósito: aquí gana el sistema, no el CSS antiguo.
+   ===================================================================== */
+.aprende { padding-block: var(--section); padding-inline: 0; }
+.aprende__inner { max-width: var(--maxw); padding-inline: var(--gutter); }
+.aprende__grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3); }
+.aprende__card {
+  border-radius: var(--radius);
+  border-color: var(--line);
+  padding: var(--s3);
+  transition: border-color var(--t), transform var(--t);
+}
+.aprende__card:hover { transform: translateY(-3px); border-color: var(--line-2); box-shadow: none; }
+.aprende__tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; font-weight: 400;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.aprende__card h3 { font-family: 'Archivo', sans-serif; font-size: 18px; }
+.aprende__card p { font-size: 14.5px; }
+.aprende__leer { color: var(--accent); font-weight: 600; font-size: 14px; }
+
+/* guías y páginas legales heredadas */
+.guia .legal__block h2 { font-size: 21px; }
+.guia__figura figcaption { font-size: 13px; color: var(--ink-dim); }
+.guia__tabla { font-size: 14.5px; }
+.guia__cta, .guia__mas { border-radius: var(--radius); border-color: var(--line); }
+
+/* checkout, rastreo y panel: mismo radio y sin brillos heredados */
+.co__card, .co__prod, .co__metodo, .co__field input, .co__field select,
+.ras__paso, .adm__stat, .adm__login { border-radius: var(--radius-sm) !important; }
+.co__card, .adm__stat, .ras__paso { box-shadow: none !important; }
+
+/* la barra de pago del checkout no debe taparse con la de la portada */
+body.buybar-on .co__bar { bottom: 0; }

@@ -1,298 +1,173 @@
-gsap.registerPlugin(ScrollTrigger);
+/* =====================================================================
+   REVTILE — comportamiento de la portada
+   Sin librerías: todo lo que hacía GSAP aquí lo hacen IntersectionObserver
+   y transiciones CSS. Si este archivo no carga, la página se lee igual.
+   ===================================================================== */
+(function () {
+  'use strict';
 
-/* ===== Entrada del hero: letras gigantes + tarro ===== */
-const heroIn = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $  = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
-heroIn
-  .from('.nav', { y: -60, opacity: 0, duration: 0.7 })
-  .from('.hero__giant span', {
-    yPercent: 70,
-    opacity: 0,
-    duration: 0.9,
-    stagger: 0.07,
-    ease: 'power4.out',
-  }, '-=0.3')
-  .from('.hero__meta', { opacity: 0, duration: 0.5 }, '-=0.5')
-  .from('.hero__baseline', { scaleX: 0, duration: 0.7, ease: 'power2.inOut' }, '-=0.4')
-  .from('.duo__item--on', { x: -50, y: 34, opacity: 0, duration: 1, ease: 'power4.out' }, '-=0.4')
-  .from('.duo__item--mt', { x: 50, y: 34, opacity: 0, duration: 1, ease: 'power4.out' }, '-=0.85')
-  .from('.duo__seal', { scale: 0.6, rotate: -40, opacity: 0, duration: 0.9, ease: 'power3.out' }, '-=0.7')
-  .from('.hero__sub', { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
-  .from('.hero__actions', { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
-  .from('.hero__badges', { opacity: 0, duration: 0.6 }, '-=0.4');
+  /* ── Entrada de secciones ──────────────────────────────────────── */
+  var reveals = $$('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    reveals.forEach(function (el) { el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    reveals.forEach(function (el) { io.observe(el); });
+    /* red de seguridad: nada se queda invisible pase lo que pase */
+    setTimeout(function () { reveals.forEach(function (el) { el.classList.add('is-in'); }); }, 4000);
+  }
 
-/* ===== Flotación sutil de los dos tarros (desincronizada) ===== */
-gsap.to('.duo__item--on img', {
-  y: -10,
-  duration: 2.7,
-  ease: 'sine.inOut',
-  yoyo: true,
-  repeat: -1,
-});
+  /* ── Nav: línea inferior al despegarse del borde ───────────────── */
+  var nav = $('#nav');
+  if (nav) {
+    var onScroll = function () { nav.classList.toggle('is-stuck', window.scrollY > 8); };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
 
-gsap.to('.duo__item--mt img', {
-  y: -12,
-  duration: 3.2,
-  ease: 'sine.inOut',
-  yoyo: true,
-  repeat: -1,
-  delay: 0.5,
-});
+  /* ── Menú móvil ────────────────────────────────────────────────── */
+  var burger = $('#navBurger');
+  var mob = $('#mobMenu');
+  if (burger && mob) {
+    var setMenu = function (open) {
+      burger.classList.toggle('is-open', open);
+      mob.classList.toggle('is-open', open);
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      mob.setAttribute('aria-hidden', String(!open));
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) { var f = mob.querySelector('a'); if (f) f.focus(); }
+    };
+    burger.addEventListener('click', function () { setMenu(!mob.classList.contains('is-open')); });
+    $$('a', mob).forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mob.classList.contains('is-open')) { setMenu(false); burger.focus(); }
+    });
+  }
 
-/* ===== Letras interactivas: se encienden al tocarlas ===== */
-document.querySelectorAll('.hero__giant span').forEach((letter) => {
-  if (letter.classList.contains('neon')) return;
-  const light = () => {
-    letter.classList.add('lit');
-    clearTimeout(letter._litTimer);
-    letter._litTimer = setTimeout(() => letter.classList.remove('lit'), 650);
-  };
-  letter.addEventListener('mouseenter', light);
-  letter.addEventListener('touchstart', light, { passive: true });
-});
-
-/* ===== Al hacer scroll: los tarros se acercan suavemente (solo en pantallas grandes,
-   en móvil el espacio es justo y terminaban montándose sobre el texto) ===== */
-gsap.matchMedia().add('(min-width: 900px)', () => {
-  gsap.to('.hero__duo', {
-    scale: 1.06,
-    yPercent: 6,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '.hero',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    },
+  /* ── FAQ: solo una abierta a la vez ────────────────────────────── */
+  $$('.faq__item').forEach(function (item) {
+    item.addEventListener('toggle', function () {
+      if (!item.open) return;
+      $$('.faq__item[open]').forEach(function (o) { if (o !== item) o.open = false; });
+    });
   });
-});
 
-/* ===== Movimiento suave de los blobs de color ===== */
-gsap.to('.blob--red', {
-  x: -60, y: 70,
-  duration: 9,
-  ease: 'sine.inOut',
-  yoyo: true,
-  repeat: -1,
-});
+  /* ── Galería: los videos arrancan cuando el visitante lo pide ──── */
+  $$('.gallery__item--video').forEach(function (fig) {
+    var video = $('video', fig);
+    var play = $('.gallery__play', fig);
+    if (!video || !play) return;
+    play.addEventListener('click', function () {
+      fig.classList.add('is-playing');
+      video.setAttribute('controls', '');
+      video.play();
+    });
+  });
 
-gsap.to('.blob--teal', {
-  x: 70, y: -60,
-  duration: 11,
-  ease: 'sine.inOut',
-  yoyo: true,
-  repeat: -1,
-});
+  /* ── Barra de compra y botón de WhatsApp ───────────────────────── */
+  var buyBar = $('#buyBar');
+  var waFloat = $('#waFloat');
+  var productos = $('#productos');
+  var cierre = $('.final');
 
-/* ===== Reveal genérico de secciones ===== */
-document.querySelectorAll('.reveal').forEach((el) => {
-  gsap.fromTo(
-    el,
-    { y: 50, opacity: 0 },
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.9,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-        toggleActions: 'play none none none',
-      },
+  if (productos && 'IntersectionObserver' in window) {
+    var visible = false;
+    var setBar = function (on) {
+      if (on === visible) return;
+      visible = on;
+      if (buyBar) {
+        buyBar.classList.toggle('is-visible', on);
+        buyBar.setAttribute('aria-hidden', String(!on));
+        var b = $('.buybar__btn', buyBar);
+        if (b) b.tabIndex = on ? 0 : -1;
+      }
+      if (waFloat) waFloat.classList.toggle('is-on', on);
+      document.body.classList.toggle('buybar-on', on);
+    };
+    /* visible entre el catálogo y el cierre */
+    var seenProducts = false, atEnd = false;
+    var sync = function () { setBar(seenProducts && !atEnd); };
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { seenProducts = e.boundingClientRect.top < 0 || e.isIntersecting; sync(); });
+    }, { rootMargin: '-40% 0px 0px 0px' }).observe(productos);
+    if (cierre) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { atEnd = e.isIntersecting; sync(); });
+      }, { rootMargin: '0px 0px -20% 0px' }).observe(cierre);
     }
-  );
-});
-
-/* ===== Precios: tachado animado + pop del precio de oferta ===== */
-document.querySelectorAll('.product').forEach((card) => {
-  ScrollTrigger.create({
-    trigger: card,
-    start: 'top 75%',
-    once: true,
-    onEnter: () => {
-      card.classList.add('struck');
-      gsap.fromTo(
-        card.querySelector('.product__price'),
-        { scale: 0.6, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.7, delay: 0.55, ease: 'back.out(2)' }
-      );
-      gsap.fromTo(
-        card.querySelector('.product__save'),
-        { scale: 0.5, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.6, delay: 0.9, ease: 'back.out(2)' }
-      );
-    },
-  });
-});
-
-/* ===== Botón flotante de WhatsApp: aparece tras salir del hero ===== */
-const waFloat = document.getElementById('waFloat');
-
-ScrollTrigger.create({
-  trigger: '#productos',
-  start: 'top 70%',
-  onEnter: () => waFloat.classList.add('is-on'),
-  onLeaveBack: () => waFloat.classList.remove('is-on'),
-});
-
-/* ===== Tarjetas de producto: toda la tarjeta lleva a la ficha ===== */
-document.querySelectorAll('.product').forEach((card) => {
-  card.addEventListener('click', (e) => {
-    if (e.target.closest('a')) return; // respeta el botón de WhatsApp y demás enlaces
-    const ficha = card.querySelector('.product__more');
-    if (ficha) window.location.href = ficha.getAttribute('href');
-  });
-});
-
-
-/* ===== Barra de compra fija: visible mientras navegas el catálogo ===== */
-const buyBar = document.getElementById('buyBar');
-
-function setBuyBar(visible) {
-  buyBar.classList.toggle('is-visible', visible);
-  buyBar.setAttribute('aria-hidden', !visible);
-  document.body.classList.toggle('buybar-on', visible);
-}
-
-ScrollTrigger.create({
-  trigger: '#productos',
-  start: 'top 55%',
-  endTrigger: '.final',
-  end: 'top 80%',
-  onEnter: () => setBuyBar(true),
-  onLeave: () => setBuyBar(false),
-  onEnterBack: () => setBuyBar(true),
-  onLeaveBack: () => setBuyBar(false),
-});
-
-/* ===== Menú móvil ===== */
-const burger = document.getElementById('navBurger');
-const mobMenu = document.getElementById('mobMenu');
-
-function toggleMenu(open) {
-  burger.classList.toggle('is-open', open);
-  mobMenu.classList.toggle('is-open', open);
-  burger.setAttribute('aria-expanded', open);
-  mobMenu.setAttribute('aria-hidden', !open);
-  document.body.style.overflow = open ? 'hidden' : '';
-
-  if (open) {
-    gsap.fromTo('.mobmenu__link',
-      { y: 34, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out', delay: 0.08 }
-    );
-    gsap.fromTo('.mobmenu__cta',
-      { y: 24, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, delay: 0.38, ease: 'power3.out' }
-    );
-  }
-}
-
-burger.addEventListener('click', () => toggleMenu(!mobMenu.classList.contains('is-open')));
-
-mobMenu.querySelectorAll('a').forEach((link) => {
-  link.addEventListener('click', () => toggleMenu(false));
-});
-
-/* ===== FAQ: solo un item abierto a la vez ===== */
-document.querySelectorAll('.faq__item').forEach((item) => {
-  item.addEventListener('toggle', () => {
-    if (!item.open) return;
-    document.querySelectorAll('.faq__item[open]').forEach((other) => {
-      if (other !== item) other.open = false;
-    });
-  });
-});
-
-/* ===== Calculadora: ¿cuánto te dura un tarro? ===== */
-const calcBox = document.querySelector('.calc__box');
-if (calcBox) {
-  const fmt = (n) => '$' + n.toLocaleString('es-CO');
-  const state = { gramos: 300, precio: 120000, dosis: 5 };
-
-  function renderCalc() {
-    const dias = Math.floor(state.gramos / state.dosis);
-    const meses = (dias / 30).toFixed(1).replace('.0', '');
-    document.getElementById('calcDias').textContent = dias;
-    document.getElementById('calcMeses').textContent = meses;
-    document.getElementById('calcDia').textContent = state.precio > 0 ? fmt(Math.round(state.precio / dias)) : '—';
-    document.getElementById('calcNote').innerHTML = state.precio > 0
-      ? `Tomando <b>${state.dosis} g diarios</b>, este tarro te acompaña <b>${dias} días seguidos</b> — menos de lo que cuesta una gaseosa al día.`
-      : `Tomando <b>${state.dosis} g diarios</b> te dura <b>${dias} días</b>. El precio de lanzamiento está por confirmar — aparta la tuya y te avisamos primero.`;
-    gsap.fromTo('.calc__stat b', { scale: 1.15 }, { scale: 1, duration: 0.35, ease: 'power2.out' });
   }
 
-  calcBox.querySelectorAll('.calc__tab').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      calcBox.querySelectorAll('.calc__tab').forEach((t) => t.classList.remove('is-active'));
-      tab.classList.add('is-active');
-      state.gramos = parseInt(tab.dataset.servGramos, 10);
-      state.precio = parseInt(tab.dataset.precio, 10);
-      renderCalc();
-    });
-  });
+  /* ── Calculadora: cuánto dura y cuánto cuesta el día ───────────── */
+  var calc = $('.calc__box');
+  if (calc) {
+    var fmt = function (n) { return '$' + n.toLocaleString('es-CO'); };
+    var st = { gramos: 300, precio: 120000, dosis: 5 };
 
-  calcBox.querySelectorAll('.calc__dosebtn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      calcBox.querySelectorAll('.calc__dosebtn').forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      state.dosis = parseInt(btn.dataset.g, 10);
-      renderCalc();
-    });
-  });
+    var render = function () {
+      var dias = Math.floor(st.gramos / st.dosis);
+      var meses = (dias / 30).toFixed(1).replace('.0', '');
+      $('#calcDias').textContent = dias;
+      $('#calcMeses').textContent = meses;
+      $('#calcDia').textContent = fmt(Math.round(st.precio / dias));
+      $('#calcNote').innerHTML = 'Tomando <b>' + st.dosis + ' g diarios</b>, este tarro te acompaña <b>' +
+        dias + ' días seguidos</b> por <b>' + fmt(Math.round(st.precio / dias)) + ' al día</b>.';
+    };
 
-  renderCalc();
-}
-
-/* ===== Iguana interactiva: tócala y levanta la pesa ===== */
-const mascotaFinal = document.getElementById('mascotaFinal');
-if (mascotaFinal) {
-  gsap.to(mascotaFinal, {
-    rotate: 3,
-    duration: 2.2,
-    ease: 'sine.inOut',
-    yoyo: true,
-    repeat: -1,
-  });
-  mascotaFinal.addEventListener('click', () => {
-    gsap.timeline()
-      .to(mascotaFinal, { y: -26, scaleY: 1.06, scaleX: 0.96, duration: 0.28, ease: 'power2.out' })
-      .to(mascotaFinal, { y: 0, scaleY: 0.94, scaleX: 1.05, duration: 0.22, ease: 'power2.in' })
-      .to(mascotaFinal, { scaleY: 1, scaleX: 1, duration: 0.35, ease: 'elastic.out(1.2, 0.5)' });
-  });
-}
-
-/* ===== Escritorio: brillo que sigue el cursor + botones magnéticos =====
-   Se inicia al cargar o al primer movimiento de mouse (por si el ancho se reporta tarde) */
-let fxEscritorioListo = false;
-
-function initFxEscritorio(e) {
-  if (fxEscritorioListo) return;
-  if (e && e.pointerType && e.pointerType !== 'mouse') return;
-  if (!window.matchMedia('(hover: hover) and (min-width: 900px)').matches) return;
-  fxEscritorioListo = true;
-
-  const glow = document.createElement('div');
-  glow.className = 'cursor-glow';
-  document.body.appendChild(glow);
-  window.addEventListener('pointermove', (e) => {
-    gsap.to(glow, { x: e.clientX, y: e.clientY, duration: 0.55, ease: 'power3.out' });
-  });
-
-  document.querySelectorAll('.btn, .nav__cta').forEach((b) => {
-    b.addEventListener('pointermove', (e) => {
-      const r = b.getBoundingClientRect();
-      gsap.to(b, {
-        x: (e.clientX - r.left - r.width / 2) * 0.18,
-        y: (e.clientY - r.top - r.height / 2) * 0.35,
-        duration: 0.3,
+    $$('.calc__tab', calc).forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        $$('.calc__tab', calc).forEach(function (t) {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+        st.gramos = parseInt(tab.dataset.servGramos, 10);
+        st.precio = parseInt(tab.dataset.precio, 10);
+        render();
       });
     });
-    b.addEventListener('pointerleave', () => {
-      gsap.to(b, { x: 0, y: 0, duration: 0.45, ease: 'elastic.out(1, 0.45)' });
-    });
-  });
-}
 
-initFxEscritorio();
-window.addEventListener('pointermove', initFxEscritorio);
+    $$('.calc__dosebtn', calc).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        $$('.calc__dosebtn', calc).forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+        st.dosis = parseInt(btn.dataset.g, 10);
+        render();
+      });
+    });
+
+    render();
+  }
+
+  /* ── Prueba social: números reales o nada ──────────────────────── */
+  var proof = document.getElementById('socialProof');
+  if (proof && 'fetch' in window) {
+    fetch('/api/social')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.ok || !d.entregados_total) return;   // sin datos, no se muestra
+        var fecha = d.generado_en;
+        $$('[data-social]', proof).forEach(function (el) {
+          var k = el.getAttribute('data-social');
+          el.textContent = k === 'generado_en' ? fecha : Number(d[k] || 0).toLocaleString('es-CO');
+        });
+        proof.hidden = false;
+      })
+      .catch(function () { /* silencio: preferimos no decir nada */ });
+  }
+})();
