@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REVTILE VERIFY — registro de inspección</title>
+  <meta name="description" content="Consulta el registro de inspección de tu tarro: sello, lote, fecha de vencimiento y fotografías tomadas por REVTILE antes del despacho.">
+  <meta name="theme-color" content="#0C0D0F">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://revtile.com.co/verify.html">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=30">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="js/analytics.js?v=2" defer></script>
+</head>
+<body class="pp">
+
+  <a class="skip-link" href="#verify">Saltar al contenido</a>
+
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
+      <a class="pp-back" href="index.html">← Volver a la tienda</a>
+      <a class="nav__cta" href="pedido.html">Pedir</a>
+    </div>
+  </header>
+
+  <main class="verify" id="verify">
+    <div class="verify__inner">
+
+      <p class="section-eyebrow" style="justify-content:center">REVTILE VERIFY</p>
+      <h1 class="section-title" style="text-align:center">Registro de inspección<span class="accent">.</span></h1>
+      <p class="section-lead" style="margin-inline:auto;text-align:center">
+        Cada tarro que despachamos queda registrado con su sello, su lote y su fecha.
+        Escribe el código de tu sticker y verás exactamente lo que documentamos del tuyo.
+      </p>
+
+      <form class="verify__form" id="verifyForm" method="get" action="verify.html" style="margin-bottom:40px">
+        <label class="sr-only" for="verifyCodigo">Código de tu registro</label>
+        <input id="verifyCodigo" name="c" type="text" inputmode="latin" autocomplete="off"
+               spellcheck="false" placeholder="RV-XXXXX-XXXX" maxlength="16" required>
+        <button class="btn btn--primary" type="submit">Verificar</button>
+      </form>
+
+      <p class="verify__msg" id="verifyMsg" role="status" hidden></p>
+
+      <!-- Registro consultado -->
+      <div id="verifyResultado" hidden></div>
+
+      <!-- Ejemplo: se muestra solo cuando no se ha consultado ningún código -->
+      <div id="verifyEjemplo">
+        <p class="verify__label-ejemplo">Ejemplo — así se ve el registro de un tarro</p>
+        <article class="verify__card is-ejemplo">
+          <div class="verify__head">
+            <span class="verify__state">Registro de ejemplo</span>
+            <p class="verify__code">RV-EJEMP-L000</p>
+            <p style="color:var(--ink-dim);font-size:14px">Optimum Nutrition — Micronized Creatine Powder · 600 g · 120 servicios</p>
+          </div>
+          <div class="verify__rows">
+            <div class="verify__row"><span class="verify__k">Sello de fábrica</span><span class="verify__v ok">Íntegro al inspeccionar</span></div>
+            <div class="verify__row"><span class="verify__k">Lote impreso</span><span class="verify__v">ON2•••••</span></div>
+            <div class="verify__row"><span class="verify__k">Vence</span><span class="verify__v">11/2028</span></div>
+            <div class="verify__row"><span class="verify__k">Inspeccionado</span><span class="verify__v">02 sep 2026</span></div>
+            <div class="verify__row"><span class="verify__k">Despachado</span><span class="verify__v">02 sep 2026</span></div>
+            <div class="verify__row"><span class="verify__k">Fotografías</span><span class="verify__v">4 imágenes</span></div>
+          </div>
+          <div class="verify__scope">
+            <b>Qué significa este registro</b>
+            REVTILE fotografió y anotó el estado observable de este tarro antes de despacharlo: el sello, el número de lote, la fecha de vencimiento y el estado del envase.
+            <br><br>
+            <b>Qué no significa</b>
+            REVTILE no es un laboratorio ni una entidad certificadora. Una inspección visual no reemplaza la verificación con el fabricante ni un análisis de laboratorio. Por eso publicamos el lote y la fecha: para que la verificación la puedas hacer tú directamente con la marca.
+          </div>
+        </article>
+      </div>
+
+      <!-- Cómo funciona -->
+      <section class="pp-section" style="padding-bottom:0">
+        <p class="section-eyebrow"><b>01</b> Cómo obtienes tu código</p>
+        <h2 style="font-size:clamp(22px,3.2vw,30px);margin-bottom:24px">Viene pegado en tu tarro<span class="accent">.</span></h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step__num">01</span>
+            <h3 class="step__title">Preparamos tu pedido</h3>
+            <p class="step__text">Antes de empacar, fotografiamos el sello, el lote y la fecha de vencimiento de tu tarro y los anotamos en su registro.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">02</span>
+            <h3 class="step__title">El código va en el envío</h3>
+            <p class="step__text">Cada tarro lleva su propio sticker con el código y un QR. Si pediste dos tarros, cada uno tiene el suyo, porque cada uno puede tener un lote distinto.</p>
+          </li>
+          <li class="step">
+            <span class="step__num">03</span>
+            <h3 class="step__title">Lo consultas cuando quieras</h3>
+            <p class="step__text">El registro no caduca. Puedes volver a abrirlo meses después, y desde ahí escribirnos si necesitas la garantía.</p>
+          </li>
+        </ol>
+      </section>
+
+      <p class="disclaimer" style="margin-top:48px;margin-inline:auto">
+        ¿No encuentras tu código, o llegó sin sticker? Escríbenos por
+        <a class="link" href="https://wa.me/573214569600?text=Hola%20REVTILE%2C%20quiero%20el%20registro%20VERIFY%20de%20mi%20pedido" target="_blank" rel="noopener">WhatsApp</a>
+        con tu número de pedido y te lo enviamos.
+      </p>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <p class="footer__logo">REVTILE<span class="nav__dot">.</span></p>
+        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp y envío gratis en toda Colombia.</p>
+        <div class="footer__social-row">
+          <a class="social__link" href="https://www.instagram.com/revtile.store" target="_blank" rel="noopener" aria-label="Instagram de REVTILE">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a class="social__link" href="https://www.tiktok.com/@revtilestore" target="_blank" rel="noopener" aria-label="TikTok de REVTILE">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.7 2h-3.2v13.6a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.5a6.2 6.2 0 0 0-.9-.1 6.2 6.2 0 1 0 6.2 6.2V8.6a7.6 7.6 0 0 0 4.4 1.4V6.8A4.5 4.5 0 0 1 16.7 2z"/></svg>
+          </a>
+        </div>
+      </div>
+      <nav class="footer__col" aria-label="Tienda">
+        <p class="footer__title">Tienda</p>
+        <a href="index.html#productos">Catálogo</a>
+        <a href="pedido.html">Hacer mi pedido</a>
+        <a href="rastreo.html">Rastrear mi pedido</a>
+      </nav>
+      <nav class="footer__col" aria-label="Ayuda">
+        <p class="footer__title">Ayuda</p>
+        <a href="index.html#faq">Preguntas frecuentes</a>
+        <a href="guia-creatina-original.html">¿Es original? Guía con fotos</a>
+        <a href="terminos.html">Términos, envíos y privacidad</a>
+      </nav>
+      <div class="footer__col" aria-label="Contacto">
+        <p class="footer__title">Contacto</p>
+        <a href="https://wa.me/573214569600" target="_blank" rel="noopener">WhatsApp +57 321 456 9600</a>
+        <a href="mailto:contacto@revtile.com.co">contacto@revtile.com.co</a>
+        <span>Bogotá · Colombia</span>
+      </div>
+    </div>
+    <div class="footer__base">
+      <p>© 2026 REVTILE · Creatina original, sellada y verificable</p>
+      <p class="footer__note">REVTILE documenta el estado observable de cada producto antes del despacho; no es un laboratorio ni una entidad certificadora.</p>
+    </div>
+  </footer>
+
+  <script src="js/verify.js?v=1" defer></script>
+</body>
+</html>

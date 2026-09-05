@@ -47,6 +47,7 @@ async function abrirPanel() {
   $('admFecha').textContent = `${DIAS_L[hoy.getDay()]} ${hoy.getDate()} de ${MESES_L[hoy.getMonth()]} · vamos con toda 🦎`;
   await cargar();
   await cargarCupones();
+  await cargarVerify();
 }
 
 async function entrar(k) {
@@ -126,6 +127,7 @@ function tarjetaPedido(p) {
       </select>
       <input type="text" data-campo="nota" placeholder="Nota interna" value="${p.nota || ''}">
       <button type="button" class="btn btn--primary adm__guardar">Guardar</button>
+      <button type="button" class="btn btn--ghost" data-registrar="${p.id}" data-sku="${(items[0] && items[0].k) || 'on'}">Registrar unidad</button>
     </div>`;
 
   el.querySelector('.adm__guardar').addEventListener('click', async (ev) => {
@@ -231,3 +233,218 @@ $('cuCrear').addEventListener('click', async () => {
   if (guardada && await entrar(guardada) === true) return;
   $('admLogin').hidden = false;
 })();
+
+/* =====================================================================
+   REVTILE VERIFY — creación de registros desde el centro de mando
+   Un registro por unidad física. 30 segundos por tarro.
+   ===================================================================== */
+
+const SKUS_VERIFY = {
+  on:    'ON Micronized Creatine 300 g',
+  mt:    'MT Platinum Creatine 400 g',
+  on120: 'ON Micronized Creatine 600 g',
+};
+
+let ultimoLote = localStorage.getItem('revtile_ultimo_lote') || '';
+let ultimoVence = localStorage.getItem('revtile_ultimo_vence') || '';
+let registros = [];
+
+function urlVerify(codigo) {
+  return location.origin + '/verify.html?c=' + codigo;
+}
+
+/* El QR se dibuja en el panel (detrás de Cloudflare Access), no en el sitio
+   público: así la tienda no carga ninguna librería extra. */
+function qrDataUrl(texto) {
+  if (!window.QRCode) return Promise.resolve(null);
+  return window.QRCode.toDataURL(texto, { margin: 1, width: 320, errorCorrectionLevel: 'M' })
+    .catch(() => null);
+}
+
+function prefill(pedidoId, sku) {
+  $('vfPedido').value = pedidoId || '';
+  if (sku) $('vfSku').value = sku;
+  if (!$('vfLote').value) $('vfLote').value = ultimoLote;
+  if (!$('vfVence').value) $('vfVence').value = ultimoVence;
+  $('vfPedido').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  $('vfLote').focus();
+}
+
+async function crearRegistro() {
+  const btn = $('vfCrear');
+  const cuerpo = {
+    pedido_id: $('vfPedido').value.trim(),
+    sku: $('vfSku').value,
+    lote: $('vfLote').value.trim(),
+    vence: $('vfVence').value.trim(),
+    sello: $('vfSello').value,
+    sello_nota: $('vfSelloNota').value.trim(),
+    nota_interna: $('vfNota').value.trim(),
+  };
+  btn.disabled = true;
+  btn.textContent = 'Creando…';
+  try {
+    const d = await api('verify', { method: 'POST', body: JSON.stringify(cuerpo) });
+
+    /* el lote suele repetirse dentro de la misma caja: se recuerda */
+    ultimoLote = cuerpo.lote;
+    ultimoVence = cuerpo.vence;
+    localStorage.setItem('revtile_ultimo_lote', ultimoLote);
+    localStorage.setItem('revtile_ultimo_vence', ultimoVence);
+
+    await mostrarNuevo(d.codigo, d.fotos_activas);
+    $('vfSelloNota').value = '';
+    $('vfNota').value = '';
+    cargarVerify();
+  } catch (e) {
+    mostrarError(e.message === 'CLAVE' ? 'Sesión caducada' : 'No se pudo crear: ' + e.message);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Crear registro';
+}
+
+async function mostrarNuevo(codigo, fotosActivas) {
+  const caja = $('vfNuevo');
+  const url = urlVerify(codigo);
+  const qr = await qrDataUrl(url);
+  caja.innerHTML = `
+    ${qr ? `<img src="${qr}" alt="Código QR del registro ${codigo}">` : ''}
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+      <span class="codigo">${codigo}</span>
+      <span style="font-size:13px;color:var(--ink-dim);word-break:break-all">${url}</span>
+      <div class="adm__verify-acciones">
+        <button type="button" class="btn btn--ghost" data-copiar="${url}">Copiar enlace</button>
+        <a class="btn btn--ghost" href="${url}" target="_blank" rel="noopener">Abrir</a>
+        <button type="button" class="btn btn--ghost" data-sticker="${codigo}">Imprimir sticker</button>
+      </div>
+      ${fotosActivas
+        ? `<label class="btn btn--primary" style="cursor:pointer">
+             Subir fotos (hasta 4)
+             <input type="file" accept="image/jpeg,image/png,image/webp" multiple hidden data-fotos="${codigo}">
+           </label>
+           <span id="vfFotoMsg" style="font-size:13px;color:var(--ink-dim)"></span>`
+        : `<span style="font-size:13px;color:var(--ink-dim)">Fotos desactivadas: falta crear el bucket R2 y atarlo como <b>VERIFY_FOTOS</b>. El registro funciona igual sin ellas.</span>`}
+    </div>`;
+  caja.hidden = false;
+  caja.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function subirFotos(codigo, archivos) {
+  const msg = $('vfFotoMsg');
+  let n = 0;
+  for (const archivo of archivos) {
+    if (msg) msg.textContent = `Subiendo ${n + 1} de ${archivos.length}…`;
+    const fd = new FormData();
+    fd.append('codigo', codigo);
+    fd.append('foto', archivo);
+    try {
+      const r = await fetch('/api/admin/verify/foto', {
+        method: 'POST',
+        headers: clave ? { 'x-admin-key': clave } : {},
+        body: fd,
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!d.ok) throw new Error(d.error || 'error');
+      n++;
+    } catch (e) {
+      if (msg) msg.textContent = 'No se pudo subir una foto: ' + e.message;
+      return;
+    }
+  }
+  if (msg) msg.textContent = `${n} foto${n === 1 ? '' : 's'} subida${n === 1 ? '' : 's'} ✓`;
+  cargarVerify();
+}
+
+async function imprimirStickers(codigos) {
+  const hoja = $('vfStickers');
+  const partes = [];
+  for (const c of codigos) {
+    const url = urlVerify(c);
+    const qr = await qrDataUrl(url);
+    partes.push(`
+      <div class="adm__sticker">
+        <span class="marca">REVTILE VERIFY</span>
+        ${qr ? `<img src="${qr}" alt="">` : ''}
+        <span class="cod">${c}</span>
+        <span class="url">revtile.com.co/verify</span>
+      </div>`);
+  }
+  hoja.innerHTML = partes.join('');
+  document.body.classList.add('imprimiendo');
+  window.print();
+  setTimeout(() => document.body.classList.remove('imprimiendo'), 500);
+}
+
+async function anularRegistro(codigo) {
+  const motivo = prompt('¿Por qué se anula ' + codigo + '? (queda visible en el registro público)');
+  if (!motivo) return;
+  try {
+    await api('verify/anular', { method: 'POST', body: JSON.stringify({ codigo, motivo }) });
+    cargarVerify();
+  } catch (e) { mostrarError(e.message); }
+}
+
+async function cargarVerify() {
+  const cont = $('admVerify');
+  if (!cont) return;
+  try {
+    const d = await api('verify');
+    registros = d.registros;
+    if (!registros.length) {
+      cont.innerHTML = '<p class="adm__vacio">Todavía no hay registros. Crea el primero con el formulario de arriba.</p>';
+      return;
+    }
+    cont.innerHTML = registros.map((r) => {
+      let fotos = 0;
+      try { fotos = JSON.parse(r.fotos || '[]').length; } catch (e) { /* nada */ }
+      const f = new Date(String(r.creado_en).replace(' ', 'T') + 'Z')
+        .toLocaleDateString('es-CO', { day: 'numeric', month: 'short' });
+      return `
+        <div class="adm__verif ${r.estado === 'anulado' ? 'is-anulado' : ''}">
+          <b>${r.codigo}</b>
+          <span>${SKUS_VERIFY[r.sku] || r.sku}${r.lote ? ' · lote ' + r.lote : ''}${r.pedido_id ? ' · ' + r.pedido_id : ''} · ${fotos} foto${fotos === 1 ? '' : 's'} · ${f}</span>
+          <span class="adm__verif-btns">
+            <button type="button" data-abrir="${r.codigo}">Ver</button>
+            <button type="button" data-sticker="${r.codigo}">Sticker</button>
+            ${r.estado === 'anulado' ? '' : `<button type="button" data-anular="${r.codigo}">Anular</button>`}
+          </span>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    cont.innerHTML = '<p class="adm__vacio">No se pudieron cargar los registros. ¿Ya ejecutaste <b>db/schema-v3.sql</b> en la consola de D1?</p>';
+  }
+}
+
+/* Delegación: cubre los botones del formulario, de la lista y de las
+   tarjetas de pedido sin volver a enganchar listeners en cada refresco. */
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-copiar],[data-sticker],[data-anular],[data-abrir],[data-registrar]');
+  if (!t) return;
+  if (t.dataset.copiar) {
+    navigator.clipboard.writeText(t.dataset.copiar);
+    t.textContent = 'Copiado ✓';
+    setTimeout(() => { t.textContent = 'Copiar enlace'; }, 1800);
+  }
+  if (t.dataset.sticker) imprimirStickers([t.dataset.sticker]);
+  if (t.dataset.anular) anularRegistro(t.dataset.anular);
+  if (t.dataset.abrir) window.open(urlVerify(t.dataset.abrir), '_blank', 'noopener');
+  if (t.dataset.registrar) prefill(t.dataset.registrar, t.dataset.sku);
+});
+
+document.addEventListener('change', (e) => {
+  const inp = e.target.closest('[data-fotos]');
+  if (inp && inp.files && inp.files.length) subirFotos(inp.dataset.fotos, Array.from(inp.files).slice(0, 4));
+});
+
+if (document.getElementById('vfCrear')) {
+  $('vfCrear').addEventListener('click', crearRegistro);
+  $('vfSello').addEventListener('change', () => {
+    $('vfSelloNota').hidden = $('vfSello').value !== 'observaciones';
+  });
+  $('vfImprimirDia').addEventListener('click', () => {
+    const hoy = new Date().toISOString().slice(0, 10);
+    const delDia = registros.filter((r) => String(r.creado_en).slice(0, 10) === hoy && r.estado === 'activo');
+    if (!delDia.length) { mostrarError('No hay registros creados hoy.'); return; }
+    imprimirStickers(delDia.map((r) => r.codigo));
+  });
+}

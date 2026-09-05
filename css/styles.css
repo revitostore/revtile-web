@@ -2418,3 +2418,127 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 /* la barra de pago del checkout no debe taparse con la de la portada */
 body.buybar-on .co__bar { bottom: 0; }
+
+/* ── REVTILE VERIFY — pantalla pública y stickers ────────────────── */
+.verify__msg {
+  max-width: 640px;
+  margin: 0 auto 28px;
+  padding: 14px 18px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 14.5px;
+  text-align: center;
+}
+.verify__label-ejemplo {
+  max-width: 640px;
+  margin: 0 auto 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.verify__card.is-ejemplo { opacity: .82; border-style: dashed; }
+.verify__card.is-ejemplo .verify__state {
+  background: transparent;
+  color: var(--ink-dim);
+  border-color: var(--line-2);
+}
+.verify .steps { max-width: 100%; }
+.verify .pp-section { padding-block: var(--section) 0; }
+
+/* ── Panel: registros VERIFY ─────────────────────────────────────── */
+.adm__verify-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: var(--s3);
+}
+.adm__verify-form input, .adm__verify-form select, .adm__verify-form textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+.adm__verify-form .full { grid-column: 1 / -1; }
+
+.adm__verify-nuevo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3);
+  margin-bottom: var(--s3);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius);
+  background: var(--accent-wash);
+}
+.adm__verify-nuevo .codigo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  letter-spacing: .05em;
+}
+.adm__verify-nuevo img { width: 128px; height: 128px; background: #fff; border-radius: 6px; padding: 6px; }
+.adm__verify-acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.adm__verify-lista { display: flex; flex-direction: column; gap: 8px; }
+.adm__verif {
+  display: grid;
+  grid-template-columns: minmax(150px, auto) 1fr auto;
+  gap: 6px 16px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  font-size: 13.5px;
+}
+.adm__verif.is-anulado { opacity: .55; }
+.adm__verif b { font-family: 'JetBrains Mono', monospace; font-size: 14px; letter-spacing: .04em; }
+.adm__verif span { color: var(--ink-dim); }
+.adm__verif .adm__verif-btns { display: flex; gap: 6px; }
+.adm__verif button {
+  padding: 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+.adm__verif button:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+/* hoja de stickers imprimible */
+.adm__stickers { display: none; }
+@media print {
+  body.imprimiendo > *:not(.adm__stickers) { display: none !important; }
+  body.imprimiendo .adm__stickers {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6mm;
+    padding: 8mm;
+    background: #fff;
+    color: #000;
+  }
+  .adm__sticker {
+    border: 1px dashed #999;
+    border-radius: 3mm;
+    padding: 4mm;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2mm;
+    break-inside: avoid;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .adm__sticker img { width: 26mm; height: 26mm; }
+  .adm__sticker .marca { font-family: 'Archivo', sans-serif; font-weight: 800; letter-spacing: .16em; font-size: 9pt; }
+  .adm__sticker .cod { font-size: 10pt; letter-spacing: .06em; }
+  .adm__sticker .url { font-size: 6.5pt; color: #555; }
+}
