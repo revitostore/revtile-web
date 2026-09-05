@@ -3,12 +3,12 @@
   "moneda": "COP",
   "whatsapp": "573214569600",
   "envio": {
-    "gratis": "toda Colombia",
+    "gratis": "Bogotá",
+    "costo_resto_del_pais": 5000,
     "dias_habiles": "2 a 3",
-    "recargo_contraentrega_fuera_bogota": 5000,
     "programada": "Bogotá con pago anticipado: el cliente elige día y hora (lunes a sábado, 9 a. m. a 6 p. m.)",
-    "frase_corta": "Envío gratis en toda Colombia",
-    "frase_larga": "Envío gratis en toda Colombia, 2 a 3 días hábiles con guía. Único cobro adicional: $5.000 en pedidos contraentrega fuera de Bogotá."
+    "frase_corta": "Envío gratis en Bogotá · $5.000 al resto del país",
+    "frase_larga": "Envío gratis en Bogotá. A cualquier otra ciudad de Colombia, $5.000. Entrega en 2 a 3 días hábiles con guía de seguimiento."
   },
   "combo": {
     "descuento_por_par": 10000,

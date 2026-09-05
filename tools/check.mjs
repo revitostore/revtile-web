@@ -25,9 +25,10 @@ for (const p of data.productos) {
   else if (Number(m[1]) !== p.precio)
     errores.push(`checkout.js dice ${cop(Number(m[1]))} para "${p.sku}", productos.json dice ${cop(p.precio)}`);
 }
-const recargo = checkout.match(/RECARGO_CE_NACIONAL\s*=\s*(\d+)/);
-if (recargo && Number(recargo[1]) !== data.envio.recargo_contraentrega_fuera_bogota)
-  errores.push(`El recargo de contraentrega no coincide: checkout.js ${recargo[1]} vs productos.json ${data.envio.recargo_contraentrega_fuera_bogota}`);
+const envioNal = checkout.match(/ENVIO_NACIONAL\s*=\s*(\d+)/);
+if (!envioNal) errores.push('checkout.js no define ENVIO_NACIONAL');
+else if (Number(envioNal[1]) !== data.envio.costo_resto_del_pais)
+  errores.push(`El envío nacional no coincide: checkout.js ${envioNal[1]} vs productos.json ${data.envio.costo_resto_del_pais}`);
 const combo = checkout.match(/COMBO_POR_PAR\s*=\s*(\d+)/);
 if (combo && Number(combo[1]) !== data.combo.descuento_por_par)
   errores.push(`El descuento del combo no coincide: checkout.js ${combo[1]} vs productos.json ${data.combo.descuento_por_par}`);
@@ -44,11 +45,12 @@ for (const p of data.productos) {
     errores.push(`${p.pagina}: el JSON-LD dice ${cop(Number(ld[1]))} y la página ${cop(p.precio)}`);
 }
 
-/* 3 · ninguna página puede decir "gratis en Bogotá" cuando es toda Colombia */
+/* 3 · ninguna página puede prometer envío gratis a todo el país:
+      es gratis en Bogotá y cuesta $5.000 al resto */
 for (const f of readdirSync(ROOT).filter((f) => f.endsWith('.html'))) {
   const s = read(f);
-  if (/gratis\s+(?:en|para|s[oó]lo en)\s+Bogot/i.test(s) || /GRATIS EN BOGOT/.test(s))
-    errores.push(`${f} dice "envío gratis en Bogotá"; la política es ${data.envio.gratis}`);
+  if (/gratis\s+(?:en\s+)?(?:toda\s+)?Colombia/i.test(s) || /GRATIS EN TODA COLOMBIA/.test(s))
+    errores.push(`${f} promete envío gratis a toda Colombia; solo es gratis en ${data.envio.gratis} (${cop(data.envio.costo_resto_del_pais)} al resto)`);
 }
 
 /* 4 · nada de urgencia simulada */

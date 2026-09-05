@@ -95,7 +95,7 @@ const footer = () => `  <footer class="footer">
     <div class="footer__grid">
       <div class="footer__brand">
         <p class="footer__logo">REVTILE<span class="nav__dot">.</span></p>
-        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp y envío gratis en toda Colombia.</p>
+        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp, envío gratis en Bogotá y $5.000 al resto del país.</p>
 ${SOCIALES}
       </div>
       <nav class="footer__col" aria-label="Tienda">
@@ -147,7 +147,7 @@ function ficha(p) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${c.titulo}</title>
-  <meta name="description" content="${nombreCompleto}, ${p.servicios} servicios de ${p.gramos_por_servicio} g. ${cop(p.precio)} COP, ${cop(porServicio)} por servicio. Sellada de fábrica, con lote y vencimiento verificables. Envío gratis en toda Colombia.">
+  <meta name="description" content="${nombreCompleto}, ${p.servicios} servicios de ${p.gramos_por_servicio} g. ${cop(p.precio)} COP, ${cop(porServicio)} por servicio. Sellada de fábrica, con lote y vencimiento verificables. ${data.envio.frase_corta}.">
   <meta name="theme-color" content="#0C0D0F">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://revtile.com.co/${p.pagina}">
@@ -235,7 +235,7 @@ ${c.galeria.map(([src, alt], i) => `          <button class="pp-gal__thumb${i ==
           <li class="check">Sellada de fábrica</li>
           <li class="check">Lote y vencimiento verificables</li>
           <li class="check">Fotos de tu tarro antes del despacho</li>
-          <li class="check">Envío gratis en toda Colombia</li>
+          <li class="check">Envío gratis en Bogotá</li>
         </ul>
 
         <a class="btn btn--primary btn--full btn--big" href="pedido.html?producto=${p.sku}">Pedir esta creatina <span class="btn__arrow" aria-hidden="true">→</span></a>
@@ -327,10 +327,10 @@ ${c.datos.map(([k, v]) => `              <tr><th scope="row">${k}</th><td>${v}</
           <table class="spec">
             <caption>Envío</caption>
             <tbody>
-              <tr><th scope="row">Costo</th><td>Gratis en toda Colombia</td></tr>
+              <tr><th scope="row">Bogotá</th><td>Gratis</td></tr>
+              <tr><th scope="row">Resto del país</th><td>${cop(data.envio.costo_resto_del_pais)}</td></tr>
               <tr><th scope="row">Tiempo</th><td>${data.envio.dias_habiles} días hábiles, con guía</td></tr>
               <tr><th scope="row">Entrega programada</th><td>Bogotá con pago anticipado: eliges día y hora (lun a sáb, 9 a. m. – 6 p. m.)</td></tr>
-              <tr><th scope="row">Único cobro adicional</th><td>${cop(data.envio.recargo_contraentrega_fuera_bogota)} en contraentrega fuera de Bogotá</td></tr>
             </tbody>
           </table>
         </div>
@@ -369,7 +369,7 @@ ${c.datos.map(([k, v]) => `              <tr><th scope="row">${k}</th><td>${v}</
         </details>
         <details class="faq__item reveal">
           <summary>¿Puedo pagar al recibir?</summary>
-          <p>Sí, contraentrega en todo el país. En Bogotá sin costo adicional; fuera de Bogotá con un recargo de ${cop(data.envio.recargo_contraentrega_fuera_bogota)}.</p>
+          <p>Sí, contraentrega en todo el país: pagas en efectivo o por transferencia al recibir. El envío cuesta lo mismo que pagando por anticipado — gratis en Bogotá, ${cop(data.envio.costo_resto_del_pais)} al resto del país.</p>
         </details>
         <details class="faq__item reveal">
           <summary>¿Y si llega con el sello roto?</summary>

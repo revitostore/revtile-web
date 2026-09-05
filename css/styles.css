@@ -475,15 +475,23 @@ section { position: relative; }
 }
 .hero__terms b { color: var(--ink); font-weight: 600; }
 
-/* La mascota, no los tarros: el catálogo que viene justo debajo ya
-   muestra las tres presentaciones, y repetirlas aquí era ruido. */
-.hero__art { position: relative; display: flex; justify-content: center; }
-.hero__art img {
-  width: 100%;
-  max-width: 460px;
-  height: auto;
-  object-fit: contain;
+/* Hero sin imagen: el catálogo que viene justo debajo ya muestra las tres
+   presentaciones, y la promesa se sostiene sola. */
+.hero--solo { padding-bottom: clamp(40px, 6vw, 72px); }
+.hero--solo .hero__inner { grid-template-columns: 1fr; }
+.hero--solo h1 { font-size: clamp(40px, 8.4vw, 88px); max-width: 15ch; }
+.hero--solo .hero__sub { font-size: clamp(17px, 2.2vw, 20px); max-width: 58ch; }
+.hero--solo .hero__terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0;
+  margin-top: var(--s2);
 }
+.hero--solo .hero__terms span {
+  padding: 16px 0 4px 20px;
+  border-left: 1px solid var(--line);
+}
+.hero--solo .hero__terms span:first-child { padding-left: 0; border-left: 0; }
 
 /* hero heredado (404) */
 .hero__stage { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); text-align: center; }

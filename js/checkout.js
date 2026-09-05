@@ -6,9 +6,8 @@ const PRODUCTOS = {
   mt: { nombre: 'MT Platinum Creatine 400 g', corto: 'MT 400g', precio: 140000 },
   on120: { nombre: 'ON Micronized Creatine 600 g (120 serv.)', corto: 'ON 600g', precio: 170000 },
 };
-const RECARGO_CE_NACIONAL = 5000;    // único cobro de envío: contraentrega fuera de Bogotá
-const TACHADO_BOGOTA = 20000;        // tarifas "de antes", tachadas para evidenciar el gratis
-const TACHADO_NACIONAL = 18000;
+const ENVIO_NACIONAL = 5000;         // fuera de Bogotá, sea cual sea el método de pago
+const ENVIO_BOGOTA = 0;              // en Bogotá el envío es gratis
 const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
@@ -209,7 +208,7 @@ function calcular() {
   const combo = pares * COMBO_POR_PAR;
   const esBogota = $('fCiudad').value === 'bogota';
   const esCE = state.pago === 'contraentrega';
-  const envio = (!esBogota && esCE) ? RECARGO_CE_NACIONAL : 0;
+  const envio = esBogota ? ENVIO_BOGOTA : ENVIO_NACIONAL;
   const programado = esBogota && !esCE; // entrega con día y hora a elección
   /* cupón: se recalcula sobre subtotal − combo (el servidor re-valida al registrar) */
   let descuento = 0;
@@ -241,11 +240,11 @@ function render() {
     card.classList.toggle('is-active', card.dataset.pago === state.pago);
   });
   $('mAntDetalle').textContent = esBogota
-    ? 'Envío GRATIS · tú eliges el día y la hora de entrega ⚡'
-    : 'Envío GRATIS a tu ciudad · sale en el día';
+    ? 'Envío gratis y tú eliges el día y la hora de la entrega.'
+    : `Envío ${fmt(ENVIO_NACIONAL)} a tu ciudad. Sale el mismo día.`;
   $('mCEDetalle').textContent = esBogota
     ? 'Pagas al recibir · entrega en 2-3 días hábiles · envío GRATIS'
-    : `Pagas al recibir · 2-3 días hábiles · recargo de ${fmt(RECARGO_CE_NACIONAL)}`;
+    : `Pagas al recibir. 2 a 3 días hábiles, envío ${fmt(ENVIO_NACIONAL)}.`;
 
   /* agenda de entrega programada */
   $('coProg').hidden = !programado;
@@ -273,8 +272,8 @@ function render() {
     $('resCuponVal').textContent = '−' + fmt(descuento);
   }
   $('resEnvio').innerHTML = envio === 0
-    ? `<s>${fmt(esBogota ? TACHADO_BOGOTA : TACHADO_NACIONAL)}</s> <span class="co__verde">GRATIS</span>`
-    : fmt(envio) + ' <small>(contraentrega)</small>';
+    ? '<span class="co__verde">GRATIS</span>'
+    : fmt(envio);
   $('resTotal').textContent = fmt(total);
   $('barTotal').textContent = fmt(total);
 }
@@ -585,7 +584,7 @@ $('btnEnviar').addEventListener('click', async () => {
     if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
     if (descuento) lineas.push(`▪ Cupón ${state.cupon.codigo}: −${fmt(descuento)}`);
     lineas.push(
-      `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio) + ' (contraentrega)'),
+      `▪ Envío ${ciudad}: ` + (envio === 0 ? 'GRATIS' : fmt(envio)),
       lineaTotal,
       lineaEntrega,
       '',
