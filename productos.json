@@ -1,0 +1,70 @@
+{
+  "_nota": "Fuente única de verdad de precios y presentaciones. Si cambias un precio aquí, ejecuta `node tools/check.mjs` para verificar que checkout.js, las fichas y el JSON-LD digan lo mismo.",
+  "moneda": "COP",
+  "whatsapp": "573214569600",
+  "envio": {
+    "gratis": "toda Colombia",
+    "dias_habiles": "2 a 3",
+    "recargo_contraentrega_fuera_bogota": 5000,
+    "programada": "Bogotá con pago anticipado: el cliente elige día y hora (lunes a sábado, 9 a. m. a 6 p. m.)",
+    "frase_corta": "Envío gratis en toda Colombia",
+    "frase_larga": "Envío gratis en toda Colombia, 2 a 3 días hábiles con guía. Único cobro adicional: $5.000 en pedidos contraentrega fuera de Bogotá."
+  },
+  "combo": {
+    "descuento_por_par": 10000,
+    "texto": "2 tarros = −$10.000 · 4 tarros = −$20.000. Se aplica en el checkout."
+  },
+  "productos": [
+    {
+      "sku": "on",
+      "marca": "Optimum Nutrition",
+      "nombre": "Micronized Creatine Powder",
+      "gramos": 300,
+      "servicios": 60,
+      "gramos_por_servicio": 5,
+      "precio": 120000,
+      "precio_antes": 170000,
+      "precio_antes_confirmado": false,
+      "rol": "Para empezar",
+      "pagina": "producto-on.html",
+      "imagen": "assets/on.png",
+      "alt": "Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g"
+    },
+    {
+      "sku": "mt",
+      "marca": "MuscleTech",
+      "nombre": "Platinum Creatine Monohydrate",
+      "gramos": 400,
+      "servicios": 80,
+      "gramos_por_servicio": 5,
+      "precio": 140000,
+      "precio_antes": 200000,
+      "precio_antes_confirmado": false,
+      "rol": "Equilibrio",
+      "pagina": "producto-mt.html",
+      "imagen": "assets/muscletech.png",
+      "alt": "Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g"
+    },
+    {
+      "sku": "on120",
+      "marca": "Optimum Nutrition",
+      "nombre": "Micronized Creatine Powder",
+      "gramos": 600,
+      "servicios": 120,
+      "gramos_por_servicio": 5,
+      "precio": 170000,
+      "precio_antes": 240000,
+      "precio_antes_confirmado": false,
+      "rol": "Mejor precio por servicio",
+      "pagina": "producto-on120.html",
+      "imagen": "assets/on120.png",
+      "alt": "Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios"
+    }
+  ],
+  "_pendientes": {
+    "razon_social": null,
+    "nit": null,
+    "direccion_notificacion": null,
+    "tabla_nutricional": "pendiente de las etiquetas reales de cada presentación"
+  }
+}
