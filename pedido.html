@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Haz tu pedido — REVTILE</title>
-  <meta name="description" content="Arma tu pedido de creatina 100% original. Envío GRATIS en toda Colombia, contraentrega disponible, y en Bogotá eliges el día y la hora de tu entrega.">
-  <meta name="theme-color" content="#07080d">
+  <meta name="description" content="Arma tu pedido de creatina original y sellada. Envío gratis en toda Colombia, contraentrega disponible, y en Bogotá eliges el día y la hora de tu entrega.">
+  <meta name="theme-color" content="#0C0D0F">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://revtile.com.co/pedido.html">
   <meta property="og:title" content="Haz tu pedido — REVTILE">
-  <meta property="og:description" content="Envío GRATIS en toda Colombia. Paga contraentrega o anticipado — en Bogotá eliges el día y la hora de tu entrega.">
+  <meta property="og:description" content="Envío gratis en toda Colombia. Paga contraentrega o anticipado; en Bogotá eliges el día y la hora de tu entrega.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://revtile.com.co/pedido.html">
   <meta property="og:image" content="https://revtile.com.co/assets/og-card.jpg">
@@ -20,228 +20,251 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=30">
-  <script src="js/analytics.js?v=2" defer></script>
+  <link rel="stylesheet" href="css/styles.css?v=31">
   <script>document.documentElement.classList.add('js');</script>
+  <script src="js/analytics.js?v=2" defer></script>
 </head>
 <body class="pp co">
 
-  <div class="blob blob--red" aria-hidden="true"></div>
-  <div class="blob blob--teal" aria-hidden="true"></div>
+  <a class="skip-link" href="#pedido">Saltar al formulario</a>
 
-  <header class="nav">
+  <header class="nav" id="nav">
     <div class="nav__inner">
       <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
       <a class="pp-back" href="index.html">← Volver a la tienda</a>
-      <a class="nav__cta" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20tengo%20una%20pregunta%20sobre%20mi%20pedido" target="_blank" rel="noopener">Ayuda</a>
+      <a class="nav__cta" href="https://wa.me/573214569600?text=Hola%20REVTILE%2C%20tengo%20una%20pregunta%20sobre%20mi%20pedido" target="_blank" rel="noopener">Ayuda</a>
     </div>
   </header>
 
-  <main class="co__main">
+  <main class="co__main" id="pedido">
     <h1 class="co__title">Haz tu pedido<span class="accent">.</span></h1>
-    <p class="co__sub">Sin registros ni contraseñas. Envío GRATIS en toda Colombia y pagas como prefieras 🦎</p>
-    <p class="co__saved" id="coSaved" hidden>👋 Te recordamos de tu último pedido — tus datos ya están llenos (se guardan solo en tu teléfono). <button type="button" id="coClear">Borrar mis datos</button></p>
+    <p class="co__sub">Sin registro ni contraseñas. Lo armas aquí, queda registrado con su número, y lo confirmas por WhatsApp.</p>
+    <p class="co__saved" id="coSaved" hidden>
+      Tus datos del último pedido ya están puestos — se guardan solo en este dispositivo.
+      <button type="button" id="coClear">Borrarlos</button>
+    </p>
 
-    <!-- ===== 01 · PRODUCTO ===== -->
-    <section class="co__card">
-      <p class="section-eyebrow"><b>01</b> Arma tu pedido — puedes mezclar</p>
-      <div class="co__products co__products--3" id="coProducts">
-        <div class="co__prod is-active" data-prod="on">
-          <picture><source srcset="assets/on.webp" type="image/webp"><img src="assets/on.png" alt="ON Micronized Creatine 300 g" width="791" height="927"></picture>
-          <span class="co__prod-name">ON Micronized<br>300 g · 60 serv.</span>
-          <span class="co__prod-price">$120.000</span>
-          <div class="co__step">
-            <button type="button" class="co__step-minus" aria-label="Quitar uno">−</button>
-            <b class="co__step-val">1</b>
-            <button type="button" class="co__step-plus" aria-label="Agregar uno">+</button>
-          </div>
-        </div>
-        <div class="co__prod" data-prod="mt">
-          <picture><source srcset="assets/muscletech.webp" type="image/webp"><img src="assets/muscletech.png" alt="MT Platinum Creatine 400 g" width="293" height="450"></picture>
-          <span class="co__prod-name">MT Platinum<br>400 g · 80 serv.</span>
-          <span class="co__prod-price">$140.000</span>
-          <div class="co__step">
-            <button type="button" class="co__step-minus" aria-label="Quitar uno">−</button>
-            <b class="co__step-val">0</b>
-            <button type="button" class="co__step-plus" aria-label="Agregar uno">+</button>
-          </div>
-        </div>
-        <div class="co__prod co__prod--nuevo" data-prod="on120">
-          <span class="co__nuevo">NUEVO</span>
-          <picture><source srcset="assets/on120.webp" type="image/webp"><img src="assets/on120.png" alt="ON Micronized Creatine 600 g, 120 servicios" width="524" height="885"></picture>
-          <span class="co__prod-name">ON Micronized<br>600 g · 120 serv.</span>
-          <span class="co__prod-price">$170.000</span>
-          <div class="co__step">
-            <button type="button" class="co__step-minus" aria-label="Quitar uno">−</button>
-            <b class="co__step-val">0</b>
-            <button type="button" class="co__step-plus" aria-label="Agregar uno">+</button>
-          </div>
-        </div>
-      </div>
-      <p class="co__combo" id="coCombo" hidden>🔥 <b id="coComboTxt">Combo Gymbro aplicado</b> — descuento por cada par de tarros</p>
-    </section>
+    <div class="co__layout">
 
-    <!-- ===== 02 · ENTREGA ===== -->
-    <section class="co__card">
-      <p class="section-eyebrow"><b>02</b> Datos de entrega</p>
-      <div class="co__grid">
-        <label class="co__field">
-          <span>Tu nombre completo *</span>
-          <input type="text" id="fNombre" autocomplete="name" placeholder="Como aparecerá en el paquete">
-        </label>
-        <label class="co__field">
-          <span>Tu WhatsApp *</span>
-          <input type="tel" id="fTel" autocomplete="tel" placeholder="3XX XXX XXXX">
-        </label>
-        <label class="co__field">
-          <span>Ciudad *</span>
-          <select id="fCiudad">
-            <option value="bogota">Bogotá — envío GRATIS 🎉</option>
-            <option value="nacional">Otra ciudad — envío GRATIS 🎉</option>
-          </select>
-        </label>
-        <label class="co__field" id="fOtraCiudadWrap" hidden>
-          <span>¿Cuál ciudad? *</span>
-          <input type="text" id="fOtraCiudad" placeholder="Ej: Medellín">
-        </label>
-        <label class="co__field co__field--full">
-          <span>Dirección *</span>
-          <input type="text" id="fDir" autocomplete="street-address" placeholder="Ej: Cra 15 # 45-32">
-        </label>
-        <label class="co__field">
-          <span>Tipo de vivienda</span>
-          <select id="fVivienda">
-            <option value="casa">Casa</option>
-            <option value="apartamento">Apartamento / edificio</option>
-            <option value="conjunto">Conjunto residencial</option>
-          </select>
-        </label>
-        <label class="co__field" id="fAptoWrap" hidden>
-          <span>Torre / apto / interior</span>
-          <input type="text" id="fApto" placeholder="Ej: Torre 2, apto 502">
-        </label>
-      </div>
-      <label class="co__check" id="fPorteriaWrap" hidden>
-        <input type="checkbox" id="fPorteria">
-        <span>Autorizo dejar el pedido en <b>portería</b> a mi nombre si no estoy</span>
-      </label>
+      <!-- ════════ COLUMNA IZQUIERDA · LOS PASOS ════════ -->
+      <div class="co__pasos">
 
-      <div class="co__map-block">
-        <div class="co__map-head">
-          <span>📍 Verifica tu ubicación (opcional, ayuda al mensajero)</span>
-          <button type="button" class="co__map-btn" id="btnGeo">Ubicar mi dirección en el mapa</button>
-        </div>
-        <div id="coMap" class="co__map" aria-label="Mapa para ajustar el punto de entrega"></div>
-        <p class="co__map-hint" id="mapHint">Arrastra el pin rojo si el punto no queda exacto.</p>
-        <p class="co__map-dir" id="mapDir" hidden></p>
-      </div>
-    </section>
-
-    <!-- ===== 03 · MÉTODO DE PAGO ===== -->
-    <section class="co__card">
-      <p class="section-eyebrow"><b>03</b> ¿Cómo quieres pagar?</p>
-      <div class="co__metodos">
-        <button type="button" class="co__metodo co__metodo--premium is-active" data-pago="anticipado">
-          <span class="co__metodo-tag">⚡ Recomendado</span>
-          <b>Pago anticipado · Bre-B / Nequi</b>
-          <span class="co__metodo-det" id="mAntDetalle">Envío GRATIS · tú eliges el día y la hora de entrega ⚡</span>
-        </button>
-        <button type="button" class="co__metodo" data-pago="contraentrega">
-          <b>🚚 Contraentrega</b>
-          <span class="co__metodo-det" id="mCEDetalle">Pagas al recibir · entrega en 2-3 días hábiles</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- ===== 04 · PAGO Y ENVÍO ===== -->
-    <section class="co__card" id="pago">
-      <p class="section-eyebrow"><b>04</b> Paga y envía tu pedido</p>
-
-      <!-- Entrega programada: solo Bogotá + pago anticipado -->
-      <div class="co__prog" id="coProg">
-        <p class="co__prog-title">⚡ Tu entrega programada <span>exclusiva por pagar anticipado</span></p>
-        <p class="co__prog-sub">Elige el día (lunes a sábado) y la hora en que quieres tu creatina en la puerta:</p>
-        <div class="co__dias" id="coDias"></div>
-        <label class="co__field co__field--hora">
-          <span>¿A qué hora? *</span>
-          <select id="fHora">
-            <option value="">Elige la hora…</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="co__cupon">
-        <input type="text" id="fCupon" placeholder="¿Tienes un cupón? Escríbelo aquí" autocomplete="off" spellcheck="false" maxlength="20">
-        <button type="button" class="btn btn--ghost" id="btnCupon">Aplicar</button>
-      </div>
-      <p class="co__cupon-msg" id="cuponMsg" hidden></p>
-
-      <div class="co__total">
-        <div class="co__total-lines" id="resItems"></div>
-        <div class="co__total-lines">
-          <p id="resComboLine" hidden><span>Combo Gymbro</span><b class="co__verde" id="resComboVal">−$10.000</b></p>
-          <p id="resCuponLine" hidden><span id="resCuponTxt">Cupón</span><b class="co__verde" id="resCuponVal">−$0</b></p>
-          <p><span>Envío</span><b id="resEnvio">GRATIS</b></p>
-          <p class="co__total-final"><span>Total a pagar</span><b id="resTotal">$120.000</b></p>
-        </div>
-      </div>
-
-      <div class="co__pay" id="payAnticipado">
-        <div class="co__pay-qr">
-          <picture><source srcset="assets/breb-qr.webp" type="image/webp"><img src="assets/breb-qr.jpg" alt="QR Bre-B de Revtile para pagar desde cualquier banco" loading="lazy"></picture>
-        </div>
-        <div class="co__pay-info">
-          <p class="co__pay-title">Paga con Bre-B desde cualquier banco</p>
-          <p class="co__pay-text">Desde tu app (Nequi, Bancolombia, Daviplata…) elige <b>enviar con Bre-B</b>, pega nuestra llave y transfiere el total exacto:</p>
-          <button type="button" class="co__key" id="btnLlave">
-            <span class="co__key-num">009 296 8559</span>
-            <span class="co__key-copy" id="llaveEstado">Copiar llave</span>
-          </button>
-          <div class="co__titular">
-            <span class="co__titular-check">✓</span>
-            <div class="co__titular-info">
-              <small>Al pagar, el titular debe aparecer como</small>
-              <b>REV*** DAV*** VIL***</b>
-              <small>Ese somos nosotros (Revtile) — verifícalo antes de enviar</small>
+        <!-- ── 01 · Producto ── -->
+        <section class="co__card">
+          <p class="section-eyebrow"><b>01</b> Qué llevas — puedes mezclar</p>
+          <div class="co__products co__products--3" id="coProducts">
+            <div class="co__prod is-active" data-prod="on">
+              <picture><source srcset="assets/on.webp" type="image/webp"><img src="assets/on.png" alt="Optimum Nutrition Micronized Creatine 300 g" width="800" height="800"></picture>
+              <span class="co__prod-name">ON Micronized<br>300 g · 60 servicios</span>
+              <span class="co__prod-price">$120.000</span>
+              <div class="co__step">
+                <button type="button" class="co__step-minus" aria-label="Quitar un tarro de ON 300 g">−</button>
+                <b class="co__step-val">1</b>
+                <button type="button" class="co__step-plus" aria-label="Agregar un tarro de ON 300 g">+</button>
+              </div>
+            </div>
+            <div class="co__prod" data-prod="mt">
+              <picture><source srcset="assets/muscletech.webp" type="image/webp"><img src="assets/muscletech.png" alt="MuscleTech Platinum Creatine 400 g" width="800" height="800"></picture>
+              <span class="co__prod-name">MT Platinum<br>400 g · 80 servicios</span>
+              <span class="co__prod-price">$140.000</span>
+              <div class="co__step">
+                <button type="button" class="co__step-minus" aria-label="Quitar un tarro de MT 400 g">−</button>
+                <b class="co__step-val">0</b>
+                <button type="button" class="co__step-plus" aria-label="Agregar un tarro de MT 400 g">+</button>
+              </div>
+            </div>
+            <div class="co__prod co__prod--nuevo" data-prod="on120">
+              <span class="co__nuevo">Mejor precio</span>
+              <picture><source srcset="assets/on120.webp" type="image/webp"><img src="assets/on120.png" alt="Optimum Nutrition Micronized Creatine 600 g" width="800" height="800"></picture>
+              <span class="co__prod-name">ON Micronized<br>600 g · 120 servicios</span>
+              <span class="co__prod-price">$170.000</span>
+              <div class="co__step">
+                <button type="button" class="co__step-minus" aria-label="Quitar un tarro de ON 600 g">−</button>
+                <b class="co__step-val">0</b>
+                <button type="button" class="co__step-plus" aria-label="Agregar un tarro de ON 600 g">+</button>
+              </div>
             </div>
           </div>
-          <p class="co__pay-text co__pay-text--small">¿Pagas desde otro dispositivo? Escanea el QR.</p>
+          <p class="co__combo" id="coCombo" hidden><b id="coComboTxt">Combo Gymbro aplicado</b></p>
+        </section>
+
+        <!-- ── 02 · Entrega ── -->
+        <section class="co__card">
+          <p class="section-eyebrow"><b>02</b> A dónde lo llevamos</p>
+          <div class="co__grid">
+            <label class="co__field">
+              <span>Nombre completo</span>
+              <input type="text" id="fNombre" autocomplete="name" placeholder="Como aparecerá en el paquete">
+            </label>
+            <label class="co__field">
+              <span>WhatsApp</span>
+              <input type="tel" id="fTel" autocomplete="tel" placeholder="3XX XXX XXXX">
+            </label>
+            <label class="co__field">
+              <span>Ciudad</span>
+              <select id="fCiudad">
+                <option value="bogota">Bogotá</option>
+                <option value="nacional">Otra ciudad de Colombia</option>
+              </select>
+            </label>
+            <label class="co__field" id="fOtraCiudadWrap" hidden>
+              <span>¿Cuál ciudad?</span>
+              <input type="text" id="fOtraCiudad" placeholder="Ej: Medellín">
+            </label>
+            <label class="co__field co__field--full">
+              <span>Dirección</span>
+              <input type="text" id="fDir" autocomplete="street-address" placeholder="Ej: Cra 15 # 45-32">
+            </label>
+            <label class="co__field">
+              <span>Tipo de vivienda</span>
+              <select id="fVivienda">
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento o edificio</option>
+                <option value="conjunto">Conjunto residencial</option>
+              </select>
+            </label>
+            <label class="co__field" id="fAptoWrap" hidden>
+              <span>Torre, apto o interior</span>
+              <input type="text" id="fApto" placeholder="Ej: Torre 2, apto 502">
+            </label>
+          </div>
+
+          <label class="co__check" id="fPorteriaWrap" hidden>
+            <input type="checkbox" id="fPorteria">
+            <span>Autorizo dejar el pedido en <b>portería</b> a mi nombre si no estoy.</span>
+          </label>
+
+          <div class="co__map-block">
+            <div class="co__map-head">
+              <span>Ubica el punto exacto — opcional, pero le ahorra llamadas al mensajero</span>
+              <button type="button" class="co__map-btn" id="btnGeo">Ubicar en el mapa</button>
+            </div>
+            <div id="coMap" class="co__map" aria-label="Mapa para ajustar el punto de entrega"></div>
+            <p class="co__map-hint" id="mapHint">Arrastra el pin si el punto no queda exacto.</p>
+            <p class="co__map-dir" id="mapDir" hidden></p>
+          </div>
+        </section>
+
+        <!-- ── 03 · Método de pago ── -->
+        <section class="co__card">
+          <p class="section-eyebrow"><b>03</b> Cómo prefieres pagar</p>
+          <div class="co__metodos">
+            <button type="button" class="co__metodo co__metodo--premium is-active" data-pago="anticipado">
+              <span class="co__metodo-tag">Recomendado</span>
+              <b>Pago anticipado · Bre-B</b>
+              <span class="co__metodo-det" id="mAntDetalle">Envío gratis y tú eliges el día y la hora de la entrega.</span>
+            </button>
+            <button type="button" class="co__metodo" data-pago="contraentrega">
+              <span class="co__metodo-tag">Sin adelantar nada</span>
+              <b>Contraentrega</b>
+              <span class="co__metodo-det" id="mCEDetalle">Pagas cuando lo recibes, en 2 a 3 días hábiles.</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ── 04 · Pagar y enviar ── -->
+        <section class="co__card" id="pago">
+          <p class="section-eyebrow"><b>04</b> Paga y envía tu pedido</p>
+
+          <!-- Entrega programada: solo Bogotá con pago anticipado -->
+          <div class="co__prog" id="coProg">
+            <p class="co__prog-title">Tu entrega programada <span>por pagar anticipado</span></p>
+            <p class="co__prog-sub">Elige el día y la hora en que quieres tu creatina en la puerta.</p>
+            <div class="co__dias" id="coDias"></div>
+            <label class="co__field co__field--hora">
+              <span>Hora de entrega</span>
+              <select id="fHora">
+                <option value="">Elige la hora…</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="co__cupon">
+            <label class="sr-only" for="fCupon">Código de cupón</label>
+            <input type="text" id="fCupon" placeholder="¿Tienes un cupón?" autocomplete="off" spellcheck="false" maxlength="20">
+            <button type="button" class="btn btn--ghost" id="btnCupon">Aplicar</button>
+          </div>
+          <p class="co__cupon-msg" id="cuponMsg" hidden></p>
+
+          <!-- Pago anticipado -->
+          <div class="co__pay" id="payAnticipado">
+            <div class="co__pay-qr">
+              <picture><source srcset="assets/breb-qr.webp" type="image/webp"><img src="assets/breb-qr.jpg" alt="Código QR de la llave Bre-B de REVTILE" loading="lazy"></picture>
+            </div>
+            <div class="co__pay-info">
+              <p class="co__pay-title">Transfiere con Bre-B desde cualquier banco</p>
+              <p class="co__pay-text">En tu app —Nequi, Bancolombia, Daviplata— elige <b>enviar con Bre-B</b>, pega esta llave y transfiere el total exacto.</p>
+              <button type="button" class="co__key" id="btnLlave">
+                <span class="co__key-num">009 296 8559</span>
+                <span class="co__key-copy" id="llaveEstado">Copiar llave</span>
+              </button>
+              <div class="co__titular">
+                <span class="co__titular-check" aria-hidden="true">✓</span>
+                <div class="co__titular-info">
+                  <small>Antes de enviar, el titular debe aparecer como</small>
+                  <b>REV*** DAV*** VIL***</b>
+                  <small>Ese somos nosotros. Si ves otro nombre, no transfieras y escríbenos.</small>
+                </div>
+              </div>
+              <p class="co__pay-text co__pay-text--small">¿Pagas desde otro dispositivo? Escanea el QR.</p>
+            </div>
+          </div>
+
+          <!-- Contraentrega -->
+          <div class="co__ce" id="payCE" hidden>
+            <p class="co__ce-title">Pagas al recibir, en la puerta de tu casa</p>
+            <p class="co__ce-text">No adelantas nada. Confirmas el pedido por WhatsApp, lo despachamos y <b>pagas en efectivo o por transferencia cuando lo tengas en las manos</b>. Llega en 2 a 3 días hábiles con guía de seguimiento.</p>
+          </div>
+
+          <button type="button" class="btn btn--primary btn--full btn--big co__send" id="btnEnviar">
+            Ya pagué → Enviar mi pedido por WhatsApp
+          </button>
+          <p class="co__ok" id="coOk" hidden></p>
+          <p class="co__error" id="coError" hidden></p>
+          <p class="co__note" id="coNota">Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante.</p>
+          <p class="co__note">¿Prefieres pedir hablando con alguien? <a href="https://wa.me/573214569600?text=Hola%20REVTILE%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
+
+          <input type="text" id="fWeb" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" placeholder="web">
+        </section>
+      </div>
+
+      <!-- ════════ COLUMNA DERECHA · RESUMEN ════════ -->
+      <aside class="co__resumen" aria-label="Resumen del pedido">
+        <p class="co__resumen-head">Tu pedido</p>
+        <div class="co__total">
+          <div class="co__total-lines" id="resItems"></div>
+          <div class="co__total-lines">
+            <p id="resComboLine" hidden><span>Combo Gymbro</span><b class="co__verde" id="resComboVal">−$10.000</b></p>
+            <p id="resCuponLine" hidden><span id="resCuponTxt">Cupón</span><b class="co__verde" id="resCuponVal">−$0</b></p>
+            <p><span>Envío</span><b id="resEnvio">GRATIS</b></p>
+            <p class="co__total-final"><span>Total</span><b id="resTotal">$120.000</b></p>
+          </div>
         </div>
-      </div>
+        <div class="co__resumen-pie">
+          <button type="button" class="btn btn--primary btn--full" id="btnIrPagarResumen"><span class="pagar-txt">Ir a pagar ↓</span></button>
+          <p class="co__resumen-nota">Envío gratis en toda Colombia. El único cobro adicional es un recargo de $5.000 en pedidos contraentrega fuera de Bogotá.</p>
+        </div>
+      </aside>
 
-      <!-- Contraentrega: sin pago ahora -->
-      <div class="co__ce" id="payCE" hidden>
-        <p class="co__ce-title">🚚 Pagas al recibir, en la puerta de tu casa</p>
-        <p class="co__ce-text">No pagas nada ahora. Confirma tu pedido por WhatsApp, lo despachamos y <b>pagas en efectivo o transferencia cuando lo tengas en tus manos</b>. Entrega en 2-3 días hábiles con guía de seguimiento.</p>
-      </div>
-
-      <button type="button" class="btn btn--primary btn--full co__send" id="btnEnviar">
-        Ya pagué → Enviar mi pedido por WhatsApp
-      </button>
-      <p class="co__ok" id="coOk" hidden></p>
-      <p class="co__note" id="coNota">Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día. 🦎</p>
-      <p class="co__note">¿Prefieres pedir hablando con un humano? <a href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener">Escríbenos directo</a>.</p>
-      <p class="co__error" id="coError" hidden></p>
-      <input type="text" id="fWeb" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" placeholder="web">
-    </section>
+    </div>
   </main>
 
   <footer class="footer">
     <div class="footer__base footer__base--solo">
-      <p>© 2026 REVTILE · <a href="terminos.html" class="co__foot-link">Términos y envíos</a></p>
+      <p>© 2026 REVTILE · <a href="terminos.html" class="co__foot-link">Términos, envíos y privacidad</a></p>
     </div>
   </footer>
 
-  <!-- Barra fija: total siempre visible + atajo que copia la llave y baja al pago -->
+  <!-- Barra inferior: en móvil el total siempre a la vista -->
   <div class="co__bar">
     <div class="co__bar-total">
       <span>Total</span>
       <b id="barTotal">$120.000</b>
     </div>
-    <button type="button" class="btn btn--primary co__bar-btn" id="btnIrPagar"><span id="barPagarTxt">Ir a pagar ↓</span></button>
+    <button type="button" class="btn btn--primary co__bar-btn" id="btnIrPagar"><span class="pagar-txt" id="barPagarTxt">Ir a pagar ↓</span></button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <script src="js/checkout.js?v=8"></script>
+  <script src="js/checkout.js?v=9"></script>
 </body>
 </html>

@@ -15,6 +15,9 @@ const WHATSAPP = '573214569600';
 const HORAS_ENTREGA = ['9:00 a.m.', '10:00 a.m.', '11:00 a.m.', '12:00 m.', '1:00 p.m.', '2:00 p.m.', '3:00 p.m.', '4:00 p.m.', '5:00 p.m.', '6:00 p.m.'];
 
 const $ = (id) => document.getElementById(id);
+/* El boton de pagar existe dos veces: en el resumen fijo de escritorio y en
+   la barra inferior de movil. Los dos dicen y hacen lo mismo. */
+const textoPagar = (t) => document.querySelectorAll('.pagar-txt').forEach((e) => { e.textContent = t; });
 const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
 const state = {
@@ -253,10 +256,10 @@ function render() {
   $('btnEnviar').textContent = esCE
     ? 'Confirmar mi pedido contraentrega por WhatsApp'
     : 'Ya pagué → Enviar mi pedido por WhatsApp';
-  $('barPagarTxt').textContent = esCE ? 'Confirmar pedido ↓' : 'Ir a pagar ↓';
+  textoPagar(esCE ? 'Confirmar pedido ↓' : 'Ir a pagar ↓');
   $('coNota').innerHTML = esCE
-    ? 'Tu pedido queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. Pagas cuando lo recibas en tu puerta. 🦎'
-    : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día. 🦎';
+    ? 'Tu pedido queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. Pagas cuando lo recibas en tu puerta.'
+    : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día.';
 
   /* factura */
   $('resItems').innerHTML = items.length
@@ -393,6 +396,9 @@ async function copiarLlave() {
 
 $('btnLlave').addEventListener('click', copiarLlave);
 
+const btnPagarResumen = $('btnIrPagarResumen');
+if (btnPagarResumen) btnPagarResumen.addEventListener('click', () => $('btnIrPagar').click());
+
 /* --- Barra fija: anticipado copia la llave y baja al pago; contraentrega baja a confirmar --- */
 $('btnIrPagar').addEventListener('click', async () => {
   if (state.pago === 'contraentrega') {
@@ -400,9 +406,9 @@ $('btnIrPagar').addEventListener('click', async () => {
     return;
   }
   const ok = await copiarLlave();
-  $('barPagarTxt').textContent = ok ? 'Llave copiada ✓ — pégala en tu app' : 'Ir a pagar';
+  textoPagar(ok ? 'Llave copiada ✓ — pégala en tu app' : 'Ir a pagar');
   document.getElementById('pago').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  setTimeout(() => { $('barPagarTxt').textContent = 'Ir a pagar ↓'; }, 3500);
+  setTimeout(() => { textoPagar('Ir a pagar ↓'); }, 3500);
 });
 
 /* --- Perfil recordado (solo en este navegador) --- */
@@ -558,8 +564,8 @@ $('btnEnviar').addEventListener('click', async () => {
   if (registrado) {
     $('coOk').hidden = false;
     $('coOk').textContent = esCE
-      ? `✅ Pedido ${id} registrado — confírmalo en WhatsApp y pagas al recibir.`
-      : `✅ Pedido ${id} registrado con todos tus datos — ahora adjunta el comprobante en WhatsApp.`;
+      ? `Pedido ${id} registrado. Confírmalo en WhatsApp y pagas al recibir.`
+      : `Pedido ${id} registrado con todos tus datos. Ahora adjunta el comprobante en WhatsApp.`;
     lineas = [
       `🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`,
       '',
