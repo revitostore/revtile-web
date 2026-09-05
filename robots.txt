@@ -29,7 +29,9 @@ Allow: /
 
 Sitemap: https://revtile.com.co/sitemap.xml
 
-# Zonas privadas
+# Zonas privadas y documentacion interna
 User-agent: *
 Disallow: /gestion.html
 Disallow: /api/
+Disallow: /db/
+Disallow: /SETUP-CLOUDFLARE.md

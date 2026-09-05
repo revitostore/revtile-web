@@ -50,7 +50,7 @@ Pasos únicos tras el deploy del sistema v2:
 2. **Acceso al centro de mando** (https://revtile.com.co/gestion.html):
    - **Opcion A (activa): Cloudflare Access** — app en Zero Trust con destinos
      `revtile.com.co/gestion.html` y `revtile.com.co/api/admin/*`, policy Allow →
-     Emails → revitostore@gmail.com; variable `ADMIN_EMAILS` = revitostore@gmail.com
+     Emails → <TU-CORREO-ADMIN>; variable `ADMIN_EMAILS` = <TU-CORREO-ADMIN>
      en Pages + Retry deployment. Entras con codigo al correo, sin contrasenas.
    - **Opcion B (respaldo): Secret `ADMIN_KEY`** = clave larga; el panel la pide una vez.
    - En el celular: abrir gestion.html → "Agregar a pantalla de inicio" = app instalada.
@@ -58,7 +58,7 @@ Pasos únicos tras el deploy del sistema v2:
 3. **(Opcional) Aviso por email de cada pedido**: crear cuenta gratis en https://resend.com
    (100 correos/día gratis), copiar la API key y agregar en Variables and Secrets:
    - `RESEND_KEY` (secret) = la API key
-   - `NOTIF_EMAIL` (texto) = tu correo (ej. oscivaramtin@gmail.com)
+   - `NOTIF_EMAIL` (texto) = tu correo (ej. <TU-CORREO>)
    Con el dominio verificado en Resend se puede agregar `NOTIF_FROM` = `REVTILE <pedidos@revtile.com.co>`.
 4. **(Opcional) Rastreo en vivo Skydropx**: si tu cuenta Skydropx PRO tiene API
    (Conexiones → API), agregar secrets `SKYDROPX_CLIENT_ID` y `SKYDROPX_CLIENT_SECRET`.

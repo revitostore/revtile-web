@@ -125,24 +125,6 @@ document.querySelectorAll('.product').forEach((card) => {
   });
 });
 
-/* ===== Contadores de beneficios ===== */
-document.querySelectorAll('[data-count]').forEach((el) => {
-  const target = parseInt(el.dataset.count, 10);
-  const counter = { val: 0 };
-  gsap.to(counter, {
-    val: target,
-    duration: 1.4,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: el,
-      start: 'top 88%',
-    },
-    onUpdate: () => {
-      el.textContent = Math.round(counter.val);
-    },
-  });
-});
-
 /* ===== Botón flotante de WhatsApp: aparece tras salir del hero ===== */
 const waFloat = document.getElementById('waFloat');
 
@@ -162,35 +144,6 @@ document.querySelectorAll('.product').forEach((card) => {
   });
 });
 
-/* ===== "Pidieron creatina en la última hora" (simulado, compartido entre tarjetas)
-   Rango 2-10, con mayor probabilidad entre 3 y 5. Cambia lento: es un dato "por hora". ===== */
-const PESOS_PEDIDOS = [[2, 1], [3, 3], [4, 3.2], [5, 2.8], [6, 1.2], [7, 0.8], [8, 0.5], [9, 0.3], [10, 0.2]];
-
-function pedidosAleatorios() {
-  const total = PESOS_PEDIDOS.reduce((s, [, w]) => s + w, 0);
-  let r = Math.random() * total;
-  for (const [valor, peso] of PESOS_PEDIDOS) {
-    if ((r -= peso) <= 0) return valor;
-  }
-  return 4;
-}
-
-const liveEls = document.querySelectorAll('[data-live]');
-let pedidos = pedidosAleatorios();
-liveEls.forEach((el) => { el.textContent = pedidos; });
-
-setInterval(() => {
-  // deriva de ±1 con tendencia a volver al rango típico (3-5)
-  let delta = Math.random() < 0.5 ? -1 : 1;
-  if (pedidos >= 6 && Math.random() < 0.7) delta = -1;
-  if (pedidos <= 2) delta = 1;
-  pedidos = Math.min(10, Math.max(2, pedidos + delta));
-
-  liveEls.forEach((el) => {
-    gsap.fromTo(el, { scale: 1.25, color: '#34e07a' }, { scale: 1, color: '#f7f8fa', duration: 0.5 });
-    el.textContent = pedidos;
-  });
-}, 50000 + Math.random() * 40000);
 
 /* ===== Barra de compra fija: visible mientras navegas el catálogo ===== */
 const buyBar = document.getElementById('buyBar');
@@ -290,15 +243,6 @@ if (calcBox) {
 
   renderCalc();
 }
-
-/* ===== Cupos de lanzamiento (edítalos en el HTML: data-cupos-quedan) ===== */
-document.querySelectorAll('[data-cupos-total]').forEach((el) => {
-  const total = parseInt(el.dataset.cuposTotal, 10);
-  const quedan = parseInt(el.dataset.cuposQuedan, 10);
-  el.textContent = quedan >= total
-    ? `Solo ${total} cupos de lanzamiento`
-    : `Quedan ${quedan} de ${total} cupos de lanzamiento`;
-});
 
 /* ===== Iguana interactiva: tócala y levanta la pesa ===== */
 const mascotaFinal = document.getElementById('mascotaFinal');

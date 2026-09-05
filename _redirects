@@ -1,0 +1,4 @@
+# Nada de documentacion interna ni esquemas SQL servidos en el dominio.
+/db/*                    /404.html   404
+/SETUP-CLOUDFLARE.md     /404.html   404
+/README.md               /404.html   404
