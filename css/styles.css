@@ -401,6 +401,7 @@ section { position: relative; }
   gap: clamp(32px, 6vw, 72px);
   align-items: center;
 }
+.hero__inner > * { min-width: 0; }
 .hero__label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -464,7 +465,7 @@ section { position: relative; }
   transition: border-color var(--t), transform var(--t);
 }
 .hero__jar:hover { border-color: var(--line-2); transform: translateY(-3px); }
-.hero__jar img { max-height: 240px; width: auto; object-fit: contain; }
+.hero__jar img { max-height: 240px; max-width: 100%; width: auto; object-fit: contain; }
 .hero__jar span {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11.5px;
@@ -485,6 +486,7 @@ section { position: relative; }
 .hero__meta, .hero__floor, .hero__badges, .duo__seal { display: none; }
 
 /* ── 09 · Tarjetas de producto ───────────────────────────────────── */
+.products__grid > * { min-width: 0; }
 .products__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
@@ -517,6 +519,7 @@ section { position: relative; }
 }
 .product__photo img {
   max-height: 100%;
+  max-width: 100%;
   width: auto;
   object-fit: contain;
   transition: transform var(--t-slow);
@@ -1098,6 +1101,7 @@ body.buybar-on .wa-float { bottom: 86px; }
   gap: clamp(28px, 5vw, 64px);
   align-items: start;
 }
+.pp-hero__inner > * { min-width: 0; }
 
 /* galería del producto */
 .pp-gal { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 12px; }
@@ -1111,7 +1115,7 @@ body.buybar-on .wa-float { bottom: 86px; }
   padding: var(--s4);
   overflow: hidden;
 }
-.pp-gal__main img { max-height: 100%; width: auto; object-fit: contain; }
+.pp-gal__main img { max-height: 100%; max-width: 100%; width: auto; object-fit: contain; }
 .pp-gal__thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
 .pp-gal__thumb {
   flex: 0 0 68px;
@@ -1126,7 +1130,8 @@ body.buybar-on .wa-float { bottom: 86px; }
 .pp-gal__thumb.is-active { border-color: var(--accent); }
 
 /* bloque de decisión */
-.pp-buy { display: flex; flex-direction: column; gap: var(--s2); }
+.pp-buy { display: flex; flex-direction: column; gap: var(--s2); min-width: 0; }
+.pp-buy h1, .hero h1 { overflow-wrap: break-word; }
 .pp-buy h1 { font-size: clamp(28px, 4.2vw, 42px); }
 .pp-buy__price {
   display: flex;

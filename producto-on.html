@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Optimum Nutrition Micronized Creatine — REVTILE</title>
-  <meta name="description" content="Creatina Optimum Nutrition Micronized Creatine Powder 300 g, 100% original y sellada de fábrica. $120.000 COP con envío gratis en toda Colombia.">
-  <meta name="theme-color" content="#07080d">
+  <title>Optimum Nutrition Micronized Creatine 300 g — REVTILE</title>
+  <meta name="description" content="Optimum Nutrition Micronized Creatine Powder 300 g, 60 servicios de 5 g. $120.000 COP, $2.000 por servicio. Sellada de fábrica, con lote y vencimiento verificables. Envío gratis en toda Colombia.">
+  <meta name="theme-color" content="#0C0D0F">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://revtile.com.co/producto-on.html">
-  <meta property="og:title" content="Optimum Nutrition Micronized Creatine 300 g — REVTILE">
-  <meta property="og:description" content="100% original y sellada de fábrica. $120.000 COP con envío gratis en toda Colombia.">
+  <meta property="og:title" content="Optimum Nutrition Micronized Creatine Powder 300 g — REVTILE">
+  <meta property="og:description" content="60 servicios por $120.000 — $2.000 por servicio. Sellada de fábrica y con lote verificable.">
   <meta property="og:type" content="product">
   <meta property="og:url" content="https://revtile.com.co/producto-on.html">
   <meta property="og:image" content="https://revtile.com.co/assets/on.png">
@@ -19,15 +19,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="assets/on.png">
+  <link rel="preload" as="image" href="assets/on.png" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=30">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "Optimum Nutrition Micronized Creatine Powder 300 g",
+    "name": "Optimum Nutrition Micronized Creatine Powder 300 g (60 servicios)",
     "image": "https://revtile.com.co/assets/on.png",
-    "description": "Creatina monohidratada micronizada 100% original, sellada de fábrica y con lote verificable. 60 servicios de 5 g.",
+    "description": "Creatina monohidratada micronizada sellada de fábrica, presentación de 300 g con 60 servicios de 5 g.",
     "brand": { "@type": "Brand", "name": "Optimum Nutrition" },
     "offers": {
       "@type": "Offer",
@@ -35,75 +37,143 @@
       "priceCurrency": "COP",
       "price": "120000",
       "availability": "https://schema.org/InStock",
-      "seller": { "@type": "Organization", "name": "REVTILE" }
+      "seller": { "@type": "Organization", "name": "REVTILE" },
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "COP" },
+        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "CO" }
+      }
     }
   }
   </script>
-  <script src="js/analytics.js?v=2" defer></script>
-  <script>document.documentElement.classList.add('js');</script>
 </head>
-<body class="pp pp--green">
+<body class="pp">
 
-  <div class="blob blob--red" aria-hidden="true"></div>
-  <div class="blob blob--teal" aria-hidden="true"></div>
+  <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-  <header class="nav">
+  <header class="nav" id="nav">
     <div class="nav__inner">
       <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
-      <a class="pp-back" href="index.html">← Volver a la tienda</a>
-      <a class="nav__cta" href="pedido.html?producto=on">Comprar</a>
+      <a class="pp-back" href="index.html#productos">← Todas las creatinas</a>
+      <a class="nav__cta" href="pedido.html?producto=on">Pedir</a>
     </div>
   </header>
 
-  <!-- ===== HERO DE PRODUCTO ===== -->
-  <section class="hero">
-    <div class="hero__stage">
-      <div class="hero__meta" aria-hidden="true">
-        <span>Optimum Nutrition</span>
-        <span>Creatina monohidratada</span>
-      </div>
-      <h1 class="hero__giant" aria-label="OPTIMUM">
-        <span>O</span><span>P</span><span class="neon">T</span><span>I</span><span>M</span><span>U</span><span>M</span>
-      </h1>
-      <div class="hero__baseline" aria-hidden="true"></div>
-      <div class="pp-jar">
-        <div class="hero__floor" aria-hidden="true"></div>
-        <img width="791" height="927" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder 300 g">
-      </div>
-    </div>
+  <main id="ficha">
 
-    <div class="pp-stats">
-      <div class="pp-stat"><b>300 g</b><span>Contenido</span></div>
-      <div class="pp-stat"><b>60</b><span>Servicios</span></div>
-      <div class="pp-stat"><b>5 g</b><span>Por servicio</span></div>
-      <div class="pp-stat"><b>0</b><span>Sabor · aditivos</span></div>
+  <!-- ===== FICHA ===== -->
+  <section class="pp-hero">
+    <div class="pp-hero__inner">
+
+      <!-- Galería -->
+      <div class="pp-gal">
+        <figure class="pp-gal__main">
+          <img id="ppMain" width="800" height="800" src="assets/on.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" fetchpriority="high">
+        </figure>
+        <div class="pp-gal__thumbs" role="group" aria-label="Fotos del producto">
+          <button class="pp-gal__thumb is-active" data-src="assets/on.png" data-alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g" aria-label="Ver foto 1: Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g"><img src="assets/on.png" alt="" loading="lazy"></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/sello-on.jpg" data-alt="Sello interno de fábrica de Optimum Nutrition intacto" aria-label="Ver foto 2: Sello interno de fábrica de Optimum Nutrition intacto"><img src="assets/galeria/sello-on.jpg" alt="" loading="lazy"></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/detalle-1.jpg" data-alt="Lote y fecha de vencimiento impresos por el fabricante en la base del tarro" aria-label="Ver foto 3: Lote y fecha de vencimiento impresos por el fabricante en la base del tarro"><img src="assets/galeria/detalle-1.jpg" alt="" loading="lazy"></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/polvo-on.jpg" data-alt="Polvo de creatina micronizada, fino y blanco" aria-label="Ver foto 4: Polvo de creatina micronizada, fino y blanco"><img src="assets/galeria/polvo-on.jpg" alt="" loading="lazy"></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/mezcla-on.jpg" data-alt="Creatina disolviéndose en un vaso de agua" aria-label="Ver foto 5: Creatina disolviéndose en un vaso de agua"><img src="assets/galeria/mezcla-on.jpg" alt="" loading="lazy"></button>
+          <button class="pp-gal__thumb" data-src="assets/galeria/detalle-2.jpg" data-alt="Interior de la tapa del envase original, Made in USA" aria-label="Ver foto 6: Interior de la tapa del envase original, Made in USA"><img src="assets/galeria/detalle-2.jpg" alt="" loading="lazy"></button>
+        </div>
+      </div>
+
+      <!-- Decisión -->
+      <div class="pp-buy">
+        <p class="product__brand">Optimum Nutrition</p>
+        <h1>Micronized Creatine Powder</h1>
+        <p class="product__size">300 g · 60 servicios de 5 g</p>
+
+        <div class="pp-buy__price">
+          <span class="now">$120.000</span>
+          <span class="was">$170.000</span>
+          <span class="mono" style="font-size:13px;color:var(--ink-dim)">COP</span>
+        </div>
+        <p class="pp-buy__unit"><b>$2.000</b> por servicio · te dura <b>60 días</b> tomando 5 g al día</p>
+
+        <ul class="checks" style="margin-block:8px">
+          <li class="check">Sellada de fábrica</li>
+          <li class="check">Lote y vencimiento verificables</li>
+          <li class="check">Fotos de tu tarro antes del despacho</li>
+          <li class="check">Envío gratis en toda Colombia</li>
+        </ul>
+
+        <a class="btn btn--primary btn--full btn--big" href="pedido.html?producto=on">Pedir esta creatina <span class="btn__arrow" aria-hidden="true">→</span></a>
+        <p class="pp-note">Armas el pedido aquí y lo confirmas por WhatsApp. Contraentrega disponible en todo el país.</p>
+
+        <div class="pp-stats">
+          <div class="pp-stat"><b>300 g</b><span>Contenido</span></div>
+          <div class="pp-stat"><b>60</b><span>Servicios</span></div>
+          <div class="pp-stat"><b>5 g</b><span>Por servicio</span></div>
+          <div class="pp-stat"><b>~2</b><span>Meses</span></div>
+        </div>
+
+        <p class="pp-note" style="margin-top:4px">La presentación con la que casi todo el mundo empieza: dos meses de toma diaria, de la marca de creatina más vendida del mundo.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ===== COMPRA ===== -->
-  <section class="pp-buy">
-    <div class="pp-buy__inner reveal">
-      <p class="product__brand">Optimum Nutrition</p>
-      <h2 class="product__name">Micronized Creatine Powder</h2>
-      <div class="product__pricing">
-        <div class="product__prices">
-          <span class="product__price-old">$170.000</span>
-          <span class="product__price">$120.000 <small>COP</small></span>
+  <!-- ===== ELEGIR PRESENTACIÓN ===== -->
+  <section class="pp-section pp-section--alt">
+    <div class="pp-section__inner">
+      <p class="section-eyebrow reveal"><b>01</b> Presentación</p>
+      <h2 class="reveal">Es la misma creatina.<br>Cambia cuánto te dura<span class="accent">.</span></h2>
+      <div class="picker reveal">
+        <a class="picker__opt is-active" href="producto-on.html" aria-current="page">
+          <span class="picker__role">Para empezar</span>
+          <span class="picker__size">300 g · 60 servicios</span>
+          <span class="picker__price">$120.000 · $2.000 por servicio</span>
+        </a>
+        <a class="picker__opt" href="producto-mt.html">
+          <span class="picker__role">Equilibrio</span>
+          <span class="picker__size">400 g · 80 servicios</span>
+          <span class="picker__price">$140.000 · $1.750 por servicio</span>
+        </a>
+        <a class="picker__opt" href="producto-on120.html">
+          <span class="picker__role">Mejor precio por servicio</span>
+          <span class="picker__size">600 g · 120 servicios</span>
+          <span class="picker__price">$170.000 · $1.417 por servicio</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VERIFICACIÓN ===== -->
+  <section class="pp-section">
+    <div class="pp-section__inner">
+      <p class="section-eyebrow reveal"><b>02</b> Autenticidad</p>
+      <h2 class="reveal">Qué registramos de tu tarro<span class="accent">.</span></h2>
+      <div class="pp-cols">
+        <div class="reveal">
+          <p class="section-lead">El tarro llega con la banda exterior y el sello interno de aluminio sin abrir. En la base del envase están impresos el lote y la fecha de vencimiento, que fotografiamos antes de despachar.</p>
+          <p class="disclaimer">REVTILE documenta lo que puede observarse del producto: el sello, el lote, la fecha y el estado del envase. No somos un laboratorio ni una entidad certificadora, y una inspección visual no reemplaza la verificación con el fabricante. Por eso te damos los datos: para que la verificación la puedas hacer tú.</p>
+          <p style="margin-top:24px"><a class="btn btn--ghost" href="verify.html">Ver un registro de ejemplo <span class="btn__arrow" aria-hidden="true">→</span></a></p>
+        </div>
+        <div class="reveal">
+          <table class="spec">
+            <caption>Datos del producto</caption>
+            <tbody>
+              <tr><th scope="row">Contenido neto</th><td>300 g</td></tr>
+              <tr><th scope="row">Servicios</th><td>60 servicios de 5 g</td></tr>
+              <tr><th scope="row">Ingrediente</th><td>Monohidrato de creatina micronizada</td></tr>
+              <tr><th scope="row">Sabor</th><td>Sin sabor</td></tr>
+              <tr><th scope="row">Presentación</th><td>Polvo</td></tr>
+              <tr><th scope="row">Origen</th><td>Made in USA</td></tr>
+              <tr><th scope="row">Sello de seguridad</th><td>Banda exterior + sello interno de aluminio</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <p class="product__serving">≈ <b>$2.000</b> por servicio de 5 g</p>
-      <a class="btn btn--primary btn--full" href="pedido.html?producto=on">
-        Comprar ahora
-      </a>
-      <p class="pp-note">Envío gratis en toda Colombia · Te enviamos fotos del sello y el lote antes del despacho</p>
     </div>
   </section>
 
   <!-- ===== CÓMO TOMARLA ===== -->
-  <section class="pp-section">
+  <section class="pp-section pp-section--alt">
     <div class="pp-section__inner">
-      <p class="section-eyebrow reveal"><b>01</b> Cómo tomarla</p>
-      <h2 class="section-title reveal">Simple y constante<span class="accent">.</span></h2>
+      <p class="section-eyebrow reveal"><b>03</b> Cómo tomarla</p>
+      <h2 class="reveal">Simple y constante<span class="accent">.</span></h2>
       <ol class="steps">
         <li class="step reveal">
           <span class="step__num">5 g</span>
@@ -112,105 +182,176 @@
         </li>
         <li class="step reveal">
           <span class="step__num">3-4</span>
-          <h3 class="step__title">Semanas para saturar</h3>
+          <h3 class="step__title">Semanas hasta saturar</h3>
           <p class="step__text">Con la toma diaria constante alcanzas la saturación muscular. No necesita fase de carga.</p>
         </li>
         <li class="step reveal">
-          <span class="step__num">24/7</span>
-          <h3 class="step__title">Incluso en descanso</h3>
-          <p class="step__text">Tómala también los días que no entrenas: la constancia es lo que la hace funcionar.</p>
+          <span class="step__num">60</span>
+          <h3 class="step__title">Días con este tarro</h3>
+          <p class="step__text">60 servicios: unos 2 meses de toma diaria antes de volver a comprar.</p>
         </li>
       </ol>
+      <p class="disclaimer reveal">Los resultados dependen de tu entrenamiento, tu alimentación, tu descanso y tu constancia. Si tienes alguna condición médica, estás embarazada o en lactancia, o tomas medicamentos, consulta a tu médico antes de consumirla.</p>
     </div>
   </section>
 
-  <!-- ===== VERIFICACIÓN ===== -->
-  <section class="pp-section pp-section--alt">
+  <!-- ===== ENVÍO Y PAGO ===== -->
+  <section class="pp-section">
     <div class="pp-section__inner">
-      <p class="section-eyebrow reveal"><b>02</b> Verifícala</p>
-      <h2 class="section-title reveal">Original, y lo puedes<br>comprobar<span class="accent">.</span></h2>
-      <div class="gallery reveal">
-        <div class="gallery__track">
-          <figure class="gallery__item gallery__item--video">
-            <video src="assets/video/destapar.mp4" poster="assets/video/destapar.jpg" autoplay muted loop playsinline></video>
-            <figcaption>El sello interno, intacto hasta tus manos</figcaption>
-          </figure>
-          <figure class="gallery__item gallery__item--video">
-            <video src="assets/video/agua.mp4" poster="assets/video/agua.jpg" autoplay muted loop playsinline></video>
-            <figcaption>Así se disuelve la creatina original</figcaption>
-          </figure>
-          <figure class="gallery__item">
-            <img src="assets/galeria/sello-on.jpg" alt="Sello interno de fábrica de Optimum Nutrition intacto" loading="lazy">
-            <figcaption>Sello interno de fábrica intacto</figcaption>
-          </figure>
-          <figure class="gallery__item">
-            <img src="assets/galeria/polvo-on.jpg" alt="Polvo de creatina micronizada cayendo del scoop al tarro" loading="lazy">
-            <figcaption>Micronizada: polvo fino, blanco y sin grumos</figcaption>
-          </figure>
-          <figure class="gallery__item">
-            <img src="assets/galeria/mezcla-on.jpg" alt="Creatina disolviéndose en un vaso de agua" loading="lazy">
-            <figcaption>Se disuelve limpia en agua</figcaption>
-          </figure>
+      <p class="section-eyebrow reveal"><b>04</b> Envío y pago</p>
+      <h2 class="reveal">Cómo llega y cómo se paga<span class="accent">.</span></h2>
+      <div class="pp-cols">
+        <div class="reveal">
+          <table class="spec">
+            <caption>Envío</caption>
+            <tbody>
+              <tr><th scope="row">Costo</th><td>Gratis en toda Colombia</td></tr>
+              <tr><th scope="row">Tiempo</th><td>2 a 3 días hábiles, con guía</td></tr>
+              <tr><th scope="row">Entrega programada</th><td>Bogotá con pago anticipado: eliges día y hora (lun a sáb, 9 a. m. – 6 p. m.)</td></tr>
+              <tr><th scope="row">Único cobro adicional</th><td>$5.000 en contraentrega fuera de Bogotá</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="reveal">
+          <table class="spec">
+            <caption>Pago</caption>
+            <tbody>
+              <tr><th scope="row">Contraentrega</th><td>Efectivo o transferencia al recibir, en todo el país</td></tr>
+              <tr><th scope="row">Anticipado</th><td>Transferencia Bre-B desde Nequi o cualquier banco</td></tr>
+              <tr><th scope="row">Combo</th><td>$10.000 menos por cada par de tarros</td></tr>
+              <tr><th scope="row">Seguimiento</th><td>Número propio <span class="mono">RV-</span> rastreable en la página</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ===== PREGUNTAS ===== -->
+  <section class="faq pp-section--alt">
+    <div class="faq__inner">
+      <p class="section-eyebrow reveal"><b>05</b> Preguntas</p>
+      <h2 class="section-title reveal">Sobre esta creatina<span class="accent">.</span></h2>
+      <div class="faq__list">
+        <details class="faq__item reveal">
+          <summary>¿Cómo sé que este tarro es original?</summary>
+          <p>Llega sellado de fábrica. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento <b>de tu tarro</b> y te enviamos las fotos, para que contrastes esos datos con el fabricante.</p>
+        </details>
+        <details class="faq__item reveal">
+          <summary>¿Cuánto me dura?</summary>
+          <p>Tomando 5 g diarios, <b>60 días</b> — unos 2 meses. Sale a $2.000 por día.</p>
+        </details>
+        <details class="faq__item reveal">
+          <summary>¿Necesito fase de carga?</summary>
+          <p>No. Con 5 g diarios de forma constante alcanzas la saturación en tres o cuatro semanas. La fase de carga solo acelera ese proceso; el resultado final es el mismo.</p>
+        </details>
+        <details class="faq__item reveal">
+          <summary>¿Puedo pagar al recibir?</summary>
+          <p>Sí, contraentrega en todo el país. En Bogotá sin costo adicional; fuera de Bogotá con un recargo de $5.000.</p>
+        </details>
+        <details class="faq__item reveal">
+          <summary>¿Y si llega con el sello roto?</summary>
+          <p>Avísanos por WhatsApp dentro de las 24 horas siguientes a la entrega, con fotos o video, y lo cambiamos sin costo. Las condiciones completas están en <a class="link" href="terminos.html">términos y garantía</a>.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OTRAS PRESENTACIONES ===== -->
+  <section class="pp-section">
+    <div class="pp-section__inner">
+      <p class="section-eyebrow reveal">También disponible</p>
+      <div class="products__grid" style="margin-top:16px">
+        <article class="product reveal">
+          <div class="product__photo"><img src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g" loading="lazy"></div>
+          <div class="product__info">
+            <p class="product__brand">MuscleTech</p>
+            <h3 class="product__name"><a class="product__link" href="producto-mt.html">Platinum Creatine Monohydrate</a></h3>
+            <p class="product__size">400 g · 80 servicios</p>
+            <div class="product__pricing"><span class="product__price">$140.000</span></div>
+            <p class="product__serving"><b>$1.750</b> por servicio</p>
+            <a class="btn btn--ghost btn--full" href="producto-mt.html">Ver la ficha</a>
+          </div>
+        </article>
+        <article class="product reveal">
+          <div class="product__photo"><img src="assets/on120.png" alt="Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g, 120 servicios" loading="lazy"></div>
+          <div class="product__info">
+            <p class="product__brand">Optimum Nutrition</p>
+            <h3 class="product__name"><a class="product__link" href="producto-on120.html">Micronized Creatine Powder</a></h3>
+            <p class="product__size">600 g · 120 servicios</p>
+            <div class="product__pricing"><span class="product__price">$170.000</span></div>
+            <p class="product__serving"><b>$1.417</b> por servicio</p>
+            <a class="btn btn--ghost btn--full" href="producto-on120.html">Ver la ficha</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
   <footer class="footer">
     <div class="footer__grid">
       <div class="footer__brand">
         <p class="footer__logo">REVTILE<span class="nav__dot">.</span></p>
-        <p class="footer__tag">Creatinas 100% originales, importadas y selladas de fábrica. Pedido por WhatsApp y envío gratis en toda Colombia.</p>
+        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp y envío gratis en toda Colombia.</p>
         <div class="footer__social-row">
-        <a class="social__link" href="https://www.instagram.com/revtile.store" target="_blank" rel="noopener" aria-label="Instagram de Revtile">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor" stroke="none"/></svg>
-        </a>
-        <a class="social__link" href="https://www.tiktok.com/@revtilestore" target="_blank" rel="noopener" aria-label="TikTok de Revtile">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.7 2h-3.2v13.6a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.5a6.2 6.2 0 0 0-.9-.1 6.2 6.2 0 1 0 6.2 6.2V8.6a7.6 7.6 0 0 0 4.4 1.4V6.8A4.5 4.5 0 0 1 16.7 2z"/></svg>
-        </a>
-        <a class="social__link" href="https://www.facebook.com/share/1CMiGgR6jj/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook de Revtile">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7h2.4l.4-2.9h-2.8V9.2c0-.8.3-1.4 1.5-1.4h1.4V5.2c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.2H8v2.9h2.5v7h3z"/></svg>
-        </a>
-      </div>
+          <a class="social__link" href="https://www.instagram.com/revtile.store" target="_blank" rel="noopener" aria-label="Instagram de REVTILE">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.4"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a class="social__link" href="https://www.tiktok.com/@revtilestore" target="_blank" rel="noopener" aria-label="TikTok de REVTILE">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.7 2h-3.2v13.6a2.9 2.9 0 1 1-2.9-2.9c.3 0 .6 0 .9.1V9.5a6.2 6.2 0 0 0-.9-.1 6.2 6.2 0 1 0 6.2 6.2V8.6a7.6 7.6 0 0 0 4.4 1.4V6.8A4.5 4.5 0 0 1 16.7 2z"/></svg>
+          </a>
+          <a class="social__link" href="https://www.facebook.com/share/1CMiGgR6jj/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook de REVTILE">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7h2.4l.4-2.9h-2.8V9.2c0-.8.3-1.4 1.5-1.4h1.4V5.2c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.2H8v2.9h2.5v7h3z"/></svg>
+          </a>
+        </div>
       </div>
       <nav class="footer__col" aria-label="Tienda">
         <p class="footer__title">Tienda</p>
         <a href="index.html#productos">Catálogo</a>
-        <a href="producto-on.html">ON Creatine 300 g</a>
-        <a href="producto-mt.html">MT Platinum 400 g</a>
-        <a href="producto-on120.html">ON 600 g — NUEVO</a>
+        <a href="producto-on.html">ON 300 g</a>
+        <a href="producto-mt.html">MT 400 g</a>
+        <a href="producto-on120.html">ON 600 g</a>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">
-        <p class="footer__title">Ayuda y guías</p>
+        <p class="footer__title">Ayuda</p>
         <a href="index.html#faq">Preguntas frecuentes</a>
-        <a href="guia-creatina-original.html">¿Es original? Guía con fotos</a>
-        <a href="guia-creatina-principiantes.html">Creatina para principiantes</a>
-        <a href="on-vs-muscletech.html">ON vs MuscleTech</a>
         <a href="rastreo.html">Rastrear mi pedido</a>
-        <a href="terminos.html">Términos, envíos y privacidad</a>
+        <a href="verify.html">Verificar un registro</a>
+        <a href="guia-creatina-original.html">¿Es original? Guía con fotos</a>
+        <a href="on-vs-muscletech.html">ON o MuscleTech</a>
       </nav>
       <div class="footer__col" aria-label="Contacto">
         <p class="footer__title">Contacto</p>
-        <a href="https://wa.me/573214569600" target="_blank" rel="noopener">WhatsApp: +57 321 456 9600</a>
+        <a href="https://wa.me/573214569600" target="_blank" rel="noopener">WhatsApp +57 321 456 9600</a>
         <a href="mailto:contacto@revtile.com.co">contacto@revtile.com.co</a>
         <span>Bogotá · Colombia</span>
+        <a href="terminos.html">Términos, envíos y privacidad</a>
       </div>
     </div>
+    <div class="footer__legal">
+      <div><span class="k">Nombre comercial</span><span class="v">REVTILE</span></div>
+      <div><span class="k">Razón social</span><span class="v">Pendiente</span></div>
+      <div><span class="k">NIT</span><span class="v">Pendiente</span></div>
+      <div><span class="k">Dirección de notificación</span><span class="v">Pendiente</span></div>
+    </div>
     <div class="footer__base">
-      <p>© 2026 REVTILE · Suplementos 100% originales, importados y sellados</p>
-      <p class="footer__note">Los suplementos no sustituyen una alimentación equilibrada. Si tienes una condición médica, consulta a tu médico.</p>
+      <p>© 2026 REVTILE · Creatina original, sellada y verificable</p>
+      <p class="footer__note">Los suplementos no son medicamentos y no sustituyen una alimentación equilibrada. Si tienes una condición médica, consulta a tu médico. REVTILE documenta el estado observable de cada producto antes del despacho; no es un laboratorio ni una entidad certificadora.</p>
     </div>
   </footer>
 
-  <a class="wa-float" id="waFloat" href="https://wa.me/573214569600?text=Hola%20Revtile%20%F0%9F%A6%8E%2C%20quiero%20pedir%20la%20Creatina%20Optimum%20Nutrition%20(300g)%20a%20%24120.000" target="_blank" rel="noopener" aria-label="Pide por WhatsApp">
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path fill="#fff" d="M16 3C9.4 3 4 8.3 4 14.9c0 2.6.8 5 2.3 7L4 29l7.3-2.3c1.9 1 4 1.6 6.2 1.6h.5c6.6 0 12-5.3 12-11.9C30 8.3 24.6 3 16 3zm6.9 16.9c-.3.8-1.7 1.6-2.4 1.7-.6.1-1.4.2-2.3-.1-.5-.2-1.2-.4-2.1-.8-3.7-1.6-6.1-5.3-6.3-5.5-.2-.2-1.5-2-1.5-3.8s1-2.7 1.3-3.1c.3-.4.7-.5 1-.5h.7c.2 0 .5-.1.8.6.3.8 1.1 2.7 1.2 2.9.1.2.2.4 0 .7-.1.3-.2.4-.4.7-.2.2-.4.5-.6.7-.2.2-.4.4-.2.8.2.4 1 1.7 2.2 2.7 1.5 1.3 2.8 1.7 3.2 1.9.4.2.6.2.9-.1.2-.3 1-1.2 1.3-1.6.3-.4.5-.3.9-.2.4.1 2.2 1 2.6 1.2.4.2.6.3.7.5.1.2.1.9-.2 1.7z"/>
-    </svg>
-  </a>
+  <!-- CTA fija en móvil -->
+  <div class="pp-sticky" id="ppSticky" aria-hidden="true">
+    <div class="pp-sticky__price">
+      <b>$120.000</b>
+      <span>300 g · envío gratis</span>
+    </div>
+    <a class="btn btn--primary" href="pedido.html?producto=on" tabindex="-1">Pedir <span class="btn__arrow" aria-hidden="true">→</span></a>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="js/product.js?v=4"></script>
+  <script src="js/product.js?v=3" defer></script>
 </body>
 </html>
