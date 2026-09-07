@@ -205,4 +205,57 @@
       })
       .catch(function () { /* silencio: preferimos no decir nada */ });
   }
+
+  /* ── Flechas de las galerías ──────────────────────────────────────
+     Se inyectan aquí y no en el HTML por dos razones: no repetir el
+     mismo marcado en nueve páginas, y que sin JavaScript la galería
+     siga funcionando con el dedo, que es como se usa en móvil. */
+  document.querySelectorAll('.gallery__track').forEach(function (via) {
+    var marco = document.createElement('div');
+    marco.className = 'gallery__marco';
+    via.parentNode.insertBefore(marco, via);
+    marco.appendChild(via);
+
+    var hacer = function (lado, etiqueta) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'gallery__nav gallery__nav--' + lado;
+      b.setAttribute('aria-label', etiqueta);
+      b.innerHTML = '<span aria-hidden="true"></span>';
+      marco.appendChild(b);
+      return b;
+    };
+    var atras = hacer('atras', 'Ver las anteriores');
+    var alante = hacer('alante', 'Ver las siguientes');
+
+    var paso = function () {
+      var uno = via.querySelector('.gallery__item');
+      /* un elemento y su separación: el salto deja la siguiente foto
+         alineada al borde, nunca cortada por la mitad */
+      return uno ? uno.getBoundingClientRect().width + 16 : via.clientWidth * .8;
+    };
+    atras.addEventListener('click', function () {
+      via.scrollBy({ left: -paso(), behavior: reduce ? 'auto' : 'smooth' });
+    });
+    alante.addEventListener('click', function () {
+      via.scrollBy({ left: paso(), behavior: reduce ? 'auto' : 'smooth' });
+    });
+
+    /* una flecha que no lleva a ninguna parte se apaga */
+    var pintar = function () {
+      var max = via.scrollWidth - via.clientWidth - 2;
+      atras.disabled = via.scrollLeft <= 2;
+      alante.disabled = via.scrollLeft >= max;
+      marco.classList.toggle('sin-flechas', max <= 2);
+    };
+    var pedido = false;
+    via.addEventListener('scroll', function () {
+      if (pedido) return;
+      pedido = true;
+      requestAnimationFrame(function () { pedido = false; pintar(); });
+    }, { passive: true });
+    window.addEventListener('resize', pintar, { passive: true });
+    pintar();
+  });
+
 })();

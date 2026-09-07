@@ -3,6 +3,53 @@
 /* Un dato legal que no existe no se anuncia: la fila simplemente no
    se pinta. Nunca se escribe un valor inventado ni la palabra
    "Pendiente", que en produccion se lee como un error. */
+
+/* La tabla nutricional se escribe como tabla, no como imagen: se lee con
+   lector de pantalla, se copia, la indexa Google y no obliga a hacer
+   zoom en el celular. La foto del envase queda al lado, para que
+   cualquiera compruebe que la transcripcion es fiel. */
+const nutricional = (p) => {
+  const n = p.nutricional;
+  if (!n) return '';
+  return `
+  <section class="pp-section pp-section--alt" id="nutricional">
+    <div class="pp-section__inner">
+      <p class="section-eyebrow reveal"><b>·</b> Tabla nutricional</p>
+      <h2 class="reveal">Lo que dice el envase<span class="accent">.</span></h2>
+      <div class="nutri reveal">
+        <div class="nutri__datos">
+          <table class="spec nutri__tabla">
+            <caption>Información nutricional por porción</caption>
+            <tbody>
+              <tr><th scope="row">Tamaño de la porción</th><td>${n.porcion}</td></tr>
+              <tr><th scope="row">Porciones por envase</th><td>${n.porciones}</td></tr>
+            </tbody>
+          </table>
+          <table class="spec nutri__tabla">
+            <thead>
+              <tr><th scope="col">Por porción</th><th scope="col">Cantidad</th><th scope="col">Valor diario</th></tr>
+            </thead>
+            <tbody>
+              ${n.filas.map(f => `<tr><th scope="row">${f[0]}</th><td>${f[1]}</td><td>${f[2]}</td></tr>`).join('\n              ')}
+              <tr><th scope="row">Otros ingredientes</th><td colspan="2">${n.otros}</td></tr>
+            </tbody>
+          </table>
+          <ul class="nutri__notas">
+            ${n.notas.map(t => `<li>${t}</li>`).join('\n            ')}
+          </ul>
+          <p class="nutri__fuente">${n.fuente}</p>
+        </div>
+        <figure class="nutri__foto">
+          <a href="${n.foto}.jpg" target="_blank" rel="noopener">
+            <picture><source srcset="${n.foto}.webp" type="image/webp"><img src="${n.foto}.jpg" alt="Foto de la tabla nutricional impresa en el envase de ${p.marca} ${p.nombre}" loading="lazy" width="1000" height="1000"></picture>
+          </a>
+          <figcaption>La etiqueta del envase. Toca para verla completa.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>`;
+};
+
 const fila = (k, v) => v ? `<div><span class="k">${k}</span><span class="v">${v}</span></div>` : '';
 /* Genera las tres fichas de producto desde productos.json + el contenido de
    abajo, para que el precio viva en un solo sitio y las tres páginas no se
@@ -230,7 +277,7 @@ ${c.galeria.map(([src, alt], i) => `          <button class="pp-gal__thumb${i ==
 
         <div class="pp-buy__price">
           <span class="now">${cop(p.precio)}</span>
-          <span class="was">${cop(p.precio_antes)}</span>
+          ${p.precio_antes ? `<span class="was">${cop(p.precio_antes)}</span>` : ''}
         </div>
         <p class="pp-buy__unit"><b>${cop(porServicio)}</b> por servicio · te dura <b>${dias} días</b> tomando ${p.gramos_por_servicio} g al día</p>
         <span class="sello">Envío gratis a toda Colombia</span>
@@ -352,6 +399,8 @@ ${c.datos.map(([k, v]) => `              <tr><th scope="row">${k}</th><td>${v}</
   </section>
 
   <!-- ===== PREGUNTAS ===== -->
+  ${nutricional(p)}
+
   <section class="faq pp-section--alt">
     <div class="faq__inner">
       <p class="section-eyebrow reveal"><b>05</b> Preguntas</p>
