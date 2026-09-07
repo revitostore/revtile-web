@@ -11,15 +11,7 @@
    POST /api/admin/pedido   {id, estado?, guia?, transportadora?, nota?} → actualizar
    GET  /api/admin/cupones                      → lista de cupones
    POST /api/admin/cupon    {codigo, tipo, valor, max_usos?, min_total?, activo?} → crear/editar
-
-   REVTILE VERIFY (un registro por unidad fisica, no por pedido):
-   GET  /api/admin/verify?pedido=RV-XXXXX  → registros de ese pedido
-   GET  /api/admin/verify?ultimos=1        → los ultimos 50 registros
-   POST /api/admin/verify        {pedido_id?, sku, lote, vence, sello, sello_nota?, nota_interna?}
-   POST /api/admin/verify/foto   multipart: codigo + foto (hasta 4 por registro)
-   POST /api/admin/verify/anular {codigo, motivo} */
-
-import { nuevoCodigo, RE_CODIGO, normalizarCodigo, producto } from '../_verify-lib.js';
+ */
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -99,17 +91,6 @@ export async function onRequest(context) {
       binds.push(id);
       const res = await env.DB.prepare(`UPDATE pedidos SET ${sets.join(', ')} WHERE id = ?`).bind(...binds).run();
 
-      /* al despachar, la fecha de despacho queda sellada en los registros
-         VERIFY de ese pedido. Un paso menos que hacer a mano. */
-      if (b.estado === 'despachado') {
-        try {
-          await env.DB.prepare(
-            `UPDATE verificaciones SET despachado_en = datetime('now')
-             WHERE pedido_id = ? AND despachado_en IS NULL AND estado = 'activo'`
-          ).bind(id).run();
-        } catch (e) { /* base sin migrar a v3: el pedido se actualiza igual */ }
-      }
-
       return json({ ok: true, actualizado: res.meta.changes > 0 });
     }
 
@@ -143,108 +124,6 @@ export async function onRequest(context) {
       return json({ ok: true, codigo });
     }
 
-
-    /* --- REVTILE VERIFY --- */
-    if (ruta === 'verify' && request.method === 'GET') {
-      const pedido = (url.searchParams.get('pedido') || '').trim().toUpperCase();
-      const sql = pedido
-        ? 'SELECT * FROM verificaciones WHERE pedido_id = ? ORDER BY creado_en DESC'
-        : 'SELECT * FROM verificaciones ORDER BY creado_en DESC LIMIT 50';
-      const st = pedido ? env.DB.prepare(sql).bind(pedido) : env.DB.prepare(sql);
-      const { results } = await st.all();
-      return json({
-        ok: true,
-        registros: results.map((r) => ({ ...r, producto: producto(r.sku) })),
-        fotos_activas: !!env.VERIFY_FOTOS,
-      });
-    }
-
-    if (ruta === 'verify' && request.method === 'POST') {
-      const b = await request.json();
-      const sku = String(b.sku || '').trim();
-      if (!['on', 'mt', 'on120'].includes(sku)) return json({ ok: false, error: 'Producto inválido' }, 400);
-
-      const pedidoId = String(b.pedido_id || '').trim().toUpperCase() || null;
-      if (pedidoId && !/^RV-[A-Z0-9]{4,8}$/.test(pedidoId))
-        return json({ ok: false, error: 'Número de pedido inválido' }, 400);
-
-      const lote = String(b.lote || '').trim().toUpperCase().slice(0, 40) || null;
-      const vence = String(b.vence || '').trim().slice(0, 10) || null;
-      if (vence && !/^\d{2}\/\d{4}$/.test(vence))
-        return json({ ok: false, error: 'La fecha de vencimiento va como MM/AAAA' }, 400);
-
-      const sello = b.sello === 'observaciones' ? 'observaciones' : 'integro';
-      const selloNota = sello === 'observaciones'
-        ? String(b.sello_nota || '').trim().slice(0, 240) || null
-        : null;
-      if (sello === 'observaciones' && !selloNota)
-        return json({ ok: false, error: 'Si el sello tiene observaciones, escribe cuáles' }, 400);
-
-      /* colisión de código: imposible en la práctica (45 bits), pero se
-         reintenta igual antes de fallar */
-      let codigo = null;
-      for (let intento = 0; intento < 5 && !codigo; intento++) {
-        const c = nuevoCodigo();
-        const r = await env.DB.prepare(
-          `INSERT OR IGNORE INTO verificaciones
-             (codigo, pedido_id, sku, lote, vence, sello, sello_nota, inspector, nota_interna)
-           VALUES (?,?,?,?,?,?,?,?,?)`
-        ).bind(
-          c, pedidoId, sku, lote, vence, sello, selloNota,
-          correoAccess || 'panel',
-          String(b.nota_interna || '').trim().slice(0, 500) || null
-        ).run();
-        if (r.meta.changes > 0) codigo = c;
-      }
-      if (!codigo) return json({ ok: false, error: 'No se pudo generar el código' }, 500);
-
-      return json({ ok: true, codigo, url: `/verify.html?c=${codigo}`, fotos_activas: !!env.VERIFY_FOTOS });
-    }
-
-    if (ruta === 'verify/anular' && request.method === 'POST') {
-      const b = await request.json();
-      const codigo = normalizarCodigo(b.codigo);
-      if (!RE_CODIGO.test(codigo)) return json({ ok: false, error: 'Código inválido' }, 400);
-      const motivo = String(b.motivo || '').trim().slice(0, 240);
-      if (!motivo) return json({ ok: false, error: 'Escribe el motivo de la anulación' }, 400);
-      const r = await env.DB.prepare(
-        "UPDATE verificaciones SET estado = 'anulado', motivo_anulacion = ? WHERE codigo = ?"
-      ).bind(motivo, codigo).run();
-      return json({ ok: true, anulado: r.meta.changes > 0 });
-    }
-
-    if (ruta === 'verify/foto' && request.method === 'POST') {
-      if (!env.VERIFY_FOTOS)
-        return json({ ok: false, error: 'Falta configurar el bucket R2 (binding VERIFY_FOTOS)' }, 503);
-
-      const form = await request.formData();
-      const codigo = normalizarCodigo(form.get('codigo'));
-      const archivo = form.get('foto');
-      if (!RE_CODIGO.test(codigo)) return json({ ok: false, error: 'Código inválido' }, 400);
-      if (!archivo || typeof archivo === 'string') return json({ ok: false, error: 'Falta la foto' }, 400);
-      if (!/^image\/(jpeg|png|webp)$/.test(archivo.type || ''))
-        return json({ ok: false, error: 'La foto debe ser JPG, PNG o WEBP' }, 400);
-      if (archivo.size > 6 * 1024 * 1024) return json({ ok: false, error: 'La foto pesa más de 6 MB' }, 400);
-
-      const fila = await env.DB.prepare('SELECT fotos FROM verificaciones WHERE codigo = ?').bind(codigo).first();
-      if (!fila) return json({ ok: false, error: 'Ese registro no existe' }, 404);
-
-      let claves = [];
-      try { claves = JSON.parse(fila.fotos || '[]'); } catch (e) { claves = []; }
-      if (claves.length >= 4) return json({ ok: false, error: 'Ya hay 4 fotos en este registro' }, 400);
-
-      const ext = archivo.type === 'image/png' ? 'png' : archivo.type === 'image/webp' ? 'webp' : 'jpg';
-      const clave = `verify/${codigo}/${claves.length}.${ext}`;
-      await env.VERIFY_FOTOS.put(clave, archivo.stream(), {
-        httpMetadata: { contentType: archivo.type, cacheControl: 'public, max-age=31536000, immutable' },
-      });
-
-      claves.push(clave);
-      await env.DB.prepare('UPDATE verificaciones SET fotos = ? WHERE codigo = ?')
-        .bind(JSON.stringify(claves), codigo).run();
-
-      return json({ ok: true, fotos: claves.length });
-    }
 
     return json({ ok: false, error: 'Ruta no encontrada' }, 404);
   } catch (e) {

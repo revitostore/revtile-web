@@ -12,8 +12,8 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=31">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=60">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="pp co adm">
@@ -89,46 +89,13 @@
       </section>
 
 
-      <section class="co__card">
-        <p class="section-eyebrow"><b>03</b> REVTILE Verify</p>
-        <p class="co__note" style="margin-bottom:16px">Un registro por <b>tarro</b>, no por pedido: si un pedido lleva dos tarros, se crean dos registros, porque cada uno puede tener su propio lote.</p>
-
-        <div class="adm__verify-form">
-          <input type="text" id="vfPedido" placeholder="Pedido RV-XXXXX (opcional)" maxlength="12">
-          <select id="vfSku">
-            <option value="on">ON 300 g</option>
-            <option value="mt">MT 400 g</option>
-            <option value="on120">ON 600 g</option>
-          </select>
-          <input type="text" id="vfLote" placeholder="Lote impreso" maxlength="40">
-          <input type="text" id="vfVence" placeholder="Vence MM/AAAA" maxlength="7">
-          <select id="vfSello">
-            <option value="integro">Sello integro</option>
-            <option value="observaciones">Sello con observaciones</option>
-          </select>
-          <input type="text" id="vfSelloNota" class="full" placeholder="Que se observo en el sello" maxlength="240" hidden>
-          <input type="text" id="vfNota" class="full" placeholder="Nota interna (no se publica)" maxlength="500">
-          <button type="button" class="btn btn--primary full" id="vfCrear">Crear registro</button>
-        </div>
-
-        <div class="adm__verify-nuevo" id="vfNuevo" hidden></div>
-
-        <div class="adm__filtros" style="margin-bottom:12px">
-          <button type="button" class="btn btn--ghost" id="vfImprimirDia">Imprimir stickers de hoy</button>
-        </div>
-        <div class="adm__verify-lista" id="admVerify"><p class="adm__vacio">Cargando…</p></div>
-      </section>
 
       <p class="co__note">Cada cambio de estado se refleja al instante en el <a href="rastreo.html" target="_blank">rastreo</a> que ve el cliente. 💡 En tu celular: menú del navegador → <b>Agregar a pantalla de inicio</b> y esto queda instalado como app.</p>
     </div>
 
     <p class="co__error" id="admError" hidden></p>
-
-    <!-- hoja de stickers: solo existe al imprimir -->
-    <div class="adm__stickers" id="vfStickers" aria-hidden="true"></div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" defer></script>
-  <script src="js/gestion.js?v=3" defer></script>
+  <script src="js/gestion.js?v=4" defer></script>
 </body>
 </html>

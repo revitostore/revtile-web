@@ -6,3 +6,6 @@ node_modules/
 .wrangler/
 .vscode/
 *.log
+_to_delete/
+_*.py
+Claude outputs/
