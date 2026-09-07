@@ -60,6 +60,12 @@ export async function onRequest(context) {
       let sql = 'SELECT * FROM pedidos';
       const binds = [];
       const cond = [];
+      /* Por defecto la lista muestra solo los pedidos activos. El
+         archivo se pide aparte con ?archivados=1, para que nada
+         archivado reaparezca por accidente en la operacion del dia. */
+      cond.push(url.searchParams.get('archivados') === '1'
+        ? 'archivado_en IS NOT NULL'
+        : 'archivado_en IS NULL');
       if (estado && ESTADOS.includes(estado)) { cond.push('estado = ?'); binds.push(estado); }
       if (q) {
         cond.push('(id LIKE ? OR nombre LIKE ? OR telefono LIKE ? OR ciudad LIKE ?)');
@@ -92,6 +98,45 @@ export async function onRequest(context) {
       const res = await env.DB.prepare(`UPDATE pedidos SET ${sets.join(', ')} WHERE id = ?`).bind(...binds).run();
 
       return json({ ok: true, actualizado: res.meta.changes > 0 });
+    }
+
+
+    /* --- Archivar y desarchivar ---
+       Un pedido archivado sale de la lista pero sigue completo en la
+       base de datos. Reversible con un clic. */
+    if (ruta === 'archivar' && request.method === 'POST') {
+      const b = await request.json();
+      const id = String(b.id || '').trim().toUpperCase();
+      if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
+      const volver = b.deshacer === true;
+      const res = await env.DB
+        .prepare('UPDATE pedidos SET archivado_en = ' + (volver ? 'NULL' : "datetime('now')") + ' WHERE id = ?')
+        .bind(id).run();
+      if (!res.meta.changes) return json({ ok: false, error: 'No existe ese pedido' }, 404);
+      return json({ ok: true, archivado: !volver });
+    }
+
+    /* --- Eliminar definitivamente ---
+       Solo sobre un pedido YA archivado, y el cliente tiene que mandar
+       de vuelta el mismo id como confirmacion. Las dos condiciones
+       existen para que ningun clic suelto borre una venta. Hace falta
+       para poder atender una solicitud de supresion de datos, que el
+       titular puede pedir (Ley 1581 de 2012). */
+    if (ruta === 'eliminar' && request.method === 'POST') {
+      const b = await request.json();
+      const id = String(b.id || '').trim().toUpperCase();
+      if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
+      if (String(b.confirmar || '').trim().toUpperCase() !== id) {
+        return json({ ok: false, error: 'Escribe el número del pedido para confirmar' }, 400);
+      }
+      const fila = await env.DB
+        .prepare('SELECT archivado_en FROM pedidos WHERE id = ?').bind(id).first();
+      if (!fila) return json({ ok: false, error: 'No existe ese pedido' }, 404);
+      if (!fila.archivado_en) {
+        return json({ ok: false, error: 'Archívalo primero. Solo se puede eliminar desde el archivo.' }, 409);
+      }
+      await env.DB.prepare('DELETE FROM pedidos WHERE id = ?').bind(id).run();
+      return json({ ok: true, eliminado: id });
     }
 
     /* --- Cupones --- */

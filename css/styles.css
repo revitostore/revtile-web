@@ -594,7 +594,7 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 }
 .hero--solo .hero__terms span {
   padding: 16px var(--gutter);
-  border-left: 1px solid rgba(255, 255, 255, .16);
+  border-left: 1px solid var(--line);
   align-items: center;
 }
 .hero--solo .hero__terms span:first-child { border-left: 0; }
@@ -1597,7 +1597,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   max-height: 420px;
   object-fit: cover;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   display: block;
 }
 
@@ -1620,7 +1620,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .guia__tabla th, .guia__tabla td {
   padding: 11px 12px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--line);
   color: var(--ink-dim);
 }
 
@@ -1636,7 +1636,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 .guia__cta {
   background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   border-radius: 20px;
   padding: 28px 26px;
 }
@@ -1659,7 +1659,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   flex-direction: column;
   gap: 10px;
   background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--line);
   border-radius: 20px;
   padding: 28px 24px;
   text-decoration: none;
@@ -1669,7 +1669,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 .aprende__card:hover {
   transform: translateY(-6px);
-  border-color: rgba(45, 226, 230, 0.5);
+  border-color: var(--accent-line);
   box-shadow: var(--glow-teal);
 }
 
@@ -1688,115 +1688,156 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 }
 
 /* ===== Rastreo de pedidos ===== */
-.ras__main { max-width: 640px; }
+.ras__main { max-width: 660px; }
 
-.ras__buscar { display: flex; gap: 10px; }
+/* ── El campo del codigo ─────────────────────────────────────────────
+   Antes el fondo y el borde eran blanco translucido, heredados del
+   tema oscuro: sobre papel no se veia nada y el campo no parecia un
+   campo. Ahora tiene fondo propio y borde de tinta. */
+.ras__buscar { display: flex; gap: 10px; align-items: stretch; }
 
 .ras__buscar input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
-  border-radius: 12px;
-  padding: 13px 16px;
+  min-width: 0;
+  min-height: 54px;
+  background: var(--surface);
+  border: 1.5px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  padding: 0 16px;
   color: var(--ink);
-  font-family: 'Barlow', system-ui, sans-serif;
-  font-size: 15px;
-  letter-spacing: 1px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 16px;
+  letter-spacing: .12em;
   text-transform: uppercase;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.ras__buscar input::placeholder {
+  color: var(--ink-dim);
+  letter-spacing: .06em;
+  text-transform: none;
+}
+.ras__buscar input:hover { border-color: var(--ink-dim); }
+.ras__buscar input:focus {
+  outline: none;
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--accent-wash);
 }
 
-.ras__buscar input::placeholder { color: var(--ink-dim); }
+.ras__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; margin-bottom: 26px; flex-wrap: wrap;
+  padding-bottom: 18px; border-bottom: 2px solid var(--ink);
+}
 
-.ras__buscar input:focus { outline: none; border-color: var(--teal); }
+/* El numero de pedido es el dato que la persona vino a buscar: era de
+   22 px y pasaba desapercibido. */
+.ras__id {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: clamp(26px, 4.4vw, 34px);
+  font-weight: 500;
+  letter-spacing: .04em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.ras__fecha { color: var(--ink-dim); font-size: 13.5px; margin-top: 6px; }
 
-.ras__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
-
-.ras__id { font-family: 'Barlow', system-ui, sans-serif; font-size: 22px; font-weight: 600; }
-
-.ras__fecha { color: var(--ink-dim); font-size: 13px; margin-top: 2px; }
-
+/* ── Los estados ─────────────────────────────────────────────────────
+   Sin colores nuevos: la escala la da el peso de la tinta. */
 .ras__badge {
+  font-family: 'Barlow', system-ui, sans-serif;
   font-size: 12.5px;
-  font-weight: 800;
-  letter-spacing: 0.6px;
+  font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  padding: 7px 14px;
-  border-radius: 999px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
   border: 1.5px solid;
+  white-space: nowrap;
 }
+/* recibido: en contorno, todavia no ha pasado nada */
+.ras__badge--teal { color: var(--ink-2); border-color: var(--line-2); background: var(--surface-2); }
+/* confirmado y entregado: tinta plena, es el estado que se busca */
+.ras__badge--lima { color: var(--cinta-ink); border-color: var(--cinta); background: var(--cinta); }
+/* en camino: rojo pleno, es lo que hay que mirar hoy */
+.ras__badge--gold { color: var(--accent-ink); border-color: var(--accent); background: var(--accent); }
+/* cancelado */
+.ras__badge--rojo { color: var(--danger); border-color: var(--danger); background: var(--surface); }
 
-.ras__badge--teal { color: var(--teal); border-color: var(--teal); background: rgba(45, 226, 230, 0.08); }
-.ras__badge--lima { color: var(--lime); border-color: var(--lime); background: rgba(166, 226, 46, 0.08); }
-.ras__badge--gold { color: var(--gold); border-color: var(--gold); background: rgba(255, 194, 75, 0.08); }
-.ras__badge--rojo { color: var(--red-soft); border-color: var(--red-soft); background: rgba(228, 28, 52, 0.08); }
-
-.ras__timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
-
-.ras__paso { display: flex; gap: 16px; align-items: flex-start; position: relative; padding-bottom: 26px; }
-
+/* ── La linea de tiempo ──────────────────────────────────────────────
+   Lo cumplido va en tinta, lo pendiente en gris, y el paso actual en
+   rojo con un anillo: un solo punto rojo en toda la pantalla. */
+.ras__timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 22px; }
+.ras__paso { display: flex; gap: 18px; align-items: flex-start; position: relative; padding-bottom: 28px; }
 .ras__paso:last-child { padding-bottom: 0; }
 
-/* línea vertical entre puntos */
 .ras__paso:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: 9px;
-  top: 20px;
-  bottom: 0;
+  left: 9px; top: 22px; bottom: 0;
   width: 2px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--line);
 }
-
-.ras__paso.is-hecho:not(:last-child)::before { background: var(--lime); }
+.ras__paso.is-hecho:not(:last-child)::before { background: var(--ink); }
 
 .ras__punto {
   flex: 0 0 auto;
   width: 20px; height: 20px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  background: var(--bg-soft);
+  border: 2px solid var(--line-2);
+  background: var(--surface);
   margin-top: 1px;
   z-index: 1;
+  transition: transform var(--t), background var(--t), border-color var(--t);
+}
+.ras__paso.is-hecho .ras__punto { border-color: var(--ink); background: var(--ink); box-shadow: none; }
+.ras__paso.is-actual .ras__punto {
+  border-color: var(--accent);
+  background: var(--accent);
+  transform: scale(1.2);
+  box-shadow: 0 0 0 5px var(--accent-wash);
 }
 
-.ras__paso.is-hecho .ras__punto { border-color: var(--lime); background: var(--lime); box-shadow: var(--glow-lime); }
+.ras__paso b { font-size: 15.5px; display: block; color: var(--ink); }
+.ras__paso small { color: var(--ink-dim); font-size: 13.5px; line-height: 1.5; display: block; margin-top: 3px; }
+.ras__paso:not(.is-hecho) b { color: var(--ink-dim); font-weight: 500; }
+.ras__paso.is-actual b { color: var(--ink); font-weight: 700; }
+.ras__timeline.is-cancelado { opacity: .5; }
 
-.ras__paso.is-actual .ras__punto { transform: scale(1.15); }
-
-.ras__paso b { font-size: 15px; display: block; }
-
-.ras__paso small { color: var(--ink-dim); font-size: 13px; line-height: 1.5; display: block; margin-top: 2px; }
-
-.ras__paso:not(.is-hecho) b { color: var(--ink-dim); }
-
-.ras__timeline.is-cancelado { opacity: 0.45; }
-
+/* ── Avisos ──────────────────────────────────────────────────────────
+   Tambien eran translucidos sobre negro. Ahora llevan una barra de
+   color a la izquierda, que se ve sin necesidad de teñir el fondo. */
 .ras__info {
-  background: rgba(255, 194, 75, 0.07);
-  border: 1px solid rgba(255, 194, 75, 0.35);
-  border-radius: 12px;
-  padding: 13px 16px;
-  font-size: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 14.5px;
+  color: var(--ink-2);
   margin-bottom: 14px;
 }
-
-.ras__info b { color: var(--gold); }
-
-.ras__info--guia { background: rgba(45, 226, 230, 0.05); border-color: rgba(45, 226, 230, 0.3); }
-
-.ras__info--guia b { color: var(--teal); }
-
+.ras__info b { color: var(--ink); font-weight: 700; }
+.ras__info--guia { border-left-color: var(--accent); background: var(--accent-wash); border-color: var(--accent-line); }
+.ras__info--guia b { color: var(--accent-text); }
 .ras__vivo { margin-top: 8px; }
+.ras__vivo b { color: var(--accent-text); }
+.ras__guia-btn { margin-top: 12px; font-size: 13.5px; padding: 10px 18px; }
 
-.ras__vivo b { color: var(--lime); }
-
-.ras__guia-btn { margin-top: 10px; font-size: 13.5px; padding: 9px 16px; }
-
-.ras__items { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 14px; font-size: 14px; color: var(--ink-dim); }
-
-.ras__items p { margin-bottom: 4px; }
-
-.ras__total { margin-top: 8px; color: var(--ink); }
+.ras__items {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.ras__items p { margin-bottom: 5px; }
+.ras__total {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ===== Panel de administración ===== */
 .adm__main { max-width: 860px; }
@@ -1813,7 +1854,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 .adm__login .co__sub { margin-bottom: 22px; }
 
-.ras__buscar--llave input { font-family: 'Inter', sans-serif; letter-spacing: 2px; text-transform: none; font-size: 14px; }
+.ras__buscar--llave input { font-family: 'DM Mono', ui-monospace, monospace; letter-spacing: .1em; text-transform: none; font-size: 14.5px; }
 
 .adm__saludo { margin-bottom: 20px; }
 
@@ -1827,7 +1868,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 .adm__stat {
   background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   border-radius: 14px;
   padding: 16px;
   text-align: center;
@@ -1842,8 +1883,8 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .adm__filtros { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
 
 .adm__filtros select, .adm__filtros input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface-2);
+  border: 1.5px solid var(--line-2);
   border-radius: 10px;
   padding: 10px 12px;
   color: var(--ink);
@@ -1858,12 +1899,12 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .adm__vacio { color: var(--ink-dim); font-size: 14px; padding: 18px 0; text-align: center; }
 
 .adm__pedido {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--line);
   border-left: 4px solid var(--ink-dim);
   border-radius: 12px;
   padding: 14px 16px;
   margin-bottom: 14px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-soft);
 }
 
 .adm__pedido--nuevo { border-left-color: var(--red); }
@@ -1889,8 +1930,8 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .adm__ped-ctrl { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .adm__ped-ctrl select, .adm__ped-ctrl input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface-2);
+  border: 1.5px solid var(--line-2);
   border-radius: 10px;
   padding: 8px 10px;
   color: var(--ink);
@@ -1907,8 +1948,8 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .adm__cupon-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
 
 .adm__cupon-form input, .adm__cupon-form select {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  background: var(--surface-2);
+  border: 1.5px solid var(--line-2);
   border-radius: 10px;
   padding: 10px 12px;
   color: var(--ink);
@@ -1923,7 +1964,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
-  border: 1px dashed rgba(255, 194, 75, 0.45);
+  border: 1px dashed var(--accent-line);
   border-radius: 10px;
   padding: 10px 14px;
   margin-bottom: 10px;
@@ -1934,14 +1975,14 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 .adm__cupon span { color: var(--ink-dim); }
 
-.adm__cupon.is-off { opacity: 0.5; border-style: solid; border-color: rgba(255, 255, 255, 0.15); }
+.adm__cupon.is-off { opacity: 0.5; border-style: solid; border-color: var(--line-2); }
 
 .adm__cupon.is-off b { color: var(--ink-dim); }
 
 .adm__cupon-toggle {
   margin-left: auto;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid var(--line-2);
   border-radius: 999px;
   color: var(--ink);
   font-size: 12px;
@@ -2689,3 +2730,88 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .nutri { grid-template-columns: 1fr; }
   .nutri__foto { order: -1; max-width: 420px; }
 }
+
+/* ── Centro de mando: los controles se ven ───────────────────────────
+   Todo lo de arriba solo devolvio el contraste. Esto agrega lo que
+   faltaba: que un campo se distinga del fondo al pasar por encima y al
+   escribir, y que cada pedido sea una tarjeta con borde propio en vez
+   de texto suelto. */
+.adm__campo-foco,
+.adm input, .adm textarea, .adm select,
+.adm__login input, .adm__buscar input, .ras__buscar input {
+  background: var(--surface);
+}
+.adm input:hover, .adm textarea:hover, .adm select:hover,
+.adm__login input:hover { border-color: var(--ink-dim); }
+.adm input:focus, .adm textarea:focus, .adm select:focus,
+.adm__login input:focus {
+  outline: none;
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+
+/* Cada pedido, una tarjeta */
+.adm__ped {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.adm__ped + .adm__ped { margin-top: 14px; }
+.adm__ped-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+/* Los bloques de envio, separados de verdad */
+.adm__envio, .adm__envios > li, .adm__envios > div {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  padding: 14px 16px;
+}
+.adm__envio + .adm__envio { margin-top: 12px; }
+
+/* ── Archivar y eliminar ─────────────────────────────────────────────
+   Los dos botones son deliberadamente discretos: la accion principal de
+   una tarjeta es Guardar, y estos dos no deben competir con ella. */
+.adm__archivar, .adm__eliminar {
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+  transition: border-color var(--t), color var(--t), background var(--t);
+}
+.adm__archivar:hover { border-color: var(--ink-dim); color: var(--ink); }
+.adm__eliminar { color: var(--danger); border-color: var(--danger); }
+.adm__eliminar:hover { background: var(--danger); color: #fff; }
+.adm__archivar:disabled { opacity: .5; }
+
+.adm__verarchivo {
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-2);
+}
+.adm__verarchivo[aria-pressed="true"] {
+  background: var(--cinta);
+  border-color: var(--cinta);
+  color: var(--cinta-ink);
+}
+
+/* El archivo se ve distinto de la lista viva, para que nadie confunda
+   un pedido guardado con uno que hay que despachar hoy. */
+.adm__lista--archivo .adm__pedido {
+  background: var(--bg-soft);
+  border-style: dashed;
+}
+.adm__lista--archivo .adm__pedido .adm__ped-head { background: transparent; }

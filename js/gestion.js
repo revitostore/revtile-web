@@ -1,6 +1,12 @@
 /* ===== Centro de mando Revtile =====
    Acceso: Cloudflare Access (correo) si está activo, o llave de respaldo (ADMIN_KEY). */
 
+/* Si el panel esta mostrando el archivo o la lista viva. Se declara
+   aqui arriba porque tarjetaPedido() la lee, y esa se define mucho
+   antes de donde vive el boton que la cambia. */
+let verArchivo = false;
+
+
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => '$' + Number(n || 0).toLocaleString('es-CO');
 const KEY_STORAGE = 'revtile_admin_key';
@@ -126,6 +132,8 @@ function tarjetaPedido(p) {
       </select>
       <input type="text" data-campo="nota" placeholder="Nota interna" value="${p.nota || ''}">
       <button type="button" class="btn btn--primary adm__guardar">Guardar</button>
+      <button type="button" class="adm__archivar">${verArchivo ? 'Devolver a la lista' : 'Archivar'}</button>
+      ${verArchivo ? '<button type="button" class="adm__eliminar">Eliminar</button>' : ''}
     </div>`;
 
   el.querySelector('.adm__guardar').addEventListener('click', async (ev) => {
@@ -143,6 +151,41 @@ function tarjetaPedido(p) {
       mostrarError('No se pudo guardar: ' + e.message);
     }
   });
+  el.querySelector('.adm__archivar').addEventListener('click', async (ev) => {
+    const btn = ev.target;
+    btn.disabled = true;
+    btn.textContent = '…';
+    try {
+      await api('archivar', { method: 'POST', body: JSON.stringify({ id: p.id, deshacer: verArchivo }) });
+      cargar(false);
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = verArchivo ? 'Devolver a la lista' : 'Archivar';
+      mostrarError('No se pudo archivar: ' + e.message);
+    }
+  });
+
+  const borrar = el.querySelector('.adm__eliminar');
+  if (borrar) borrar.addEventListener('click', async () => {
+    /* Se pide escribir el numero a mano: un pedido borrado no se
+       recupera, y un boton de "¿seguro?" se acepta sin leerlo. */
+    const escrito = window.prompt(
+      'Esto borra el pedido ' + p.id + ' de la base de datos.\n' +
+      'No se puede deshacer.\n\n' +
+      'Si estás seguro, escribe ' + p.id + ':');
+    if (escrito === null) return;
+    if (escrito.trim().toUpperCase() !== p.id.toUpperCase()) {
+      mostrarError('El número no coincide. No se borró nada.');
+      return;
+    }
+    try {
+      await api('eliminar', { method: 'POST', body: JSON.stringify({ id: p.id, confirmar: escrito.trim() }) });
+      cargar(false);
+    } catch (e) {
+      mostrarError('No se pudo eliminar: ' + e.message);
+    }
+  });
+
   return el;
 }
 
@@ -153,12 +196,14 @@ async function cargar(conLoader = true) {
     const params = new URLSearchParams();
     if ($('admEstado').value) params.set('estado', $('admEstado').value);
     if ($('admBuscar').value.trim()) params.set('q', $('admBuscar').value.trim());
+    if (verArchivo) params.set('archivados', '1');
     const data = await api('pedidos?' + params.toString());
     pedidos = data.pedidos;
     statsDe(pedidos);
     cont.innerHTML = '';
     if (!pedidos.length) {
-      cont.innerHTML = '<p class="adm__vacio">No hay pedidos con ese filtro.</p>';
+      cont.innerHTML = '<p class="adm__vacio">' +
+        (verArchivo ? 'El archivo está vacío.' : 'No hay pedidos con ese filtro.') + '</p>';
       return;
     }
     pedidos.forEach((p) => cont.appendChild(tarjetaPedido(p)));
@@ -169,6 +214,18 @@ async function cargar(conLoader = true) {
 
 $('admEstado').addEventListener('change', () => cargar());
 $('admRefrescar').addEventListener('click', () => cargar());
+
+/* El archivo es una vista aparte, no un filtro mas del desplegable:
+   asi queda claro que lo que se ve ahi ya no esta en la operacion. */
+const btnArchivo = document.getElementById('admVerArchivo');
+if (btnArchivo) btnArchivo.addEventListener('click', () => {
+  verArchivo = !verArchivo;
+  btnArchivo.textContent = verArchivo ? '← Volver a los pedidos' : 'Ver archivo';
+  btnArchivo.setAttribute('aria-pressed', String(verArchivo));
+  document.getElementById('admLista').classList.toggle('adm__lista--archivo', verArchivo);
+  cargar();
+});
+
 let tBuscar;
 $('admBuscar').addEventListener('input', () => {
   clearTimeout(tBuscar);
@@ -231,4 +288,3 @@ $('cuCrear').addEventListener('click', async () => {
   if (guardada && await entrar(guardada) === true) return;
   $('admLogin').hidden = false;
 })();
-
