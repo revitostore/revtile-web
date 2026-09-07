@@ -4,6 +4,7 @@
    Si algo falla, devuelve error y el checkout usa su respaldo por WhatsApp. */
 
 import { validarCupon } from './cupon.js';
+import { copiarAHoja } from './_sheets.js';
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -137,6 +138,20 @@ export async function onRequestPost(context) {
         id, metodo_pago: metodo, items: p.items, total, nombre, telefono, ciudad, direccion,
         entrega_dia: p.entrega_dia, entrega_hora: p.entrega_hora, envio: Number(p.envio) || 0, cupon, descuento,
       }));
+
+      /* Copia a la hoja de calculo. Va dentro de waitUntil, igual que el
+         aviso: corre DESPUES de responderle al cliente, asi que ni lo
+         hace esperar ni puede tumbar la venta si Google falla. Se relee
+         la fila para mandar exactamente lo que quedo guardado, no lo que
+         creemos que se guardo. */
+      context.waitUntil((async () => {
+        try {
+          const fila = await env.DB.prepare('SELECT * FROM pedidos WHERE id = ?').bind(id).first();
+          if (fila) await copiarAHoja(env, fila);
+        } catch (e) {
+          console.error('[sheets] fallo la copia de', id, e.message);
+        }
+      })());
     }
 
     return json({ ok: true, id, cupon, descuento });

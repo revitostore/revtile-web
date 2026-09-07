@@ -9,3 +9,10 @@ node_modules/
 _to_delete/
 _*.py
 Claude outputs/
+
+# La llave de la cuenta de servicio de Google. Nunca al repositorio:
+# va como variable cifrada en Cloudflare (GOOGLE_SA_JSON).
+*-*.json.key
+*service-account*.json
+*gserviceaccount*.json
+revtile-*.json
