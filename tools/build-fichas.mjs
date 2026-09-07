@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+
+/* Un dato legal que no existe no se anuncia: la fila simplemente no
+   se pinta. Nunca se escribe un valor inventado ni la palabra
+   "Pendiente", que en produccion se lee como un error. */
+const fila = (k, v) => v ? `<div><span class="k">${k}</span><span class="v">${v}</span></div>` : '';
 /* Genera las tres fichas de producto desde productos.json + el contenido de
    abajo, para que el precio viva en un solo sitio y las tres páginas no se
    desincronicen nunca.
@@ -121,9 +126,9 @@ ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'Muscle
     </div>
     <div class="footer__legal">
       <div><span class="k">Nombre comercial</span><span class="v">REVTILE</span></div>
-      <div><span class="k">Razón social</span><span class="v">${data._pendientes.razon_social || 'Pendiente'}</span></div>
-      <div><span class="k">NIT</span><span class="v">${data._pendientes.nit || 'Pendiente'}</span></div>
-      <div><span class="k">Dirección de notificación</span><span class="v">${data._pendientes.direccion_notificacion || 'Pendiente'}</span></div>
+      ${fila('Razón social', data._pendientes.razon_social)}
+      ${fila('NIT', data._pendientes.nit)}
+      ${fila('Dirección de notificación', data._pendientes.direccion_notificacion)}
     </div>
     <div class="footer__base">
       <p>© 2026 REVTILE · Creatina original, sellada y verificable</p>
