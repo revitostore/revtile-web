@@ -724,10 +724,10 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   border-top: 1px solid var(--line);
 }
 .product__price {
-  font-family: 'Anton', sans-serif;
-  font-size: clamp(38px, 4.2vw, 50px);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: clamp(34px, 3.6vw, 44px);
   font-weight: 400;
-  letter-spacing: .012em;
+  letter-spacing: .01em;
   color: var(--ink);
   line-height: .9;
   font-variant-numeric: tabular-nums;
@@ -848,7 +848,7 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   text-transform: uppercase;
   color: var(--accent-text);
 }
-.picker__size { font-family: 'Barlow', system-ui, sans-serif; font-size: 17px; font-weight: 700; }
+.picker__size { font-family: 'Barlow', system-ui, sans-serif; font-size: 17px; font-weight: 600; }
 .picker__price { font-size: 13px; color: var(--ink-dim); }
 
 /* combo */
@@ -933,10 +933,10 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 .calc__stat:last-child { border-right: 0; }
 .calc__stat b {
   font-family: 'Barlow', system-ui, sans-serif;
-  font-size: clamp(26px, 3.1vw, 33px);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.04;
+  font-size: clamp(25px, 2.9vw, 31px);
+  font-weight: 600;
+  letter-spacing: .012em;
+  line-height: 1.15;
   font-variant-numeric: tabular-nums;
 }
 .calc__stat:last-child b { color: var(--accent-text); }
@@ -963,10 +963,10 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   gap: 8px;
 }
 .benefit__value {
-  font-family: 'Anton', sans-serif;
-  font-size: clamp(34px, 5vw, 48px);
-  font-weight: 800;
-  letter-spacing: .006em;
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: clamp(31px, 4.2vw, 42px);
+  font-weight: 600;
+  letter-spacing: .01em;
   line-height: 1;
   color: var(--accent-text);
 }
@@ -1081,9 +1081,9 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 .social-proof__stat { display: flex; flex-direction: column; gap: 6px; }
 .social-proof__stat b {
   font-family: 'Barlow', system-ui, sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: .012em;
   font-variant-numeric: tabular-nums;
 }
 .social-proof__stat span { font-size: 13px; color: var(--ink-dim); }
@@ -1269,7 +1269,7 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 }
 .buybar__thumbs img + img { margin-left: -10px; }
 .buybar__text { display: flex; flex-direction: column; min-width: 0; }
-.buybar__text b { font-family: 'Barlow', system-ui, sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+.buybar__text b { font-family: 'Barlow', system-ui, sans-serif; font-size: 17px; font-weight: 600; letter-spacing: .008em; }
 .buybar__text span { font-size: 12.5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .buybar__btn { flex: none; min-height: 46px; }
 body.buybar-on { padding-bottom: 76px; }
@@ -1350,11 +1350,11 @@ body.buybar-on .wa-float { bottom: 86px; }
   border-top: 1px solid var(--line);
 }
 .pp-buy__price .now {
-  font-family: 'Anton', sans-serif;
-  font-size: clamp(48px, 6.6vw, 74px);
+  font-family: 'Barlow', system-ui, sans-serif;
+  font-size: clamp(42px, 5.4vw, 60px);
   font-weight: 400;
-  letter-spacing: .008em;
-  line-height: .88;
+  letter-spacing: .01em;
+  line-height: 1.05;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -1381,7 +1381,7 @@ body.buybar-on .wa-float { bottom: 86px; }
   gap: 6px;
 }
 .pp-stat:last-child { border-right: 0; }
-.pp-stat b { font-family: 'Barlow', system-ui, sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.pp-stat b { font-family: 'Barlow', system-ui, sans-serif; font-size: 20px; font-weight: 600; letter-spacing: .008em; }
 .pp-stat span { font-size: 11.5px; color: var(--ink-dim); }
 
 .pp-note { font-size: 13.5px; color: var(--ink-2); }
@@ -1416,7 +1416,7 @@ body.buybar-on .wa-float { bottom: 86px; }
 }
 .pp-sticky.is-visible { transform: none; }
 .pp-sticky__price { display: flex; flex-direction: column; }
-.pp-sticky__price b { font-family: 'Barlow', system-ui, sans-serif; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+.pp-sticky__price b { font-family: 'Barlow', system-ui, sans-serif; font-size: 18px; font-weight: 600; letter-spacing: .008em; }
 .pp-sticky__price span { font-size: 11.5px; color: var(--ink-dim); }
 .pp-sticky .btn { flex: none; min-height: 46px; }
 
@@ -1711,7 +1711,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 .ras__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
 
-.ras__id { font-family: 'Barlow', system-ui, sans-serif; font-size: 22px; font-weight: 800; }
+.ras__id { font-family: 'Barlow', system-ui, sans-serif; font-size: 22px; font-weight: 600; }
 
 .ras__fecha { color: var(--ink-dim); font-size: 13px; margin-top: 2px; }
 
@@ -2193,8 +2193,8 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__prod img { width: 100%; max-width: 108px; aspect-ratio: 1/1; object-fit: contain; }
 .co__prod-name { font-size: 12.5px; line-height: 1.35; color: var(--ink-2); }
 .co__prod-price {
-  font-family: 'Barlow', system-ui, sans-serif; font-size: 20px; font-weight: 700;
-  letter-spacing: -0.025em; color: var(--ink); font-variant-numeric: tabular-nums;
+  font-family: 'Barlow', system-ui, sans-serif; font-size: 18px; font-weight: 600;
+  letter-spacing: .008em; color: var(--ink); font-variant-numeric: tabular-nums;
 }
 .co__nuevo {
   position: absolute; top: 8px; right: 8px;
@@ -2434,9 +2434,9 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   font-size: 15px !important; color: var(--ink) !important;
 }
 .co__total-final b {
-  font-family: 'Anton', sans-serif !important; font-size: 38px !important;
-  font-weight: 700 !important; letter-spacing: -0.045em; color: var(--ink) !important;
-  font-variant-numeric: tabular-nums; line-height: .9;
+  font-family: 'Barlow', system-ui, sans-serif !important; font-size: 33px !important;
+  font-weight: 600 !important; letter-spacing: .01em; color: var(--ink) !important;
+  font-variant-numeric: tabular-nums; line-height: 1.1;
 }
 .co__total-lines p b#resEnvio { color: var(--accent); }
 .co__resumen-pie {
@@ -2471,8 +2471,8 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__bar-total { display: flex; flex-direction: column; }
 .co__bar-total span { font-size: 11.5px; color: var(--ink-dim); }
 .co__bar-total b {
-  font-family: 'Barlow', system-ui, sans-serif; font-size: 22px; font-weight: 700;
-  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  font-family: 'Barlow', system-ui, sans-serif; font-size: 20px; font-weight: 600;
+  letter-spacing: .01em; font-variant-numeric: tabular-nums;
 }
 .co__bar-btn { flex: none; min-height: 46px; }
 
