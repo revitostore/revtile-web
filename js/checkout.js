@@ -6,8 +6,9 @@ const PRODUCTOS = {
   mt: { nombre: 'MT Platinum Creatine 400 g', corto: 'MT 400g', precio: 140000 },
   on120: { nombre: 'ON Micronized Creatine 600 g (120 serv.)', corto: 'ON 600g', precio: 170000 },
 };
-const ENVIO_NACIONAL = 5000;         // fuera de Bogotá, sea cual sea el método de pago
-const ENVIO_BOGOTA = 0;              // en Bogotá el envío es gratis
+/* El envío es gratis a cualquier ciudad de Colombia: REVTILE asume el
+   despacho completo. Sin recargos ni excepciones. */
+const ENVIO = 0;
 const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
@@ -208,7 +209,7 @@ function calcular() {
   const combo = pares * COMBO_POR_PAR;
   const esBogota = $('fCiudad').value === 'bogota';
   const esCE = state.pago === 'contraentrega';
-  const envio = esBogota ? ENVIO_BOGOTA : ENVIO_NACIONAL;
+  const envio = ENVIO;
   const programado = esBogota && !esCE; // entrega con día y hora a elección
   /* cupón: se recalcula sobre subtotal − combo (el servidor re-valida al registrar) */
   let descuento = 0;
@@ -241,10 +242,10 @@ function render() {
   });
   $('mAntDetalle').textContent = esBogota
     ? 'Envío gratis y tú eliges el día y la hora de la entrega.'
-    : `Envío ${fmt(ENVIO_NACIONAL)} a tu ciudad. Sale el mismo día.`;
+    : 'Envío gratis a tu ciudad. Sale el mismo día.';
   $('mCEDetalle').textContent = esBogota
     ? 'Pagas al recibir · entrega en 2-3 días hábiles · envío GRATIS'
-    : `Pagas al recibir. 2 a 3 días hábiles, envío ${fmt(ENVIO_NACIONAL)}.`;
+    : 'Pagas al recibir. 2 a 3 días hábiles, con envío gratis.';
 
   /* agenda de entrega programada */
   $('coProg').hidden = !programado;

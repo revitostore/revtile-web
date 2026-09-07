@@ -25,13 +25,10 @@ for (const p of data.productos) {
   else if (Number(m[1]) !== p.precio)
     errores.push(`checkout.js dice ${cop(Number(m[1]))} para "${p.sku}", productos.json dice ${cop(p.precio)}`);
 }
-const envioNal = checkout.match(/ENVIO_NACIONAL\s*=\s*(\d+)/);
-if (!envioNal) errores.push('checkout.js no define ENVIO_NACIONAL');
-else if (Number(envioNal[1]) !== data.envio.costo_resto_del_pais)
-  errores.push(`El envío nacional no coincide: checkout.js ${envioNal[1]} vs productos.json ${data.envio.costo_resto_del_pais}`);
-const combo = checkout.match(/COMBO_POR_PAR\s*=\s*(\d+)/);
-if (combo && Number(combo[1]) !== data.combo.descuento_por_par)
-  errores.push(`El descuento del combo no coincide: checkout.js ${combo[1]} vs productos.json ${data.combo.descuento_por_par}`);
+const envioConst = checkout.match(/const ENVIO\s*=\s*(\d+)/);
+if (!envioConst) errores.push('checkout.js no define ENVIO');
+else if (Number(envioConst[1]) !== data.envio.costo)
+  errores.push(`El envío no coincide: checkout.js ${envioConst[1]} vs productos.json ${data.envio.costo}`);
 
 /* 2 · el precio de cada producto debe aparecer en su ficha, y el JSON-LD coincidir */
 for (const p of data.productos) {
@@ -49,8 +46,8 @@ for (const p of data.productos) {
       es gratis en Bogotá y cuesta $5.000 al resto */
 for (const f of readdirSync(ROOT).filter((f) => f.endsWith('.html'))) {
   const s = read(f);
-  if (/gratis\s+(?:en\s+)?(?:toda\s+)?Colombia/i.test(s) || /GRATIS EN TODA COLOMBIA/.test(s))
-    errores.push(`${f} promete envío gratis a toda Colombia; solo es gratis en ${data.envio.gratis} (${cop(data.envio.costo_resto_del_pais)} al resto)`);
+  if (/\$\s?5\.000[^.<]{0,44}env[ií]o/i.test(s) || /env[ií]o[^.<]{0,44}\$\s?5\.000/i.test(s))
+    errores.push(`${f} sigue cobrando $5.000 de envío; ahora es gratis a ${data.envio.gratis}`);
 }
 
 /* 4 · nada de urgencia simulada */

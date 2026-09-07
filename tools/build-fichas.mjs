@@ -95,7 +95,7 @@ const footer = () => `  <footer class="footer">
     <div class="footer__grid">
       <div class="footer__brand">
         <p class="footer__logo">REVTILE<span class="nav__dot">.</span></p>
-        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp, envío gratis en Bogotá y $5.000 al resto del país.</p>
+        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp, envío gratis a toda Colombia.</p>
 ${SOCIALES}
       </div>
       <nav class="footer__col" aria-label="Tienda">
@@ -108,7 +108,6 @@ ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'Muscle
         <p class="footer__title">Ayuda</p>
         <a href="index.html#faq">Preguntas frecuentes</a>
         <a href="rastreo.html">Rastrear mi pedido</a>
-        <a href="verify.html">Verificar un registro</a>
         <a href="guia-creatina-original.html">¿Es original? Guía con fotos</a>
         <a href="on-vs-muscletech.html">ON o MuscleTech</a>
       </nav>
@@ -148,7 +147,7 @@ function ficha(p) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${c.titulo}</title>
   <meta name="description" content="${nombreCompleto}, ${p.servicios} servicios de ${p.gramos_por_servicio} g. ${cop(p.precio)} COP, ${cop(porServicio)} por servicio. Sellada de fábrica, con lote y vencimiento verificables. ${data.envio.frase_corta}.">
-  <meta name="theme-color" content="#0C0D0F">
+  <meta name="theme-color" content="#EDEDE8">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="canonical" href="https://revtile.com.co/${p.pagina}">
   <meta property="og:title" content="${nombreCompleto} — REVTILE">
@@ -161,9 +160,9 @@ function ficha(p) {
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=30">
+  <link rel="stylesheet" href="css/styles.css?v=60">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -227,15 +226,15 @@ ${c.galeria.map(([src, alt], i) => `          <button class="pp-gal__thumb${i ==
         <div class="pp-buy__price">
           <span class="now">${cop(p.precio)}</span>
           <span class="was">${cop(p.precio_antes)}</span>
-          <span class="mono" style="font-size:13px;color:var(--ink-dim)">${data.moneda}</span>
         </div>
         <p class="pp-buy__unit"><b>${cop(porServicio)}</b> por servicio · te dura <b>${dias} días</b> tomando ${p.gramos_por_servicio} g al día</p>
+        <span class="sello">Envío gratis a toda Colombia</span>
 
         <ul class="checks" style="margin-block:8px">
           <li class="check">Sellada de fábrica</li>
           <li class="check">Lote y vencimiento verificables</li>
           <li class="check">Fotos de tu tarro antes del despacho</li>
-          <li class="check">Envío gratis en Bogotá</li>
+          <li class="check">Envío gratis a toda Colombia</li>
         </ul>
 
         <a class="btn btn--primary btn--full btn--big" href="pedido.html?producto=${p.sku}">Pedir esta creatina <span class="btn__arrow" aria-hidden="true">→</span></a>
@@ -277,7 +276,6 @@ ${data.productos.map((o) => `        <a class="picker__opt${o.sku === p.sku ? ' 
         <div class="reveal">
           <p class="section-lead">${c.verificacion}</p>
           <p class="disclaimer">REVTILE documenta lo que puede observarse del producto: el sello, el lote, la fecha y el estado del envase. No somos un laboratorio ni una entidad certificadora, y una inspección visual no reemplaza la verificación con el fabricante. Por eso te damos los datos: para que la verificación la puedas hacer tú.</p>
-          <p style="margin-top:24px"><a class="btn btn--ghost" href="verify.html">Ver un registro de ejemplo <span class="btn__arrow" aria-hidden="true">→</span></a></p>
         </div>
         <div class="reveal">
           <table class="spec">
@@ -327,8 +325,7 @@ ${c.datos.map(([k, v]) => `              <tr><th scope="row">${k}</th><td>${v}</
           <table class="spec">
             <caption>Envío</caption>
             <tbody>
-              <tr><th scope="row">Bogotá</th><td>Gratis</td></tr>
-              <tr><th scope="row">Resto del país</th><td>${cop(data.envio.costo_resto_del_pais)}</td></tr>
+              <tr><th scope="row">Costo</th><td>Gratis a toda Colombia</td></tr>
               <tr><th scope="row">Tiempo</th><td>${data.envio.dias_habiles} días hábiles, con guía</td></tr>
               <tr><th scope="row">Entrega programada</th><td>Bogotá con pago anticipado: eliges día y hora (lun a sáb, 9 a. m. – 6 p. m.)</td></tr>
             </tbody>
@@ -369,7 +366,7 @@ ${c.datos.map(([k, v]) => `              <tr><th scope="row">${k}</th><td>${v}</
         </details>
         <details class="faq__item reveal">
           <summary>¿Puedo pagar al recibir?</summary>
-          <p>Sí, contraentrega en todo el país: pagas en efectivo o por transferencia al recibir. El envío cuesta lo mismo que pagando por anticipado — gratis en Bogotá, ${cop(data.envio.costo_resto_del_pais)} al resto del país.</p>
+          <p>Sí, contraentrega en todo el país: pagas en efectivo o por transferencia al recibir, con el mismo envío gratis.</p>
         </details>
         <details class="faq__item reveal">
           <summary>¿Y si llega con el sello roto?</summary>
