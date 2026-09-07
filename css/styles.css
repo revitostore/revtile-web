@@ -2712,8 +2712,16 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .nutri__notas li { font-size: 14px; color: var(--ink-2); line-height: 1.55; }
 .nutri__fuente { font-size: 12.5px; color: var(--ink-dim); }
 .nutri__foto { min-width: 0; }
+/* El enlace tiene que ser bloque: envuelve una imagen al 100 % y, si se
+   queda en linea, ese 100 % no tiene contra que medirse y la foto
+   colapsa. El aspect-ratio le reserva el alto aunque la imagen tarde. */
+.nutri__foto a { display: block; }
 .nutri__foto img {
+  display: block;
   width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  min-height: 120px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);

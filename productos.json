@@ -43,7 +43,9 @@
           "El valor diario de la creatina no está establecido por la FDA.",
           "Uso sugerido del fabricante: una cucharadita rasa en un batido de proteína o en el líquido de tu preferencia, revuelto con cuchara."
         ],
-        "fuente": "Transcrito del envase de Optimum Nutrition Micronized Creatine Powder, 300 g."
+        "fuente": "Transcrito del envase de Optimum Nutrition Micronized Creatine Powder, 300 g.",
+        "ancho": 1000,
+        "alto": 1000
       }
     },
     {
@@ -76,7 +78,9 @@
           "Uso sugerido del fabricante: fase de carga de 3 días con 1 scoop cuatro veces al día en 240 ml de agua; después, 1 a 2 scoops al día.",
           "El fabricante indica que no está destinado a menores de 18 años, ni a mujeres embarazadas o lactantes."
         ],
-        "fuente": "Transcrito del envase de MuscleTech Platinum Creatine Monohydrate, 400 g. Distribuido por Iovate Health Sciences U.S.A. Inc."
+        "fuente": "Transcrito del envase de MuscleTech Platinum Creatine Monohydrate, 400 g. Distribuido por Iovate Health Sciences U.S.A. Inc.",
+        "ancho": 1100,
+        "alto": 1100
       }
     },
     {
@@ -107,7 +111,9 @@
           "El valor diario de la creatina no está establecido por la FDA.",
           "Uso sugerido del fabricante: una cucharadita rasa en un batido de proteína o en el líquido de tu preferencia, revuelto con cuchara."
         ],
-        "fuente": "Transcrito del envase de Optimum Nutrition Micronized Creatine Powder, 600 g."
+        "fuente": "Transcrito del envase de Optimum Nutrition Micronized Creatine Powder, 600 g.",
+        "ancho": 1000,
+        "alto": 1000
       }
     }
   ],

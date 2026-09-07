@@ -41,7 +41,7 @@ const nutricional = (p) => {
         </div>
         <figure class="nutri__foto">
           <a href="${n.foto}.jpg" target="_blank" rel="noopener">
-            <picture><source srcset="${n.foto}.webp" type="image/webp"><img src="${n.foto}.jpg" alt="Foto de la tabla nutricional impresa en el envase de ${p.marca} ${p.nombre}" decoding="async" width="1000" height="1000"></picture>
+            <picture><source srcset="${n.foto}.webp" type="image/webp"><img src="${n.foto}.jpg" alt="Foto de la tabla nutricional impresa en el envase de ${p.marca} ${p.nombre}" decoding="async" width="${n.ancho || 1000}" height="${n.alto || 1000}"></picture>
           </a>
           <figcaption>La etiqueta del envase. Toca para verla completa.</figcaption>
         </figure>
