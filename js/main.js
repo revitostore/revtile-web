@@ -27,6 +27,41 @@
     setTimeout(function () { reveals.forEach(function (el) { el.classList.add('is-in'); }); }, 4000);
   }
 
+
+  /* ── El campo rojo del hero se retira con el scroll ──────────────
+     Una sola escritura de una variable CSS por cuadro, y solo mientras
+     el hero está a la vista: fuera de ahí el listener no hace nada. */
+  var hero = document.querySelector('.hero--solo');
+  var campo = document.querySelector('.hero__campo');
+  if (hero && campo && !reduce) {
+    var enPantalla = true;
+    var pedido = false;
+
+    var pintar = function () {
+      pedido = false;
+      var alto = hero.offsetHeight || 1;
+      var avance = Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / alto));
+      /* de 0 % a 46 %: el campo se desliza hacia la derecha y deja el
+         catálogo sobre negro limpio */
+      hero.style.setProperty('--campo', (avance * 46).toFixed(2) + '%');
+    };
+
+    var alScroll = function () {
+      if (!enPantalla || pedido) return;
+      pedido = true;
+      requestAnimationFrame(pintar);
+    };
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { enPantalla = e.isIntersecting; if (enPantalla) alScroll(); });
+      }, { rootMargin: '10px' }).observe(hero);
+    }
+    window.addEventListener('scroll', alScroll, { passive: true });
+    window.addEventListener('resize', alScroll, { passive: true });
+    pintar();
+  }
+
   /* ── Nav: línea inferior al despegarse del borde ───────────────── */
   var nav = $('#nav');
   if (nav) {
