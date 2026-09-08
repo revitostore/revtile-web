@@ -33,7 +33,11 @@ export async function onRequest(context) {
       || (request.headers.get('cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1];
     if (jwt) {
       try {
-        const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        /* base64url -> base64 CON relleno: sin los '=' finales, atob falla
+           según la longitud del token (por eso el acceso era intermitente) */
+        let b64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        b64 += '='.repeat((4 - (b64.length % 4)) % 4);
+        const payload = JSON.parse(atob(b64));
         correoAccess = String(payload.email || '').toLowerCase();
       } catch (e) { /* token ilegible: seguimos sin correo */ }
     }
