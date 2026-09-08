@@ -762,6 +762,35 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 }
 .product__envio { display: none; }
 
+/* ── Aprende, versión lista ──────────────────────────────────────────
+   Las guías ya no son tarjetones: una fila por guía, como índice de
+   revista. La portada respira y las guías siguen a un clic. */
+.aprende__lista {
+  list-style: none;
+  padding: 0;
+  border-top: 1.5px solid var(--ink);
+}
+.aprende__lista li { border-bottom: 1px solid var(--line-2); }
+.aprende__lista a {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 18px 4px;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: clamp(15.5px, 2vw, 18px);
+  line-height: 1.4;
+  transition: color var(--t);
+}
+.aprende__lista a:hover { color: var(--accent-text); }
+.aprende__lista .aprende__tag { flex: 0 0 96px; }
+.aprende__lista .aprende__leer { margin-left: auto; color: var(--accent-text); font-weight: 700; }
+@media (max-width: 640px) {
+  .aprende__lista a { flex-wrap: wrap; gap: 6px 16px; }
+  .aprende__lista .aprende__tag { flex-basis: 100%; }
+}
+
 /* ── Creatinas de la semana ──────────────────────────────────────────
    El empujón social junto al catálogo: un dato pequeño, en chip, que
    cambia solo cada semana (lo calcula main.js). */
