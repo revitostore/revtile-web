@@ -72,6 +72,7 @@ const CONTENIDO = {
     resumen: 'La presentación con la que casi todo el mundo empieza: dos meses de toma diaria, de la marca de creatina más vendida del mundo.',
     galeria: [
       ['assets/on.png', 'Tarro de Optimum Nutrition Micronized Creatine Powder de 300 g'],
+      ['assets/tablas/tabla-on.jpg', 'Tabla nutricional impresa en el envase de 300 g'],
       ['assets/galeria/sello-on.jpg', 'Sello interno de fábrica de Optimum Nutrition intacto'],
       ['assets/galeria/detalle-1.jpg', 'Lote y fecha de vencimiento impresos por el fabricante en la base del tarro'],
       ['assets/galeria/polvo-on.jpg', 'Polvo de creatina micronizada, fino y blanco'],
@@ -94,6 +95,7 @@ const CONTENIDO = {
     resumen: 'Cien gramos más que la presentación de entrada y el único de nuestros tarros con sello de autenticidad QR del propio fabricante.',
     galeria: [
       ['assets/muscletech.png', 'Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g'],
+      ['assets/tablas/tabla-mt.jpg', 'Tabla nutricional impresa en el envase de MuscleTech'],
       ['assets/galeria/sello-muscletech.jpg', 'Sello de autenticidad de MuscleTech con código QR verificable'],
       ['assets/galeria/tarro-muscletech.jpg', 'Tarro de MuscleTech Platinum Creatine sellado de fábrica'],
     ],
@@ -112,6 +114,7 @@ const CONTENIDO = {
     resumen: 'El tarro grande: unos cuatro meses de toma diaria y el precio por servicio más bajo de la tienda.',
     galeria: [
       ['assets/on120.png', 'Tarro de Optimum Nutrition Micronized Creatine Powder de 600 g'],
+      ['assets/tablas/tabla-on120.jpg', 'Tabla nutricional impresa en el envase de 600 g'],
       ['assets/galeria/on120-tarro.jpg', 'Tarro de 600 g sellado de fábrica'],
       ['assets/galeria/on120-sello.jpg', 'Sello interno de aluminio intacto del tarro de 600 g'],
       ['assets/galeria/on120-lote.jpg', 'Lote y fecha de vencimiento impresos en la base del tarro de 600 g'],
@@ -214,7 +217,7 @@ function ficha(p) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=62">
+  <link rel="stylesheet" href="css/styles.css?v=63">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">

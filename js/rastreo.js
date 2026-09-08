@@ -102,8 +102,14 @@ function pintar(p) {
   }
 
   /* productos (sin datos personales) */
-  $('rasItems').innerHTML = (p.items || [])
-    .map((i) => `<p>▪ ${i.c}× ${i.nombre}</p>`)
+  /* el pedido en grande, con la foto de cada tarro */
+  const imgDe = (nombre) => {
+    if (/600/.test(nombre)) return 'assets/on120.png';
+    if (/platinum|muscletech|\bmt\b|400/i.test(nombre)) return 'assets/muscletech.png';
+    return 'assets/on.png';
+  };
+  $('rasItems').innerHTML = '<p class="ras__items-titulo">Tu pedido</p>' + (p.items || [])
+    .map((i) => `<div class="ras__item"><img src="${imgDe(i.nombre)}" alt="" width="56" height="56" loading="lazy"><span><b>${i.c}×</b> ${i.nombre}</span></div>`)
     .join('') + `<p class="ras__total">Total: <b>$${Number(p.total).toLocaleString('es-CO')}</b>${p.metodo_pago === 'contraentrega' ? ' (pagas al recibir)' : ''}</p>`;
 
   $('rasWa').href = 'https://wa.me/573214569600?text=' + encodeURIComponent(`Hola Revtile 🦎, pregunta sobre mi pedido ${p.id}`);
