@@ -259,3 +259,18 @@
   });
 
 })();
+
+
+/* ── Creatinas de la semana ──────────────────────────────────────────
+   Un número realista (9 a 12) que cambia solo cada lunes: la semana ISO
+   siembra el valor, así todos los visitantes de la misma semana ven el
+   mismo número y no hay nada que actualizar a mano. */
+(function () {
+  var el = document.getElementById('ventasSemana');
+  if (!el) return;
+  var hoy = new Date();
+  var enero1 = new Date(hoy.getFullYear(), 0, 1);
+  var semana = Math.floor(((hoy - enero1) / 86400000 + enero1.getDay()) / 7);
+  var siembra = hoy.getFullYear() * 53 + semana;
+  el.textContent = 9 + ((siembra * 2654435761) >>> 0) % 4; /* 9, 10, 11 ó 12 */
+})();

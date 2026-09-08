@@ -762,6 +762,35 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 }
 .product__envio { display: none; }
 
+/* ── Creatinas de la semana ──────────────────────────────────────────
+   El empujón social junto al catálogo: un dato pequeño, en chip, que
+   cambia solo cada semana (lo calcula main.js). */
+.ventas-semana {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.ventas-semana::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: 0 0 auto;
+}
+.ventas-semana b {
+  font: inherit;
+  font-weight: 500;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── Tachado animado ─────────────────────────────────────────────────
    El precio de antes se tacha "a mano" un instante después de cargar:
    la raya crece de izquierda a derecha, sutil y una sola vez. */
@@ -2679,6 +2708,17 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .gallery__item figcaption { min-height: 3.9em; }
 
 @media (max-width: 860px) {
+  /* ── La portada compacta en el celular ─────────────────────────────
+     Los checks de cada tarjeta repetían lo mismo tres veces (ya lo dice
+     el hero) y los datos de la creatina iban en una columna eterna. */
+  .product .checks { display: none; }
+  .product__photo { aspect-ratio: auto; }
+  .product__photo img { height: 215px; width: auto; max-width: 100%; margin-inline: auto; object-fit: contain; }
+  .products__grid { gap: 18px; }
+  .benefits__grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .benefit__value { font-size: 30px; }
+  .benefit__text { font-size: 13px; }
+
   /* en móvil las flechas van dentro, para no salirse de la pantalla */
   .gallery__nav--atras  { left: 6px; }
   .gallery__nav--alante { right: 6px; }
