@@ -762,6 +762,54 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 }
 .product__envio { display: none; }
 
+/* ── Compra protegida ────────────────────────────────────────────────
+   El seguro de la compra, dicho en concreto y junto al botón de pagar:
+   qué garantiza REVTILE y cómo se reclama. */
+.co__protegida {
+  margin-top: 18px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  background: var(--surface);
+}
+.co__protegida-titulo {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.co__protegida-titulo::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #F3EFE4;
+  background-image: url('../assets/mascota-chip.webp');
+  background-size: cover;
+  border: 1px solid var(--cinta);
+}
+.co__protegida ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.co__protegida li {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  padding-left: 18px;
+  position: relative;
+}
+.co__protegida li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
 /* ── Aprende, versión lista ──────────────────────────────────────────
    Las guías ya no son tarjetones: una fila por guía, como índice de
    revista. La portada respira y las guías siguen a un clic. */

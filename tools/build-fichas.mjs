@@ -96,8 +96,10 @@ const CONTENIDO = {
     galeria: [
       ['assets/muscletech.png', 'Tarro de MuscleTech Platinum Creatine Monohydrate de 400 g'],
       ['assets/tablas/tabla-mt.jpg', 'Tabla nutricional impresa en el envase de MuscleTech'],
+      ['assets/galeria/mt-tarro.jpg', 'Tarro de MuscleTech Platinum Creatine sellado, de frente'],
+      ['assets/galeria/mt-sello-tapa.jpg', 'Sello morado de autenticidad de MuscleTech en la tapa del tarro'],
+      ['assets/galeria/mt-destape.jpg', 'Tarro de MuscleTech destapado con la tapa apoyada al lado'],
       ['assets/galeria/sello-muscletech.jpg', 'Sello de autenticidad de MuscleTech con código QR verificable'],
-      ['assets/galeria/tarro-muscletech.jpg', 'Tarro de MuscleTech Platinum Creatine sellado de fábrica'],
     ],
     datos: [
       ['Contenido neto', '400 g'],
@@ -217,7 +219,7 @@ function ficha(p) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=65">
+  <link rel="stylesheet" href="css/styles.css?v=66">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
