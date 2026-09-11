@@ -307,28 +307,90 @@ try {
     $('mapHint').textContent = '📍 Punto de entrega ajustado — irá en tu pedido.';
     direccionDelPin(state.lat, state.lng);
   });
+  /* Leaflet pinta gris si mide el mapa antes de que el layout termine */
+  setTimeout(() => mapa.invalidateSize(), 400);
+  window.addEventListener('load', () => setTimeout(() => mapa.invalidateSize(), 100));
 } catch (e) {
   document.querySelector('.co__map-block').hidden = true; // si el mapa falla, el pedido sigue funcionando
 }
 
-/* normaliza nomenclatura colombiana para que el buscador la entienda */
+/* normaliza nomenclatura colombiana para que el buscador la entienda:
+   quita apto/torre/interior (no geocodifican), expande abreviaturas y
+   deja la placa pegada (52-59) */
 function normalizarDireccion(d) {
   return d
+    .split(',')[0]
+    .replace(/\b(apto|apt|apartamento|torre|int|interior|bloque|blq|piso|of|oficina|local|manzana|mz|conjunto|edificio|ed|casa)\b\.?[\s\S]*$/gi, ' ')
     .replace(/[#º°]/g, ' ')
-    .replace(/\bn[oº]?\.?(?=\s|\d)/gi, ' ')
-    .replace(/\b(cra|kra|kr|cr)\.?\b/gi, 'Carrera')
-    .replace(/\b(cll|cl)\.?\b/gi, 'Calle')
-    .replace(/\bav\.?\b/gi, 'Avenida')
-    .replace(/\b(tv|trans)\.?\b/gi, 'Transversal')
-    .replace(/\b(dg|diag)\.?\b/gi, 'Diagonal')
+    .replace(/\bn(o|ro|um|úm)?\.?(?=\s|\d)/gi, ' ')
+    .replace(/\bav(?:enida)?\.?\s*(?:cra|kra|kr|cr|k)\.?(?=\s|\d)|\bak\.?(?=\s|\d)/gi, 'Avenida Carrera')
+    .replace(/\bav(?:enida)?\.?\s*(?:cll|cl)\.?(?=\s|\d)|\bac\.?(?=\s|\d)/gi, 'Avenida Calle')
+    .replace(/\b(cra|kra|kr|cr)\b\.?/gi, 'Carrera')
+    .replace(/\b(cll|cl)\b\.?/gi, 'Calle')
+    .replace(/\b(av|avda)\b\.?/gi, 'Avenida')
+    .replace(/\b(tv|tranv|transv|trans)\b\.?/gi, 'Transversal')
+    .replace(/\b(dg|diag)\b\.?/gi, 'Diagonal')
+    .replace(/(\d)\s*-\s*(\d)/g, '$1-$2')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-async function buscarNominatim(q) {
-  const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&q=' + encodeURIComponent(q));
-  const data = await r.json();
-  return data.length ? data[0] : null;
+async function pedirJson(url) {
+  const r = await fetch(url);
+  return r.ok ? r.json() : null;
+}
+const esperar = (ms) => new Promise((res) => setTimeout(res, ms));
+
+async function buscarNominatim(q, extra) {
+  const data = await pedirJson('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=co&addressdetails=1&'
+    + (extra || 'q=' + encodeURIComponent(q)));
+  if (!data || !data.length) return null;
+  return { lat: +data[0].lat, lon: +data[0].lon, casa: !!(data[0].address && data[0].address.house_number) };
+}
+
+/* segundo motor (Photon/OSM): entiende mejor las vías con letra (53C, 68D Sur) */
+async function buscarPhoton(q) {
+  const c = mapa ? mapa.getCenter() : { lat: BOGOTA[0], lng: BOGOTA[1] };
+  const data = await pedirJson('https://photon.komoot.io/api/?limit=1&lang=es&lat=' + c.lat + '&lon=' + c.lng + '&q=' + encodeURIComponent(q));
+  const f = data && data.features && data.features[0];
+  if (!f || (f.properties && f.properties.countrycode && f.properties.countrycode !== 'CO')) return null;
+  return { lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0], casa: !!(f.properties && f.properties.housenumber) };
+}
+
+/* de la búsqueda más exacta a la más amplia; devuelve también qué tan fina fue */
+async function geocodificar(norm, ciudad) {
+  const zona = ciudad + ', Colombia';
+  const sinPlaca = norm.replace(/(\d+[a-z]?)\s*-\s*\d+\s*$/i, '$1').trim();
+  const via = norm.match(/^(Avenida Carrera|Avenida Calle|Carrera|Calle|Avenida|Transversal|Diagonal)\s+(\d+\s?[a-z]?(?:\s?(?:bis|sur|norte|este|oeste))*)\s+(.+)$/i);
+
+  const rondas = [];
+  if (via) {
+    /* consulta estructurada: numero de casa + via, la que mejor da en el clavo */
+    rondas.push({ extra: 'street=' + encodeURIComponent(via[3] + ' ' + via[1] + ' ' + via[2]) + '&city=' + encodeURIComponent(ciudad) + '&country=Colombia' });
+  }
+  rondas.push({ q: norm + ', ' + zona });
+  if (sinPlaca !== norm) rondas.push({ q: sinPlaca + ', ' + zona });
+
+  for (const ronda of rondas) {
+    const hit = await buscarNominatim(ronda.q, ronda.extra);
+    if (hit) return { ...hit, zoom: hit.casa ? 18 : 16 };
+    await esperar(400); /* cortesía con Nominatim: ~1 consulta por segundo */
+  }
+
+  try {
+    const photon = await buscarPhoton(norm + ' ' + ciudad);
+    if (photon) return { ...photon, zoom: photon.casa ? 18 : 16 };
+  } catch (e) { /* sin Photon: seguimos */ }
+
+  /* al menos la vía completa, sin placa, para centrar la calle */
+  if (via) {
+    const hitVia = await buscarNominatim(via[1] + ' ' + via[2] + ', ' + zona);
+    if (hitVia) return { ...hitVia, casa: false, zoom: 15, aprox: true };
+  }
+  /* último recurso: centrar la ciudad para poner el pin a mano */
+  const hitCiudad = await buscarNominatim(zona);
+  if (hitCiudad) return { ...hitCiudad, casa: false, zoom: 13, soloCiudad: true };
+  return null;
 }
 
 /* direccion que el mapa reconoce en el punto del pin (para corroborar) */
@@ -353,32 +415,60 @@ async function direccionDelPin(lat, lng) {
 let geoOcupado = false;
 $('btnGeo').addEventListener('click', async () => {
   if (!mapa || geoOcupado) return;
-  geoOcupado = true;
   const dir = $('fDir').value.trim();
-  const ciudad = $('fCiudad').value === 'bogota' ? 'Bogotá' : $('fOtraCiudad').value.trim();
-  if (!dir) { mostrarError('Escribe primero tu dirección para ubicarla en el mapa.'); return; }
+  const ciudad = ($('fCiudad').value === 'bogota' ? 'Bogotá' : $('fOtraCiudad').value.trim()) || 'Bogotá';
+  if (!dir) return mostrarError('Escribe primero tu dirección para ubicarla en el mapa.');
+  geoOcupado = true;
   $('btnGeo').textContent = 'Buscando…';
   try {
-    const norm = normalizarDireccion(dir);
-    const zona = (ciudad || 'Bogotá') + ', Colombia';
-    // intento 1: direccion completa; intento 2: sin la placa final (ej. "45-32" -> "45")
-    let hit = await buscarNominatim(norm + ', ' + zona);
-    if (!hit) hit = await buscarNominatim(norm.replace(/(\d+)\s*-\s*\d+\s*$/, '$1') + ', ' + zona);
+    const hit = await geocodificar(normalizarDireccion(dir), ciudad);
     if (hit) {
-      mapa.setView([hit.lat, hit.lon], 17);
+      mapa.setView([hit.lat, hit.lon], hit.zoom);
       pin.setLatLng([hit.lat, hit.lon]);
-      state.lat = parseFloat(hit.lat).toFixed(6);
-      state.lng = parseFloat(hit.lon).toFixed(6);
-      $('mapHint').textContent = '📍 ¿Quedó bien el pin? Arrástralo si hay que afinarlo.';
-      direccionDelPin(state.lat, state.lng);
+      state.lat = hit.lat.toFixed(6);
+      state.lng = hit.lon.toFixed(6);
+      $('mapHint').textContent = hit.soloCiudad
+        ? 'No dimos con la dirección exacta, pero centramos tu ciudad: pon el pin en tu punto — el pedido sirve igual.'
+        : hit.aprox
+          ? '📍 Encontramos tu calle — desliza el pin hasta tu puerta.'
+          : hit.casa
+            ? '📍 Dirección encontrada — arrastra el pin si hay que afinarlo.'
+            : '📍 Te dejamos muy cerca — arrastra el pin hasta tu puerta exacta.';
+      if (!hit.soloCiudad) direccionDelPin(state.lat, state.lng);
     } else {
-      $('mapHint').textContent = 'No encontramos esa dirección exacta — acerca el mapa y pon el pin a mano en tu punto.';
+      $('mapHint').textContent = 'No encontramos esa dirección — acerca el mapa y pon el pin a mano en tu punto (el pedido sirve igual).';
     }
   } catch (e) {
     $('mapHint').textContent = 'No se pudo buscar — mueve el pin a mano hasta tu punto.';
   }
-  $('btnGeo').textContent = 'Ubicar mi dirección en el mapa';
+  $('btnGeo').textContent = 'Ubicar en el mapa';
   geoOcupado = false;
+});
+
+/* --- Usar la ubicación del dispositivo: en el celular es un solo toque --- */
+$('btnGps').addEventListener('click', () => {
+  if (!mapa) return;
+  if (!navigator.geolocation) return mostrarError('Tu navegador no permite compartir la ubicación — busca la dirección o pon el pin a mano.');
+  $('btnGps').textContent = 'Ubicando…';
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude, accuracy } = pos.coords;
+      mapa.setView([latitude, longitude], 17);
+      pin.setLatLng([latitude, longitude]);
+      state.lat = latitude.toFixed(6);
+      state.lng = longitude.toFixed(6);
+      $('mapHint').textContent = accuracy > 120
+        ? '📍 Ubicación aproximada — arrastra el pin hasta tu puerta.'
+        : '📍 Este es tu punto — ajusta el pin si hace falta.';
+      direccionDelPin(state.lat, state.lng);
+      $('btnGps').textContent = 'Usar mi ubicación';
+    },
+    () => {
+      $('btnGps').textContent = 'Usar mi ubicación';
+      mostrarError('No pudimos leer tu ubicación — busca la dirección o pon el pin a mano.');
+    },
+    { enableHighAccuracy: true, timeout: 9000 }
+  );
 });
 
 /* --- Copiar llave Bre-B --- */
