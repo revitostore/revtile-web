@@ -2,13 +2,14 @@
 
 /* --- Configuración (edita aquí precios y tarifas) --- */
 const PRODUCTOS = {
-  on: { nombre: 'ON Micronized Creatine 300 g', corto: 'ON 300g', precio: 120000 },
-  mt: { nombre: 'MT Platinum Creatine 400 g', corto: 'MT 400g', precio: 140000 },
-  on120: { nombre: 'ON Micronized Creatine 600 g (120 serv.)', corto: 'ON 600g', precio: 170000 },
+  on: { nombre: 'ON Micronized Creatine 300 g', corto: 'ON 300g', precio: 120000, precio_antes: 170000 },
+  mt: { nombre: 'MT Platinum Creatine 400 g', corto: 'MT 400g', precio: 140000, precio_antes: 200000 },
+  on120: { nombre: 'ON Micronized Creatine 600 g (120 serv.)', corto: 'ON 600g', precio: 170000, precio_antes: 240000 },
 };
 /* El envío es gratis a cualquier ciudad de Colombia: REVTILE asume el
    despacho completo. Sin recargos ni excepciones. */
 const ENVIO = 0;
+const ENVIO_LISTA = 20000; // lo que costaría por transportadora: se muestra tachado
 const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
@@ -198,11 +199,13 @@ function calcular() {
   let subtotal = 0;
   let tarros = 0;
   const items = [];
+  let lista = 0; // lo que costaría a precio de lista, para mostrar el ahorro
   for (const [k, c] of Object.entries(state.cant)) {
     if (c > 0) {
       subtotal += PRODUCTOS[k].precio * c;
+      lista += PRODUCTOS[k].precio_antes * c;
       tarros += c;
-      items.push({ k, c, nombre: PRODUCTOS[k].nombre, corto: PRODUCTOS[k].corto, valor: PRODUCTOS[k].precio * c });
+      items.push({ k, c, nombre: PRODUCTOS[k].nombre, corto: PRODUCTOS[k].corto, valor: PRODUCTOS[k].precio * c, valorLista: PRODUCTOS[k].precio_antes * c });
     }
   }
   const pares = Math.floor(tarros / 2);
@@ -219,11 +222,12 @@ function calcular() {
       ? Math.round((base * state.cupon.valor) / 100)
       : Math.min(state.cupon.valor, base);
   }
-  return { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, descuento, total: subtotal - combo - descuento + envio };
+  const ahorro = (lista - subtotal) + combo + descuento + ENVIO_LISTA;
+  return { items, tarros, subtotal, lista, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total: subtotal - combo - descuento + envio };
 }
 
 function render() {
-  const { items, tarros, subtotal, pares, combo, esBogota, esCE, programado, envio, descuento, total } = calcular();
+  const { items, tarros, subtotal, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total } = calcular();
 
   document.querySelectorAll('.co__prod').forEach((card) => {
     const c = state.cant[card.dataset.prod];
@@ -263,7 +267,7 @@ function render() {
 
   /* factura */
   $('resItems').innerHTML = items.length
-    ? items.map((i) => `<p><span>${i.c}× ${i.nombre}</span><b>${fmt(i.valor)}</b></p>`).join('')
+    ? items.map((i) => `<p><span><b class="co__cant">${i.c}×</b> ${i.nombre}</span><span class="co__precios"><s>${fmt(i.valorLista)}</s> <b>${fmt(i.valor)}</b></span></p>`).join('')
     : '<p><span>Elige al menos un tarro</span><b>—</b></p>';
   $('resComboLine').hidden = combo === 0;
   $('resComboVal').textContent = '−' + fmt(combo);
@@ -273,8 +277,10 @@ function render() {
     $('resCuponVal').textContent = '−' + fmt(descuento);
   }
   $('resEnvio').innerHTML = envio === 0
-    ? '<span class="co__verde">GRATIS</span>'
+    ? `<s>${fmt(ENVIO_LISTA)}</s> <span class="co__verde">GRATIS</span>`
     : fmt(envio);
+  $('resAhorroLine').hidden = !items.length;
+  $('resAhorroVal').textContent = '−' + fmt(ahorro);
   $('resTotal').textContent = fmt(total);
   $('barTotal').textContent = fmt(total);
 }

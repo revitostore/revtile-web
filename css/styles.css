@@ -845,26 +845,35 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 .ventas-semana {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin-top: 14px;
+  gap: 11px;
+  margin-top: 16px;
   font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 12px;
+  font-size: 12.5px;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--ink-dim);
+  color: var(--ink-2);
 }
 .ventas-semana::before {
   content: '';
-  width: 6px;
-  height: 6px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--accent);
   flex: 0 0 auto;
+  animation: latido-punto 2.2s ease-in-out infinite;
 }
+@keyframes latido-punto {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(227, 29, 54, .35); }
+  50% { box-shadow: 0 0 0 7px rgba(227, 29, 54, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .ventas-semana::before { animation: none; } }
 .ventas-semana b {
-  font: inherit;
-  font-weight: 500;
-  color: var(--ink);
+  font-family: 'Anton', 'Barlow', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: .02em;
+  color: var(--accent-text);
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
@@ -2748,18 +2757,47 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__ce-text { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
 .co__ce-text b { color: var(--ink); font-weight: 600; }
 
-/* ── Resumen fijo ────────────────────────────────────────────────── */
+/* ── Resumen fijo ────────────────────────────────────────────────────
+   La factura es la protagonista: cabecera en cinta, borde firme y el
+   ahorro cantado en rojo. Nada de resumen apagado. */
 .co__resumen {
   position: sticky; top: 88px;
-  border: 1px solid var(--line); border-radius: var(--radius);
+  border: 1.5px solid var(--ink); border-radius: var(--radius);
   background: var(--surface); overflow: hidden;
+  box-shadow: var(--shadow);
 }
 .co__resumen-head {
-  padding: 16px var(--s3);
-  border-bottom: 1px solid var(--line);
-  font-family: 'DM Mono', monospace; font-size: 11px;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim);
+  padding: 14px var(--s3);
+  background: var(--cinta);
+  font-family: 'DM Mono', monospace; font-size: 11.5px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--cinta-ink);
 }
+/* la cantidad se ve: chip rojo delante de cada tarro */
+.co__cant {
+  display: inline-block;
+  min-width: 26px;
+  text-align: center;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  margin-right: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.co__precios { white-space: nowrap; }
+.co__precios s { color: var(--ink-dim); font-size: 12px; margin-right: 6px; }
+.co__precios b { font-variant-numeric: tabular-nums; }
+#resEnvio s { color: var(--ink-dim); font-size: 12px; margin-right: 6px; font-weight: 400; }
+/* el renglón del ahorro: la razón para pagar ya */
+.co__ahorro {
+  background: var(--accent-wash);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px !important;
+  margin-top: 4px;
+}
+.co__ahorro span { color: var(--accent-text) !important; font-weight: 700; }
+.co__ahorro b { color: var(--accent-text) !important; font-weight: 700; }
 .co__total { padding: var(--s3); display: flex; flex-direction: column; gap: 14px; }
 .co__total-lines { display: flex; flex-direction: column; gap: 9px; }
 .co__total-lines p {
