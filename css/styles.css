@@ -2481,42 +2481,56 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__check b { color: var(--ink); font-weight: 600; }
 
 /* ── Próximamente: proteínas ─────────────────────────────────────────
-   Un anuncio, no una tarjeta de producto: borde punteado, la iguana y
-   un botón que captura interesados por WhatsApp. */
+   El anuncio va en la cinta: el único bloque de tinta plena del
+   sistema, con la esquina roja diagonal del hero y el título en Anton.
+   Vistoso, pero con las mismas piezas de siempre. */
 .pronto {
-  margin-top: 22px;
+  position: relative;
+  margin-top: 26px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   flex-wrap: wrap;
-  border: 1.5px dashed var(--line-2);
+  background: var(--cinta);
   border-radius: var(--radius);
-  background: var(--surface-2);
-  padding: 20px 24px;
+  padding: 30px 34px;
+  overflow: hidden;
 }
-.pronto__mascota { display: block; flex: 0 0 auto; width: 58px; }
-.pronto__mascota img { width: 100%; height: auto; border-radius: 50%; border: 2px solid var(--cinta); transform: rotate(-6deg); display: block; }
-.pronto__texto { flex: 1 1 260px; }
+.pronto::before { /* la esquina roja, como el campo del hero */
+  content: '';
+  position: absolute;
+  right: -70px;
+  top: -70px;
+  width: 220px;
+  height: 220px;
+  background: var(--accent);
+  transform: rotate(35deg);
+}
+.pronto > * { position: relative; z-index: 1; }
+.pronto__mascota { display: block; flex: 0 0 auto; width: 76px; }
+.pronto__mascota img { width: 100%; height: auto; border-radius: 50%; border: 3px solid var(--cinta-ink); transform: rotate(-6deg); display: block; }
+.pronto__texto { flex: 1 1 280px; }
 .pronto__tag {
   font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: .14em;
+  font-size: 12px;
+  letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--accent-text);
-  margin-bottom: 2px;
+  color: var(--cinta-acc);
+  margin-bottom: 4px;
 }
 .pronto__titulo {
   font-family: 'Anton', 'Barlow', sans-serif;
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: clamp(32px, 5vw, 52px);
   text-transform: uppercase;
   letter-spacing: .01em;
-  color: var(--ink);
-  line-height: 1.1;
+  color: var(--cinta-ink);
+  line-height: 1.05;
 }
-.pronto__sub { font-size: 14px; color: var(--ink-2); margin-top: 4px; max-width: 52ch; }
-.pronto__btn { flex: 0 0 auto; font-size: 14px; padding: 12px 22px; }
+.pronto__titulo .accent { color: var(--cinta-acc); }
+.pronto__sub { font-size: 14.5px; color: var(--cinta-dim); margin-top: 8px; max-width: 52ch; }
+.pronto__btn { flex: 0 0 auto; font-size: 14.5px; padding: 14px 26px; }
 @media (max-width: 640px) {
-  .pronto { padding: 18px; }
+  .pronto { padding: 24px 20px; }
   .pronto__btn { flex-basis: 100%; text-align: center; }
 }
 
