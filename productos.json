@@ -100,6 +100,13 @@
           "nota": 5,
           "texto": "Muchísimas gracias.",
           "fecha": "2026-08-20"
+        },
+        {
+          "quien": "Cliente verificado",
+          "ciudad": "Bogotá",
+          "nota": 5,
+          "texto": "Muchas gracias 🤗",
+          "fecha": "2026-08-24"
         }
       ]
     },

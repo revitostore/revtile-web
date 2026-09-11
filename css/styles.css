@@ -2480,6 +2480,46 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__check input { width: 19px; height: 19px; accent-color: var(--accent); flex: none; margin-top: 1px; }
 .co__check b { color: var(--ink); font-weight: 600; }
 
+/* ── Próximamente: proteínas ─────────────────────────────────────────
+   Un anuncio, no una tarjeta de producto: borde punteado, la iguana y
+   un botón que captura interesados por WhatsApp. */
+.pronto {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  border: 1.5px dashed var(--line-2);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  padding: 20px 24px;
+}
+.pronto__mascota { display: block; flex: 0 0 auto; width: 58px; }
+.pronto__mascota img { width: 100%; height: auto; border-radius: 50%; border: 2px solid var(--cinta); transform: rotate(-6deg); display: block; }
+.pronto__texto { flex: 1 1 260px; }
+.pronto__tag {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  margin-bottom: 2px;
+}
+.pronto__titulo {
+  font-family: 'Anton', 'Barlow', sans-serif;
+  font-size: clamp(22px, 3vw, 30px);
+  text-transform: uppercase;
+  letter-spacing: .01em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.pronto__sub { font-size: 14px; color: var(--ink-2); margin-top: 4px; max-width: 52ch; }
+.pronto__btn { flex: 0 0 auto; font-size: 14px; padding: 12px 22px; }
+@media (max-width: 640px) {
+  .pronto { padding: 18px; }
+  .pronto__btn { flex-basis: 100%; text-align: center; }
+}
+
 /* ── Opiniones ───────────────────────────────────────────────────────
    Frases reales de los chats de entrega: estrellas, cita y quién. */
 .resenas {
