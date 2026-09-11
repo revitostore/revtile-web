@@ -227,7 +227,7 @@ function calcular() {
 }
 
 function render() {
-  const { items, tarros, subtotal, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total } = calcular();
+  const { items, tarros, subtotal, lista, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total } = calcular();
 
   document.querySelectorAll('.co__prod').forEach((card) => {
     const c = state.cant[card.dataset.prod];
@@ -281,6 +281,8 @@ function render() {
     : fmt(envio);
   $('resAhorroLine').hidden = !items.length;
   $('resAhorroVal').textContent = '−' + fmt(ahorro);
+  $('resTotalLista').textContent = fmt(lista + ENVIO_LISTA); /* lo que costaría a precio de lista con envío */
+  $('resTotalLista').hidden = !items.length;
   $('resTotal').textContent = fmt(total);
   $('barTotal').textContent = fmt(total);
 }
