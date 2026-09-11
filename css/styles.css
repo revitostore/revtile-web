@@ -2480,6 +2480,77 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__check input { width: 19px; height: 19px; accent-color: var(--accent); flex: none; margin-top: 1px; }
 .co__check b { color: var(--ink); font-weight: 600; }
 
+/* ── Opiniones ───────────────────────────────────────────────────────
+   Frases reales de los chats de entrega: estrellas, cita y quién. */
+.resenas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+.resena {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  padding: 18px 20px;
+}
+.resena__estrellas {
+  color: var(--accent-text);
+  font-size: 17px;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+.resena blockquote {
+  margin: 0 0 12px;
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.resena figcaption { font-size: 13px; color: var(--ink-2); }
+.resena figcaption b { color: var(--ink); }
+.resena__chip {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.resenas__nota { margin-top: 14px; font-size: 12.5px; color: var(--ink-dim); }
+
+/* ── El pin del mapa ─────────────────────────────────────────────────
+   El rediseño se llevó estos estilos y el pin quedó invisible: el
+   marcador es un divIcon propio (sin imágenes externas, sin CSP). */
+.co__pin { filter: drop-shadow(0 3px 5px rgba(20, 20, 15, .35)); }
+.co__pin-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3.5px solid #fff;
+  box-sizing: border-box;
+}
+.co__pin-punta {
+  position: absolute;
+  left: 50%;
+  top: 21px;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 16px solid var(--accent);
+}
+
 /* ── Mapa ────────────────────────────────────────────────────────── */
 .co__map-block { margin-top: var(--s3); }
 .co__map-head {
@@ -2984,6 +3055,19 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   transition: border-color var(--t), color var(--t), background var(--t);
 }
 .adm__archivar:hover { border-color: var(--ink-dim); color: var(--ink); }
+.adm__avisar {
+  padding: 8px 14px;
+  border: 1.5px solid var(--whatsapp);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: #128C4B;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+}
+.adm__avisar:hover { background: var(--whatsapp); color: #fff; }
 .adm__eliminar { color: var(--danger); border-color: var(--danger); }
 .adm__eliminar:hover { background: var(--danger); color: #fff; }
 .adm__archivar:disabled { opacity: .5; }

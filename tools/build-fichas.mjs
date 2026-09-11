@@ -8,6 +8,38 @@
    lector de pantalla, se copia, la indexa Google y no obliga a hacer
    zoom en el celular. La foto del envase queda al lado, para que
    cualquiera compruebe que la transcripcion es fiel. */
+
+/* Opiniones: solo frases reales de los chats de entrega. Si un producto
+   no tiene, la sección no se pinta y el schema no inventa nada. */
+const estrellas = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+const opiniones = (p) => {
+  const r = p.resenas || [];
+  if (!r.length) return '';
+  return `
+  <section class="pp-section" id="opiniones">
+    <div class="pp-section__inner">
+      <p class="section-eyebrow reveal"><b>·</b> Opiniones</p>
+      <h2 class="reveal">Clientes que ya la recibieron<span class="accent">.</span></h2>
+      <div class="resenas reveal">
+${r.map((x) => `        <figure class="resena">
+          <div class="resena__estrellas" role="img" aria-label="${x.nota} de 5 estrellas">${estrellas(x.nota)}</div>
+          <blockquote>«${x.texto}»</blockquote>
+          <figcaption><b>${x.quien}</b> · ${x.ciudad} · <span class="resena__chip">Compra verificada</span></figcaption>
+        </figure>`).join('\n')}
+      </div>
+      <p class="resenas__nota">Frases tomadas de nuestros chats de entrega reales, con el permiso implícito de mostrarse sin datos personales.</p>
+    </div>
+  </section>`;
+};
+const schemaOpiniones = (p) => {
+  const r = p.resenas || [];
+  if (!r.length) return '';
+  const prom = (r.reduce((a, x) => a + x.nota, 0) / r.length).toFixed(1);
+  return `
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "${prom}", "reviewCount": "${r.length}" },
+    "review": [${r.map((x) => `{ "@type": "Review", "author": { "@type": "Person", "name": "${x.quien}" }, "datePublished": "${x.fecha}", "reviewBody": "${x.texto}", "reviewRating": { "@type": "Rating", "ratingValue": "${x.nota}" } }`).join(', ')}],`;
+};
+
 const nutricional = (p) => {
   const n = p.nutricional;
   if (!n) return '';
@@ -219,7 +251,7 @@ function ficha(p) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=66">
+  <link rel="stylesheet" href="css/styles.css?v=67">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -229,7 +261,7 @@ function ficha(p) {
     "name": "${p.marca} ${p.nombre} ${p.gramos} g (${p.servicios} servicios)",
     "image": "https://revtile.com.co/${p.imagen}",
     "description": "Creatina monohidratada micronizada sellada de fábrica, presentación de ${p.gramos} g con ${p.servicios} servicios de ${p.gramos_por_servicio} g.",
-    "brand": { "@type": "Brand", "name": "${p.marca}" },
+    "brand": { "@type": "Brand", "name": "${p.marca}" },${schemaOpiniones(p)}
     "offers": {
       "@type": "Offer",
       "url": "https://revtile.com.co/${p.pagina}",
@@ -405,6 +437,8 @@ ${c.datos.map(([k, v]) => `              <tr><th scope="row">${k}</th><td>${v}</
 
   <!-- ===== PREGUNTAS ===== -->
   ${nutricional(p)}
+
+  ${opiniones(p)}
 
   <section class="faq pp-section--alt">
     <div class="faq__inner">

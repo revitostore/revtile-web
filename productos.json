@@ -47,7 +47,16 @@
         "fuente": "Transcrito del envase de Optimum Nutrition Micronized Creatine Powder, 300 g.",
         "ancho": 1000,
         "alto": 1000
-      }
+      },
+      "resenas": [
+        {
+          "quien": "Carlos C.",
+          "ciudad": "Bogotá",
+          "nota": 5,
+          "texto": "Ya lo recibí, todo súper, muchas gracias.",
+          "fecha": "2026-08-31"
+        }
+      ]
     },
     {
       "sku": "mt",
@@ -83,7 +92,16 @@
         "fuente": "Transcrito del envase de MuscleTech Platinum Creatine Monohydrate, 400 g. Distribuido por Iovate Health Sciences U.S.A. Inc.",
         "ancho": 1100,
         "alto": 1100
-      }
+      },
+      "resenas": [
+        {
+          "quien": "Cliente en Bogotá",
+          "ciudad": "Bogotá",
+          "nota": 5,
+          "texto": "Muchísimas gracias.",
+          "fecha": "2026-08-20"
+        }
+      ]
     },
     {
       "sku": "on120",
@@ -125,5 +143,6 @@
     "nit": null,
     "direccion_notificacion": null,
     "tabla_nutricional": "pendiente de las etiquetas reales de cada presentación"
-  }
+  },
+  "_nota_resenas": "Reseñas: SOLO frases reales de chats de clientes. Campos: quien (nombre corto o 'Cliente en <ciudad>'), ciudad, nota (1-5), texto, fecha (AAAA-MM-DD). Tras editar: node tools/build-fichas.mjs"
 }

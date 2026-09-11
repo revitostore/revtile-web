@@ -132,6 +132,7 @@ function tarjetaPedido(p) {
       </select>
       <input type="text" data-campo="nota" placeholder="Nota interna" value="${p.nota || ''}">
       <button type="button" class="btn btn--primary adm__guardar">Guardar</button>
+      <button type="button" class="adm__avisar">📲 Avisar</button>
       <button type="button" class="adm__archivar">${verArchivo ? 'Devolver a la lista' : 'Archivar'}</button>
       ${verArchivo ? '<button type="button" class="adm__eliminar">Eliminar</button>' : ''}
     </div>`;
@@ -151,6 +152,54 @@ function tarjetaPedido(p) {
       mostrarError('No se pudo guardar: ' + e.message);
     }
   });
+  /* 📲 Avisar: abre WhatsApp con el mensaje del estado ya escrito.
+     Toma lo que está puesto en los campos de la tarjeta (estado, guía,
+     transportadora), así se puede guardar y avisar de una. Las fotos del
+     sello y el lote se adjuntan a mano en el mismo chat que se abre. */
+  el.querySelector('.adm__avisar').addEventListener('click', () => {
+    const estado = el.querySelector('[data-campo="estado"]').value;
+    const guia = el.querySelector('[data-campo="guia"]').value.trim();
+    const transp = el.querySelector('[data-campo="transportadora"]').value;
+    const nombrePila = (p.nombre || '').trim().split(/\s+/)[0];
+    const rastreo = 'revtile.com.co/rastreo?id=' + p.id;
+    const esCE = p.metodo_pago === 'contraentrega';
+    let lineas;
+    if (estado === 'despachado') {
+      lineas = [
+        `Hola ${nombrePila}! Soy David de REVTILE 🦎`,
+        '',
+        `Tu pedido *${p.id}* ya va en camino 🚚` + (guia ? ` con ${transp || 'la transportadora'} — guía *${guia}*.` : '.'),
+        `Síguelo en vivo aquí: ${rastreo}`,
+        '',
+        'Te comparto ahora las fotos del sello y el lote de tu tarro 👇',
+      ];
+    } else if (estado === 'verificado') {
+      lineas = [
+        `Hola ${nombrePila}! Soy David de REVTILE 🦎`,
+        '',
+        esCE
+          ? `Tu pedido *${p.id}* quedó confirmado ✅ y entra a despacho — pagas al recibirlo.`
+          : `Recibimos tu pago ✅ y tu pedido *${p.id}* entra a despacho.`,
+        `Puedes seguirlo aquí: ${rastreo}`,
+      ];
+    } else if (estado === 'entregado') {
+      lineas = [
+        `${nombrePila}, tu pedido *${p.id}* figura como entregado 🎉`,
+        '',
+        'Esperamos que la rompas en el gym 💪 Cualquier duda con tu creatina, escríbeme por aquí.',
+        '',
+        '— David · REVTILE 🦎',
+      ];
+    } else {
+      lineas = [
+        `Hola ${nombrePila}! Soy David de REVTILE 🦎`,
+        '',
+        `Te escribo por tu pedido *${p.id}*. Puedes ver su estado aquí: ${rastreo}`,
+      ];
+    }
+    window.open('https://wa.me/57' + p.telefono + '?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
+  });
+
   el.querySelector('.adm__archivar').addEventListener('click', async (ev) => {
     const btn = ev.target;
     btn.disabled = true;
