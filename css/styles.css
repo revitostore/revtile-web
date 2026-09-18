@@ -2489,6 +2489,37 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__check input { width: 19px; height: 19px; accent-color: var(--accent); flex: none; margin-top: 1px; }
 .co__check b { color: var(--ink); font-weight: 600; }
 
+/* ── Métodos de pago en el pie ───────────────────────────────────────
+   Chips de texto, sin logos ajenos: dicen cómo se paga de un vistazo. */
+.footer__pagos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 18px var(--gutter);
+  max-width: var(--maxw);
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+}
+.footer__pagos-titulo {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-right: 4px;
+}
+.pago-chip {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  padding: 5px 12px;
+  background: var(--surface);
+}
+.pago-chip--pronto { color: var(--ink-dim); font-weight: 500; border-style: dashed; }
+
 /* ── Próximamente: proteínas ─────────────────────────────────────────
    El anuncio va en la cinta: el único bloque de tinta plena del
    sistema, con la esquina roja diagonal del hero y el título en Anton.
