@@ -42,7 +42,9 @@ function pintar(p) {
   $('rasVerifTitulo').textContent = esCE ? 'Pedido confirmado' : 'Pago verificado';
   $('rasVerifTxt').textContent = esCE
     ? 'Confirmamos tu pedido y los datos de entrega — pagas al recibir'
-    : 'Confirmamos tu pago Bre-B';
+    : p.metodo_pago === 'wompi'
+      ? 'Tu pago en línea fue aprobado'
+      : 'Confirmamos tu pago Bre-B';
 
   let [txt, color] = BADGES[p.estado] || BADGES.nuevo;
   if (p.estado === 'verificado' && !esCE) txt = 'Pago verificado';

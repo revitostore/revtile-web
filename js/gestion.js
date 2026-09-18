@@ -117,7 +117,7 @@ function tarjetaPedido(p) {
       <p>👤 <b>${p.nombre}</b> · <a href="https://wa.me/57${p.telefono}" target="_blank" rel="noopener">📱 ${p.telefono}</a></p>
       <p>📍 ${p.direccion}, ${p.ciudad}${p.apto ? ' · ' + p.apto : ''}${p.porteria ? ' · deja en portería ✓' : ''}</p>
       <p>🛒 ${items.map((i) => `${i.c}× ${i.nombre}`).join(' + ') || p.items}</p>
-      <p>${p.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA — cobrar ' + fmt(p.total) + ' al entregar' : '⚡ Anticipado Bre-B'}
+      <p>${p.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA — cobrar ' + fmt(p.total) + ' al entregar' : p.metodo_pago === 'wompi' ? '💳 Pagado en línea (Wompi)' : '⚡ Anticipado Bre-B'}
          ${p.entrega_dia ? ` · 📦 <b>${p.entrega_dia} ${p.entrega_hora || ''}</b>` : ''}
          ${p.cupon ? ` · 🎟 ${p.cupon} (−${fmt(p.descuento)})` : ''}</p>
       ${p.direccion_mapa ? `<p>🗺 Según el mapa: ${p.direccion_mapa}${p.lat ? ` · <a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">ver punto</a>` : ''}</p>` : ''}

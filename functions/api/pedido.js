@@ -63,7 +63,7 @@ export async function onRequestPost(context) {
   const telefono = String(p.telefono || '').replace(/\D/g, '');
   const ciudad = String(p.ciudad || '').trim().slice(0, 80);
   const direccion = String(p.direccion || '').trim().slice(0, 200);
-  const metodo = p.metodo_pago === 'contraentrega' ? 'contraentrega' : 'anticipado';
+  const metodo = ['contraentrega', 'wompi'].includes(p.metodo_pago) ? p.metodo_pago : 'anticipado';
 
   if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
   if (!nombre) return json({ ok: false, error: 'Falta el nombre' }, 400);

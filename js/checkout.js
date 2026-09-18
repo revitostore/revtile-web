@@ -255,15 +255,21 @@ function render() {
   $('coProg').hidden = !programado;
 
   /* bloques de pago */
-  $('payAnticipado').hidden = esCE;
+  const esWompi = state.pago === 'wompi';
+  $('payAnticipado').hidden = esCE || esWompi;
   $('payCE').hidden = !esCE;
+  $('payWompi').hidden = !esWompi;
   $('btnEnviar').textContent = esCE
     ? 'Confirmar mi pedido contraentrega por WhatsApp'
-    : 'Ya pagué → Enviar mi pedido por WhatsApp';
-  textoPagar(esCE ? 'Confirmar pedido ↓' : 'Ir a pagar ↓');
+    : esWompi
+      ? 'Pagar ahora con tarjeta, PSE o Nequi →'
+      : 'Ya pagué → Enviar mi pedido por WhatsApp';
+  textoPagar(esCE ? 'Confirmar pedido ↓' : esWompi ? 'Pagar en línea ↓' : 'Ir a pagar ↓');
   $('coNota').innerHTML = esCE
     ? 'Tu pedido queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. Pagas cuando lo recibas en tu puerta.'
-    : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día.';
+    : esWompi
+      ? 'Te llevamos a la pasarela segura de <b>Wompi (Bancolombia)</b>. Al aprobarse el pago, tu pedido queda <b>verificado automáticamente</b> y vuelves a tu página de rastreo.'
+      : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día.';
 
   /* factura */
   $('resItems').innerHTML = items.length
@@ -548,6 +554,42 @@ $('coClear').addEventListener('click', () => {
   location.reload();
 });
 
+/* --- Wompi: pedir la URL firmada y saltar a la pasarela --- */
+async function irAWompi(id) {
+  const boton = $('btnEnviar');
+  boton.disabled = true;
+  boton.textContent = 'Abriendo la pasarela segura…';
+  try {
+    const r = await fetch('/api/wompi/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    const data = await r.json();
+    if (data.ok && data.url) {
+      $('coOk').hidden = false;
+      $('coOk').textContent = `Pedido ${id} registrado. Te llevamos a Wompi para completar el pago…`;
+      if (typeof gtag === 'function') gtag('event', 'checkout_wompi', { id });
+      location.href = data.url;
+      return;
+    }
+    mostrarError(data.error || 'El pago en línea no está disponible ahora — puedes pagar por Bre-B o contraentrega.');
+  } catch (e) {
+    mostrarError('No pudimos conectar con la pasarela — intenta de nuevo o paga por Bre-B.');
+  }
+  boton.disabled = false;
+  boton.textContent = 'Pagar ahora con tarjeta, PSE o Nequi →';
+}
+
+/* solo se ofrece Wompi si las llaves ya están configuradas en el servidor */
+(async () => {
+  try {
+    const r = await fetch('/api/wompi/checkout');
+    const d = await r.json();
+    if (d && d.activo) $('mWompi').hidden = false;
+  } catch (e) { /* sin señal: la opción queda oculta */ }
+})();
+
 /* --- Validación y envío --- */
 function mostrarError(msg) {
   const el = $('coError');
@@ -581,9 +623,15 @@ $('btnEnviar').addEventListener('click', async () => {
   /* candado: nunca dos envios en paralelo */
   if (enviando) return;
 
+  const esWompi = state.pago === 'wompi';
+
   /* idempotencia: mismo pedido repetido => mismo ID, sin duplicar el registro */
   const hash = hashPedido(nombre, tel, dir, total);
   const previo = pedidoPrevio(hash);
+  if (previo && esWompi) {
+    /* reintento de pago legítimo: mismo pedido, nueva sesión de Wompi */
+    return irAWompi(previo.id);
+  }
   if (previo) {
     $('coOk').hidden = false;
     $('coOk').textContent = `✅ Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp.`;
@@ -619,7 +667,7 @@ $('btnEnviar').addEventListener('click', async () => {
       body: JSON.stringify({
         id,
         web: $('fWeb') ? $('fWeb').value : '', // honeypot
-        metodo_pago: esCE ? 'contraentrega' : 'anticipado',
+        metodo_pago: esCE ? 'contraentrega' : esWompi ? 'wompi' : 'anticipado',
         entrega_dia: programado ? state.diaISO : null,
         entrega_hora: programado ? state.hora : null,
         items: items.map((i) => ({ k: i.k, c: i.c, nombre: i.nombre, valor: i.valor })),
@@ -646,8 +694,19 @@ $('btnEnviar').addEventListener('click', async () => {
 
   enviando = false;
   ultimoEnvioTs = Date.now();
-  recordarPedido(hash, id);
   boton.disabled = false;
+
+  /* Wompi: sin WhatsApp — directo a la pasarela. El webhook verifica solo. */
+  if (esWompi) {
+    if (!registrado) {
+      boton.textContent = 'Pagar ahora con tarjeta, PSE o Nequi →';
+      return mostrarError('No pudimos iniciar el pago en línea. Intenta de nuevo, o paga por Bre-B o contraentrega.');
+    }
+    recordarPedido(hash, id);
+    return irAWompi(id);
+  }
+
+  recordarPedido(hash, id);
 
   const lineaEntrega = programado
     ? `📦 Entrega programada: *${state.dia} · ${state.hora}*`
