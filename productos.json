@@ -147,8 +147,8 @@
   ],
   "_pendientes": {
     "razon_social": null,
-    "nit": null,
-    "direccion_notificacion": null,
+    "nit": "1050672185 (persona natural comerciante)",
+    "direccion_notificacion": "Bogotá D.C. · notificaciones al correo contacto@revtile.com.co",
     "tabla_nutricional": "pendiente de las etiquetas reales de cada presentación"
   },
   "_nota_resenas": "Reseñas: SOLO frases reales de chats de clientes. Campos: quien (nombre corto o 'Cliente en <ciudad>'), ciudad, nota (1-5), texto, fecha (AAAA-MM-DD). Tras editar: node tools/build-fichas.mjs"
