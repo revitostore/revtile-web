@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
-  <link rel="stylesheet" href="css/styles.css?v=72">
+  <link rel="stylesheet" href="css/styles.css?v=73">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
 </head>
@@ -161,9 +161,9 @@
               <span class="co__metodo-det" id="mCEDetalle">Pagas cuando lo recibes, en 2 a 3 días hábiles.</span>
             </button>
             <button type="button" class="co__metodo" data-pago="wompi" id="mWompi" hidden>
-              <span class="co__metodo-tag">Pago en línea</span>
+              <span class="co__metodo-tag">Pago en línea seguro</span>
               <b>Tarjeta, PSE o Nequi</b>
-              <span class="co__metodo-det">Con Wompi de Bancolombia. Tu pedido queda verificado al instante.</span>
+              <span class="co__metodo-det">Por Wompi, la pasarela de Bancolombia. Verificación al instante.</span>
             </button>
           </div>
         </section>
@@ -217,9 +217,13 @@
           </div>
 
           <!-- Pago en línea con Wompi -->
-          <div class="co__ce" id="payWompi" hidden>
-            <p class="co__ce-title">Pago en línea seguro con Wompi</p>
-            <p class="co__ce-text">Al continuar te llevamos a la pasarela de <b>Wompi (Bancolombia)</b> para pagar con tarjeta, PSE o Nequi. Apenas el pago se apruebe, tu pedido queda <b>verificado automáticamente</b> y aterrizas en tu página de rastreo. Sin pantallazos ni comprobantes.</p>
+          <div class="co__ce co__wompi" id="payWompi" hidden>
+            <p class="co__ce-title"><span class="co__wompi-candado" aria-hidden="true">🔒</span> Pago 100% seguro</p>
+            <p class="co__ce-text">Pagas en <b>Wompi, la pasarela oficial de Bancolombia</b> — la misma que usan miles de tiendas en Colombia. Tus datos van cifrados y <b>nunca pasan por REVTILE</b>. Apenas se apruebe el pago, tu pedido queda verificado automáticamente y llega en 2 a 3 días hábiles con guía de rastreo.</p>
+            <div class="co__wompi-chips" aria-hidden="true">
+              <span>Visa</span><span>Mastercard</span><span>PSE</span><span>Nequi</span>
+            </div>
+            <p class="co__wompi-nota"><b>✓</b> Si el pago no se aprueba, no se te cobra nada y tu pedido queda guardado para intentarlo de nuevo o pagar de otra forma.</p>
           </div>
 
           <!-- Contraentrega -->
@@ -288,6 +292,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <script src="js/checkout.js?v=13"></script>
+  <script src="js/checkout.js?v=14"></script>
 </body>
 </html>

@@ -2788,6 +2788,23 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 .co__ce-text { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
 .co__ce-text b { color: var(--ink); font-weight: 600; }
 
+/* ── Pago en línea (Wompi): la caja debe oler a banco, no a improvisación ── */
+.co__wompi { border: 1.5px solid var(--ink); background: var(--surface); }
+.co__wompi-candado { font-size: 15px; margin-right: 2px; }
+.co__wompi-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.co__wompi-chips span {
+  font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink);
+  padding: 7px 14px; border: 1px solid var(--line-2); border-radius: 999px;
+  background: var(--bg-soft);
+}
+.co__wompi-nota {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; color: var(--ink-2); line-height: 1.55;
+  padding-top: 12px; border-top: 1px dashed var(--line-2);
+}
+.co__wompi-nota b { color: var(--accent-text); flex: none; }
+
 /* ── Resumen fijo ────────────────────────────────────────────────────
    La factura es la protagonista: cabecera en cinta, borde firme y el
    ahorro cantado en rojo. Nada de resumen apagado. */
