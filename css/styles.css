@@ -663,10 +663,10 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 /* nivel 1 — la foto */
 .product__photo {
   background: var(--bg-soft);
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3; /* antes 1/1: la tarjeta se sentía enorme */
   display: grid;
   place-items: center;
-  padding: var(--s3);
+  padding: 18px;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
 }
@@ -703,7 +703,7 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: var(--s3);
+  padding: 20px;
   flex: 1;
 }
 
@@ -737,12 +737,12 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   flex-wrap: wrap;
   gap: 4px 12px;
   margin-top: auto;
-  padding-top: var(--s3);
+  padding-top: 16px;
   border-top: 1px solid var(--line);
 }
 .product__price {
   font-family: 'Barlow', system-ui, sans-serif;
-  font-size: clamp(34px, 3.6vw, 44px);
+  font-size: clamp(30px, 3vw, 38px);
   font-weight: 700;
   letter-spacing: 0;
   color: var(--ink);
@@ -928,10 +928,10 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 }
 
 .product__serving {
-  font-size: 15px;
+  font-size: 14.5px;
   color: var(--ink-2);
-  padding-top: 10px;
-  margin-bottom: var(--s3);
+  padding-top: 4px;
+  margin-bottom: 14px;
 }
 .product__serving b {
   color: var(--accent-text);
@@ -942,7 +942,7 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 .product__info .sello { margin-bottom: var(--s3); }
 
 /* nivel 3 — los checks */
-.checks { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: var(--s3); }
+.checks { display: flex; flex-wrap: wrap; gap: 5px 14px; margin-bottom: 16px; }
 .check {
   display: inline-flex;
   align-items: center;
