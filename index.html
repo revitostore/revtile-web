@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=78">
+  <link rel="stylesheet" href="css/styles.css?v=79">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -273,17 +273,10 @@
             <output class="tarro__val" id="tarroSlOut" for="tarroSl">5 días por semana</output>
             <input type="range" id="tarroSl" min="1" max="7" step="1" value="5">
           </div>
-          <div class="tarro__f tarro__f--dosis">
-            <span class="tarro__lbl" id="tarroDosisL">Tu dosis</span>
-            <div class="calc__dose-btns" role="group" aria-labelledby="tarroDosisL">
-              <button type="button" class="calc__dosebtn" data-g="3" aria-pressed="false">3 g</button>
-              <button type="button" class="calc__dosebtn is-active" data-g="5" aria-pressed="true">5 g</button>
-            </div>
-          </div>
           <button type="button" class="btn btn--ghost tarro__repetir" id="tarroRepetir">Ver de nuevo</button>
         </div>
 
-        <p class="tarro__reloj" aria-hidden="true"><span>Tiempo acelerado</span><span>Día <b id="tarroDia">0</b> · <b id="tarroFecha">hoy</b></span></p>
+        <p class="tarro__reloj" aria-hidden="true"><span>Tiempo acelerado</span><span>Día <b id="tarroDia">0</b></span></p>
 
         <div class="tarro__jars" id="tarroJars">
           <article class="tarro__card" data-gramos="300" data-precio="120000">
@@ -295,10 +288,9 @@
             </div>
             <h3 class="tarro__nom">ON · 300 g</h3>
             <p class="tarro__dur"><b data-dur>84</b><small>días</small></p>
-            <p class="tarro__fin" data-fin-wrap hidden>se acaba el <span data-fin></span></p>
             <div class="tarro__precios">
-              <p class="tarro__mes"><b data-mes>$42.857</b><small>al mes</small></p>
-              <p class="tarro__toma"><b data-toma>$2.000</b> por toma</p>
+              <p class="tarro__scoop"><b data-toma>$2.000</b><small>por scoop</small></p>
+              <p class="tarro__mes"><b data-mes>$42.857</b> al mes</p>
             </div>
           </article>
           <article class="tarro__card" data-gramos="400" data-precio="140000">
@@ -310,10 +302,9 @@
             </div>
             <h3 class="tarro__nom">MT · 400 g</h3>
             <p class="tarro__dur"><b data-dur>112</b><small>días</small></p>
-            <p class="tarro__fin" data-fin-wrap hidden>se acaba el <span data-fin></span></p>
             <div class="tarro__precios">
-              <p class="tarro__mes"><b data-mes>$37.500</b><small>al mes</small></p>
-              <p class="tarro__toma"><b data-toma>$1.750</b> por toma</p>
+              <p class="tarro__scoop"><b data-toma>$1.750</b><small>por scoop</small></p>
+              <p class="tarro__mes"><b data-mes>$37.500</b> al mes</p>
             </div>
           </article>
           <article class="tarro__card" data-gramos="600" data-precio="170000">
@@ -325,10 +316,9 @@
             </div>
             <h3 class="tarro__nom">ON · 600 g</h3>
             <p class="tarro__dur"><b data-dur>168</b><small>días</small></p>
-            <p class="tarro__fin" data-fin-wrap hidden>se acaba el <span data-fin></span></p>
             <div class="tarro__precios">
-              <p class="tarro__mes"><b data-mes>$30.357</b><small>al mes</small></p>
-              <p class="tarro__toma"><b data-toma>$1.417</b> por toma</p>
+              <p class="tarro__scoop"><b data-toma>$1.417</b><small>por scoop</small></p>
+              <p class="tarro__mes"><b data-mes>$30.357</b> al mes</p>
             </div>
           </article>
         </div>
@@ -337,7 +327,7 @@
           <p id="tarroCierre" aria-live="polite"></p>
           <a class="btn btn--primary" href="pedido.html?producto=on120">Pedir la de 600 g <span class="btn__arrow" aria-hidden="true">→</span></a>
         </div>
-        <p class="tarro__nota">Cálculo con la dosis que elijas, una toma por día que la tomes. Los precios son los del catálogo.</p>
+        <p class="tarro__nota">Cálculo con un scoop de 5 g por cada día que la tomes. Los precios son los del catálogo.</p>
       </div>
     </div>
   </section>
@@ -663,7 +653,7 @@
   </a>
 
   <script src="js/main.js?v=14" defer></script>
-  <script src="js/hero-polvo.js?v=1" defer></script>
-  <script src="js/tarro.js?v=1" defer></script>
+  <script src="js/hero-polvo.js?v=3" defer></script>
+  <script src="js/tarro.js?v=2" defer></script>
 </body>
 </html>

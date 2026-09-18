@@ -3320,7 +3320,6 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   background: var(--surface);
 }
 .tarro__f { flex: 1 1 260px; min-width: 0; }
-.tarro__f--dosis { flex: 0 0 auto; }
 .tarro__lbl {
   display: block;
   margin-bottom: 6px;
@@ -3422,25 +3421,27 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 }
 .tarro__fin { margin-top: 2px; font-size: 13px; color: var(--ink-2); }
 .tarro__precios { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
-.tarro__mes {
+.tarro__scoop {
   font-family: 'Barlow', system-ui, sans-serif;
-  font-size: clamp(18px, 3vw, 24px);
+  font-size: clamp(24px, 4vw, 32px);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
+  letter-spacing: 0;
+  color: var(--accent-text);
   font-variant-numeric: tabular-nums;
 }
-.tarro__mes small {
+.tarro__scoop small {
   display: block;
-  margin-top: 2px;
+  margin-top: 3px;
   font-family: 'DM Mono', monospace;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 400;
   letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--ink-dim);
 }
-.tarro__toma { margin-top: 8px; font-size: 13px; color: var(--ink-2); }
-.tarro__toma b { color: var(--accent-text); font-weight: 700; }
+.tarro__mes { margin-top: 10px; font-size: 13px; color: var(--ink-2); }
+.tarro__mes b { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 
 .tarro__cierre {
   display: flex;
@@ -3464,7 +3465,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .tarro__nom { font-size: 10px; letter-spacing: .08em; }
   .tarro__dur small { display: block; margin: 2px 0 0; }
   .tarro__agot { font-size: 13px; padding: 4px 9px; }
-  .tarro__toma { font-size: 12px; }
+  .tarro__mes { font-size: 12px; }
   .tarro__cierre { padding: var(--s2); }
 }
 

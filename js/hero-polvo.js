@@ -35,12 +35,10 @@
     return a || fs * 0.8;
   }
 
-  /* una línea si cabe grande; si el hueco es angosto (celular), REV / TILE apilado */
-  function plan(rw, rh) {
-    var b = 100, a = alto(b);
-    var f1 = Math.min(rw / ancho('REVTILE', b), rh / a) * b;
-    var f2 = Math.min(rw / Math.max(ancho('REV', b), ancho('TILE', b)), rh / (a * 2 + b * 0.16)) * b;
-    return f2 > f1 * 1.15 ? { fs: Math.min(f2, 150), l: ['REV', 'TILE'] } : { fs: Math.min(f1, 150), l: ['REVTILE'] };
+  /* el nombre siempre en una sola línea: lo más grande que quepa en el hueco */
+  function tamano(rw, rh) {
+    var b = 100;
+    return Math.min(Math.min(rw / ancho('REVTILE', b), rh / alto(b)) * b, 150);
   }
 
   function build() {
@@ -60,13 +58,15 @@
     var rw = x1 - x0, rh = y1 - y0;
     if (rw < 90 || rh < 50) return;   // no cabe: el hero queda como estaba
 
-    var pl = plan(rw, rh), fs = pl.fs, asc = alto(fs), gap = fs * 0.16;
+    var fs = tamano(rw, rh), asc = alto(fs);
     var off = document.createElement('canvas');
     off.width = Math.ceil(rw); off.height = Math.ceil(rh);
     var o = off.getContext('2d');
     o.font = fs + FUENTE; o.textAlign = 'center'; o.textBaseline = 'alphabetic'; o.fillStyle = '#fff';
-    var y = (rh - (pl.l.length * asc + (pl.l.length - 1) * gap)) / 2 + asc;
-    pl.l.forEach(function (t) { o.fillText(t, rw / 2, y); y += asc + gap; });
+    /* si la palabra es chica frente al hueco (celular) se sube al tope del campo, donde el rojo es más
+       ancho y todo el polvo queda blanco; si lo llena (escritorio), va centrada */
+    var y = (asc < rh * 0.55 ? 6 : (rh - asc) / 2) + asc;
+    o.fillText('REVTILE', rw / 2, y);
 
     var d = o.getImageData(0, 0, off.width, off.height).data, pts = [], step = 2;
     for (var j = 0; j < off.height; j += step) {

@@ -1,27 +1,24 @@
 /* Tu tarro en el tiempo.
    Sustituye a la calculadora de pestañas: con cuántos días a la semana
-   toma creatina y qué dosis usa, los tres tarros se vacían en tiempo
-   acelerado y cada uno muestra cuándo se acaba y cuánto cuesta al mes.
-   Todo son cuentas sobre los precios del catálogo; no promete resultados. */
+   toma creatina (un scoop de 5 g), los tres tarros se vacían en tiempo
+   acelerado y cada uno muestra cuánto dura, cuánto cuesta cada scoop y
+   cuánto al mes. Todo son cuentas sobre los precios del catálogo. */
 (function () {
   'use strict';
 
   var root = document.getElementById('tarro');
   if (!root) return;
 
-  var MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  var SCOOP_G = 5;                                   // gramos por scoop
   var ANIM = 7000;                                   // duración del tiempo acelerado
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var hoy = new Date();
 
   var sl = document.getElementById('tarroSl');
   var out = document.getElementById('tarroSlOut');
   var repetir = document.getElementById('tarroRepetir');
   var dia = document.getElementById('tarroDia');
-  var fechaEl = document.getElementById('tarroFecha');
   var cierre = document.getElementById('tarroCierre');
-  var dosisBtns = [].slice.call(root.querySelectorAll('.calc__dosebtn'));
-  var st = { dpw: 5, dosis: 5 };
+  var st = { dpw: 5 };
 
   var P = [].slice.call(root.querySelectorAll('.tarro__card')).map(function (el) {
     return {
@@ -33,11 +30,6 @@
   });
 
   var cop = function (n) { return '$' + Math.round(n).toLocaleString('es-CO'); };
-  var fecha = function (dias) {
-    var d = new Date(hoy);
-    d.setDate(d.getDate() + dias);
-    return d.getDate() + ' ' + MES[d.getMonth()] + ' ' + d.getFullYear();
-  };
 
   /* las fotos tienen el tarro entre el 7 % y el 93 % del alto: el nivel
      recorta desde arriba solo esa franja */
@@ -49,7 +41,7 @@
     st.dpw = +sl.value;
     out.textContent = st.dpw + (st.dpw === 1 ? ' día por semana' : ' días por semana');
     P.forEach(function (p) {
-      var tomas = Math.floor(p.gramos / st.dosis);
+      var tomas = Math.floor(p.gramos / SCOOP_G);
       p.dur = Math.round(tomas * 7 / st.dpw);
       p.mes = p.precio / p.dur * 30;
       p.toma = p.precio / tomas;
@@ -57,8 +49,6 @@
     var mejor = P.reduce(function (a, b) { return b.mes < a.mes ? b : a; });
     P.forEach(function (p) {
       p.el.querySelector('[data-dur]').textContent = p.dur;
-      p.el.querySelector('[data-fin]').textContent = fecha(p.dur);
-      p.el.querySelector('[data-fin-wrap]').hidden = false;
       p.el.querySelector('[data-mes]').textContent = cop(p.mes);
       p.el.querySelector('[data-toma]').textContent = cop(p.toma);
       p.el.classList.toggle('is-best', p === mejor);
@@ -68,7 +58,7 @@
     cierre.innerHTML = ahorro > 0
       ? 'Con <b>' + st.dpw + (st.dpw === 1 ? ' día' : ' días') + ' a la semana</b>, el de ' + grande.gramos +
         ' g te sale <em>' + cop(ahorro) + ' menos al mes</em> que el de ' + chico.gramos +
-        ' g, y te dura hasta el <b>' + fecha(grande.dur) + '</b>.'
+        ' g, y te dura <b>' + grande.dur + ' días</b>.'
       : '';
   }
 
@@ -82,7 +72,6 @@
       p.el.classList.toggle('is-empty', l <= 0);
     });
     dia.textContent = Math.round(d);
-    fechaEl.textContent = fecha(Math.round(d));
     raf = f < 1 ? requestAnimationFrame(cuadro) : 0;
   }
 
@@ -90,23 +79,12 @@
     cancelAnimationFrame(raf);
     P.forEach(function (p) { nivel(p, 1); p.el.classList.remove('is-empty'); });
     dia.textContent = '0';
-    fechaEl.textContent = 'hoy';
     if (reduce) return;
     t0 = performance.now();
     raf = requestAnimationFrame(cuadro);
   }
 
   sl.addEventListener('input', function () { cuentas(); reproducir(); });
-  dosisBtns.forEach(function (b) {
-    b.addEventListener('click', function () {
-      dosisBtns.forEach(function (x) { x.classList.remove('is-active'); x.setAttribute('aria-pressed', 'false'); });
-      b.classList.add('is-active');
-      b.setAttribute('aria-pressed', 'true');
-      st.dosis = +b.dataset.g;
-      cuentas();
-      reproducir();
-    });
-  });
   repetir.addEventListener('click', reproducir);
 
   cuentas();
