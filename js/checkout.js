@@ -13,7 +13,9 @@ const ENVIO_LISTA = 20000; // lo que costaría por transportadora: se muestra ta
 const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
-const TXT_BTN_WOMPI = '🔒 Pagar de forma segura con Wompi';
+/* el boton de Wompi imita al oficial de la pasarela: fondo negro y su
+   wordmark blanco (asset de marca de public-assets.wompi.com) */
+const HTML_BTN_WOMPI = 'Pagar con <img class="btn__wompi" src="assets/wompi-logo-blanco.svg" alt="Wompi">';
 const HORAS_ENTREGA = ['9:00 a.m.', '10:00 a.m.', '11:00 a.m.', '12:00 m.', '1:00 p.m.', '2:00 p.m.', '3:00 p.m.', '4:00 p.m.', '5:00 p.m.', '6:00 p.m.'];
 
 const $ = (id) => document.getElementById(id);
@@ -262,12 +264,13 @@ function render() {
   $('payAnticipado').hidden = esCE || esWompi;
   $('payCE').hidden = !esCE;
   $('payWompi').hidden = !esWompi;
-  $('btnEnviar').textContent = esCE
+  $('btnEnviar').classList.toggle('btn--wompi', esWompi);
+  $('btnEnviar').innerHTML = esCE
     ? 'Confirmar mi pedido contraentrega por WhatsApp'
     : esWompi
-      ? TXT_BTN_WOMPI
+      ? HTML_BTN_WOMPI
       : 'Ya pagué → Enviar mi pedido por WhatsApp';
-  textoPagar(esCE ? 'Confirmar pedido ↓' : esWompi ? 'Pagar seguro ↓' : 'Ir a pagar ↓');
+  textoPagar(esCE ? 'Confirmar pedido ↓' : esWompi ? 'Pagar ↓' : 'Ir a pagar ↓');
   $('coNota').innerHTML = esCE
     ? 'Tu pedido queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. Pagas cuando lo recibas en tu puerta.'
     : esWompi
@@ -581,7 +584,7 @@ async function irAWompi(id) {
     mostrarError('No pudimos conectar con la pasarela — intenta de nuevo o paga por Bre-B.');
   }
   boton.disabled = false;
-  boton.textContent = TXT_BTN_WOMPI;
+  boton.innerHTML = HTML_BTN_WOMPI;
 }
 
 /* solo se ofrece Wompi si las llaves ya están configuradas en el servidor */
@@ -702,7 +705,7 @@ $('btnEnviar').addEventListener('click', async () => {
   /* Wompi: sin WhatsApp — directo a la pasarela. El webhook verifica solo. */
   if (esWompi) {
     if (!registrado) {
-      boton.textContent = TXT_BTN_WOMPI;
+      boton.innerHTML = HTML_BTN_WOMPI;
       return mostrarError('No pudimos iniciar el pago en línea. Intenta de nuevo, o paga por Bre-B o contraentrega.');
     }
     recordarPedido(hash, id);

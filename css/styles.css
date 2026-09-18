@@ -2790,7 +2790,10 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
 
 /* ── Pago en línea (Wompi): la caja debe oler a banco, no a improvisación ── */
 .co__wompi { border: 1.5px solid var(--ink); background: var(--surface); }
-.co__wompi-candado { font-size: 15px; margin-right: 2px; }
+.co__wompi-candado {
+  width: 14px; height: 14px;
+  display: inline-block; vertical-align: -1.5px; margin-right: 4px;
+}
 .co__wompi-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
 .co__wompi-chips span {
   font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .1em;
@@ -2804,6 +2807,13 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   padding-top: 12px; border-top: 1px dashed var(--line-2);
 }
 .co__wompi-nota b { color: var(--accent-text); flex: none; }
+
+/* El boton de pago replica el oficial de Wompi (negro, wordmark blanco):
+   que se sienta que sales a la pasarela, no que es un boton mas nuestro.
+   Va despues de .btn--primary en la cascada para ganarle el fondo. */
+.btn--wompi { background: var(--cinta); color: #fff; }
+.btn--wompi:hover { background: #000; color: #fff; }
+.btn__wompi { height: 21px; width: auto; display: block; margin-top: 1px; }
 
 /* ── Resumen fijo ────────────────────────────────────────────────────
    La factura es la protagonista: cabecera en cinta, borde firme y el
@@ -3021,6 +3031,27 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .gallery__nav--atras  { left: 6px; }
   .gallery__nav--alante { right: 6px; }
   .gallery__nav { width: 40px; height: 40px; background: var(--bg-blur); }
+}
+
+/* ── Tercera pasada de compactación móvil ────────────────────────────
+   La portada seguía sintiéndose sin fin en el celular: tarjetas de
+   producto y fotos más pequeñas, que se recorran rápido con el pulgar. */
+@media (max-width: 640px) {
+  .product__photo { padding: 12px; }
+  .product__photo img { height: 150px; }
+  .products__grid { gap: 14px; }
+  .product__info { padding: 16px; }
+  .product__info .sello { margin-bottom: 10px; }
+  .product__pricing { padding-top: 12px; }
+  .product__serving { padding-top: 4px; margin-bottom: 12px; }
+  .product__more { margin-top: 6px; }
+  /* fotos y testimonios: más angostas (se asoma la siguiente) y por
+     tanto bastante más bajas; el pie de foto ya no reserva espacio */
+  .gallery__item { flex-basis: 56vw; }
+  .gallery__item figcaption { min-height: 0; }
+  /* los tres pasos de verificación eran una columna de texto eterna */
+  .steps-num > * { padding: 16px; gap: 6px; }
+  .steps-num p { font-size: 13.5px; }
 }
 
 /* ── El hero, segunda pasada ─────────────────────────────────────────
