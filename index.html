@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=76">
+  <link rel="stylesheet" href="css/styles.css?v=78">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -264,27 +264,80 @@
     <div class="calc__inner">
       <p class="section-eyebrow reveal"><b>02</b> Costo real</p>
       <h2 class="section-title reveal">Cuánto te dura<br>y cuánto te cuesta el día<span class="accent">.</span></h2>
-      <p class="section-lead reveal">Un tarro no se compra por lo que cuesta el tarro. Se compra por lo que cuesta cada día que lo tomas.</p>
+      <p class="section-lead reveal">Un tarro no se compra por lo que cuesta el tarro. Se compra por lo que cuesta cada día que lo tomas. Mueve el control y mira cómo se vacían los tres.</p>
 
-      <div class="calc__box reveal">
-        <div class="calc__tabs" role="tablist" aria-label="Presentación">
-          <button class="calc__tab is-active" role="tab" aria-selected="true" data-serv-gramos="300" data-precio="120000">ON · 300 g</button>
-          <button class="calc__tab" role="tab" aria-selected="false" data-serv-gramos="400" data-precio="140000">MT · 400 g</button>
-          <button class="calc__tab" role="tab" aria-selected="false" data-serv-gramos="600" data-precio="170000">ON · 600 g</button>
-        </div>
-        <div class="calc__dose">
-          <span id="calcDoseLabel">Tu dosis diaria</span>
-          <div class="calc__dose-btns" role="group" aria-labelledby="calcDoseLabel">
-            <button class="calc__dosebtn" data-g="3" aria-pressed="false">3 g</button>
-            <button class="calc__dosebtn is-active" data-g="5" aria-pressed="true">5 g</button>
+      <div class="tarro reveal" id="tarro">
+        <div class="tarro__ctl">
+          <div class="tarro__f">
+            <label class="tarro__lbl" for="tarroSl">¿Cuántos días a la semana la tomas?</label>
+            <output class="tarro__val" id="tarroSlOut" for="tarroSl">5 días por semana</output>
+            <input type="range" id="tarroSl" min="1" max="7" step="1" value="5">
           </div>
+          <div class="tarro__f tarro__f--dosis">
+            <span class="tarro__lbl" id="tarroDosisL">Tu dosis</span>
+            <div class="calc__dose-btns" role="group" aria-labelledby="tarroDosisL">
+              <button type="button" class="calc__dosebtn" data-g="3" aria-pressed="false">3 g</button>
+              <button type="button" class="calc__dosebtn is-active" data-g="5" aria-pressed="true">5 g</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn--ghost tarro__repetir" id="tarroRepetir">Ver de nuevo</button>
         </div>
-        <div class="calc__result" aria-live="polite">
-          <div class="calc__stat"><b id="calcDias">60</b><span>días de toma diaria</span></div>
-          <div class="calc__stat"><b id="calcMeses">2</b><span>meses completos</span></div>
-          <div class="calc__stat"><b id="calcDia">$2.000</b><span>te cuesta el día</span></div>
+
+        <p class="tarro__reloj" aria-hidden="true"><span>Tiempo acelerado</span><span>Día <b id="tarroDia">0</b> · <b id="tarroFecha">hoy</b></span></p>
+
+        <div class="tarro__jars" id="tarroJars">
+          <article class="tarro__card" data-gramos="300" data-precio="120000">
+            <span class="product__flag" hidden>Menor costo</span>
+            <div class="tarro__foto">
+              <picture><source srcset="assets/on.webp" type="image/webp"><img class="tarro__fantasma" src="assets/on.png" alt="" width="1000" height="1000" loading="lazy"></picture>
+              <picture><source srcset="assets/on.webp" type="image/webp"><img class="tarro__lleno" src="assets/on.png" alt="Tarro de Optimum Nutrition de 300 g" width="1000" height="1000" loading="lazy"></picture>
+              <span class="tarro__agot">Se acabó</span>
+            </div>
+            <h3 class="tarro__nom">ON · 300 g</h3>
+            <p class="tarro__dur"><b data-dur>84</b><small>días</small></p>
+            <p class="tarro__fin" data-fin-wrap hidden>se acaba el <span data-fin></span></p>
+            <div class="tarro__precios">
+              <p class="tarro__mes"><b data-mes>$42.857</b><small>al mes</small></p>
+              <p class="tarro__toma"><b data-toma>$2.000</b> por toma</p>
+            </div>
+          </article>
+          <article class="tarro__card" data-gramos="400" data-precio="140000">
+            <span class="product__flag" hidden>Menor costo</span>
+            <div class="tarro__foto">
+              <picture><source srcset="assets/muscletech.webp" type="image/webp"><img class="tarro__fantasma" src="assets/muscletech.png" alt="" width="1000" height="1000" loading="lazy"></picture>
+              <picture><source srcset="assets/muscletech.webp" type="image/webp"><img class="tarro__lleno" src="assets/muscletech.png" alt="Tarro de MuscleTech Platinum de 400 g" width="1000" height="1000" loading="lazy"></picture>
+              <span class="tarro__agot">Se acabó</span>
+            </div>
+            <h3 class="tarro__nom">MT · 400 g</h3>
+            <p class="tarro__dur"><b data-dur>112</b><small>días</small></p>
+            <p class="tarro__fin" data-fin-wrap hidden>se acaba el <span data-fin></span></p>
+            <div class="tarro__precios">
+              <p class="tarro__mes"><b data-mes>$37.500</b><small>al mes</small></p>
+              <p class="tarro__toma"><b data-toma>$1.750</b> por toma</p>
+            </div>
+          </article>
+          <article class="tarro__card" data-gramos="600" data-precio="170000">
+            <span class="product__flag" hidden>Menor costo</span>
+            <div class="tarro__foto">
+              <picture><source srcset="assets/on120.webp" type="image/webp"><img class="tarro__fantasma" src="assets/on120.png" alt="" width="1000" height="1000" loading="lazy"></picture>
+              <picture><source srcset="assets/on120.webp" type="image/webp"><img class="tarro__lleno" src="assets/on120.png" alt="Tarro de Optimum Nutrition de 600 g" width="1000" height="1000" loading="lazy"></picture>
+              <span class="tarro__agot">Se acabó</span>
+            </div>
+            <h3 class="tarro__nom">ON · 600 g</h3>
+            <p class="tarro__dur"><b data-dur>168</b><small>días</small></p>
+            <p class="tarro__fin" data-fin-wrap hidden>se acaba el <span data-fin></span></p>
+            <div class="tarro__precios">
+              <p class="tarro__mes"><b data-mes>$30.357</b><small>al mes</small></p>
+              <p class="tarro__toma"><b data-toma>$1.417</b> por toma</p>
+            </div>
+          </article>
         </div>
-        <p class="calc__note" id="calcNote"></p>
+
+        <div class="tarro__cierre">
+          <p id="tarroCierre" aria-live="polite"></p>
+          <a class="btn btn--primary" href="pedido.html?producto=on120">Pedir la de 600 g <span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
+        <p class="tarro__nota">Cálculo con la dosis que elijas, una toma por día que la tomes. Los precios son los del catálogo.</p>
       </div>
     </div>
   </section>
@@ -609,6 +662,8 @@
     </svg>
   </a>
 
-  <script src="js/main.js?v=13" defer></script>
+  <script src="js/main.js?v=14" defer></script>
+  <script src="js/hero-polvo.js?v=1" defer></script>
+  <script src="js/tarro.js?v=1" defer></script>
 </body>
 </html>
