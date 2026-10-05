@@ -677,6 +677,10 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   transition: transform var(--t-slow);
 }
 .product:hover .product__photo img { transform: scale(1.025); }
+/* el <picture> es en línea: sin esto el <img> mide el ancho en cuadrado y la
+   foto 4:3 recorta el tarro por arriba y por abajo */
+.product__photo { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+.product__photo picture { display: block; width: 100%; height: 100%; min-height: 0; }
 
 /* una sola etiqueta, y solo cuando dice algo */
 .product__flag {

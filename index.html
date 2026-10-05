@@ -22,7 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=76">
+  <link rel="stylesheet" href="css/styles.css?v=78">
+  <link rel="stylesheet" href="css/preventa.css?v=302a9d9b">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -33,7 +34,7 @@
     "url": "https://revtile.com.co",
     "logo": "https://revtile.com.co/assets/favicon-512.png",
     "image": "https://revtile.com.co/assets/og-card.jpg",
-    "description": "Tienda colombiana de creatina original (Optimum Nutrition y MuscleTech), sellada de fábrica. Antes de despachar registramos el sello, el lote y la fecha de vencimiento de cada tarro y enviamos las fotos al cliente. Envío gratis a toda Colombia, contraentrega disponible y entrega programada con día y hora a elección en Bogotá.",
+    "description": "Tienda colombiana de creatina original (Optimum Nutrition y MuscleTech), sellada de fábrica. También tiene en preventa su primera tanda de suplementos: whey, pre-entreno, BCAA y multivitamínico. Antes de despachar registramos el sello, el lote y la fecha de vencimiento de cada tarro y enviamos las fotos al cliente. Envío gratis a toda Colombia, contraentrega disponible y entrega programada con día y hora a elección en Bogotá.",
     "telephone": "+573214569600",
     "email": "contacto@revtile.com.co",
     "areaServed": { "@type": "Country", "name": "Colombia" },
@@ -78,6 +79,11 @@
         "@type": "Question",
         "name": "¿Qué creatinas vende REVTILE y a qué precio?",
         "acceptedAnswer": { "@type": "Answer", "text": "Optimum Nutrition Micronized Creatine 300 g, 60 servicios, a 120.000 pesos; MuscleTech Platinum Creatine 400 g, 80 servicios, a 140.000 pesos; y Optimum Nutrition 600 g, 120 servicios, a 170.000 pesos, que es el mejor precio por servicio. Todas selladas de fábrica y con lote verificable." }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Venden proteína, pre-entreno, BCAA y multivitamínicos?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Sí, están en preventa: Optimum Nutrition Gold Standard 100% Whey (2 lb), Nutrex Outrage (pre-entreno), Rule 1 BCAA y AllMax Vitaform (multivitamínico). La primera tanda es pequeña y las unidades están contadas. Se pueden apartar sin pagar; el precio definitivo se confirma cuando llegan." }
       }
     ]
   }
@@ -93,6 +99,7 @@
       <a class="nav__logo" href="/">REVTILE<span class="nav__dot">.</span></a>
       <nav class="nav__links" aria-label="Principal">
         <a href="#productos">Creatinas</a>
+        <a href="#preventa">Preventa</a>
         <a href="#calculadora">Precios</a>
         <a href="#autenticidad">Autenticidad</a>
         <a href="#como-comprar">Entregas</a>
@@ -109,10 +116,11 @@
   <div class="mobmenu" id="mobMenu" aria-hidden="true">
     <nav class="mobmenu__links" aria-label="Menú móvil">
       <a href="#productos" class="mobmenu__link"><i>01</i>Creatinas</a>
-      <a href="#calculadora" class="mobmenu__link"><i>02</i>Precios</a>
-      <a href="#autenticidad" class="mobmenu__link"><i>03</i>Autenticidad</a>
-      <a href="#como-comprar" class="mobmenu__link"><i>04</i>Entregas</a>
-      <a href="#faq" class="mobmenu__link"><i>05</i>Preguntas</a>
+      <a href="#preventa" class="mobmenu__link"><i>02</i>Preventa</a>
+      <a href="#calculadora" class="mobmenu__link"><i>03</i>Precios</a>
+      <a href="#autenticidad" class="mobmenu__link"><i>04</i>Autenticidad</a>
+      <a href="#como-comprar" class="mobmenu__link"><i>05</i>Entregas</a>
+      <a href="#faq" class="mobmenu__link"><i>06</i>Preguntas</a>
     </nav>
     <a class="btn btn--primary mobmenu__cta" href="pedido.html">Hacer mi pedido</a>
     <picture><source srcset="assets/mascota-chip.webp" type="image/webp"><img width="640" height="640" src="assets/mascota-chip.png" alt="" class="mobmenu__mascot" aria-hidden="true"></picture>
@@ -246,16 +254,76 @@
         <a class="btn btn--ghost combo__btn" href="pedido.html">Armar mi combo <span class="btn__arrow" aria-hidden="true">→</span></a>
       </div>
 
-      <!-- Lo que viene: proteínas -->
-      <aside class="pronto reveal" aria-label="Próximamente: proteínas">
-        <picture class="pronto__mascota" aria-hidden="true"><source srcset="assets/mascota-chip.webp" type="image/webp"><img src="assets/mascota-chip.png" alt="" width="640" height="640" loading="lazy"></picture>
-        <div class="pronto__texto">
-          <p class="pronto__tag">Próximamente</p>
-          <p class="pronto__titulo">Proteínas<span class="accent">.</span></p>
-          <p class="pronto__sub">Whey de marcas originales, con la misma verificación de sello y lote de siempre.</p>
+    </div>
+  </section>
+
+  <!-- ===== PREVENTA ===== -->
+  <section class="pre" id="preventa" aria-labelledby="preTitulo">
+    <div class="pre__inner">
+      <div class="pre__cinta reveal">
+        <div class="pre__cinta-texto">
+          <p class="pre__tag">Preventa · Primera tanda</p>
+          <h2 class="pre__titulo" id="preTitulo">Más que creatina. Unidades contadas<span class="accent">.</span></h2>
+          <p class="pre__sub">Proteína, pre-entreno, BCAA y multivitamínico. Apártalos hoy sin pagar: cuando llegan te escribimos con el precio y decides.</p>
         </div>
-        <a class="btn btn--primary pronto__btn" href="https://wa.me/573214569600?text=Hola%20REVTILE%20%F0%9F%A6%8E%2C%20av%C3%ADsenme%20cuando%20lleguen%20las%20prote%C3%ADnas" target="_blank" rel="noopener">Avísame cuando lleguen</a>
-      </aside>
+        <a class="btn btn--primary pre__btn" href="preventa.html">Ver la preventa <span class="btn__arrow" aria-hidden="true">→</span></a>
+      </div>
+      <!-- preventa:tarjetas:inicio -->
+      <div class="products__grid pre__grid">
+        <article class="product pre-card reveal">
+          <span class="product__flag">Preventa</span>
+          <div class="product__photo"><picture><source srcset="assets/pre/wgs-dobles.webp" type="image/webp"><img src="assets/pre/wgs-dobles.png" alt="Tarro de Optimum Nutrition Gold Standard 100% Whey de 2 lb, sabor Double Rich Chocolate" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__info">
+            <p class="product__brand">Optimum Nutrition</p>
+            <h3 class="product__name"><a class="product__link" href="whey-gold-standard-optimum-nutrition.html">Gold Standard 100% Whey</a></h3>
+            <p class="product__size">2 lb · 2 sabores</p>
+            <p class="pre-card__gancho">24 g de proteína por scoop. La whey insignia de Optimum Nutrition.</p>
+            <span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span>
+            <p class="pre-precio"><span>Precio</span><i aria-hidden="true"></i><b>Al llegar</b></p>
+            <a class="btn btn--primary btn--full" href="whey-gold-standard-optimum-nutrition.html">Apartar <span class="btn__arrow" aria-hidden="true">→</span></a>
+          </div>
+        </article>
+        <article class="product pre-card reveal">
+          <span class="product__flag">Preventa</span>
+          <div class="product__photo"><picture><source srcset="assets/pre/outrage-blue.webp" type="image/webp"><img src="assets/pre/outrage-blue.png" alt="Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__info">
+            <p class="product__brand">Nutrex Research</p>
+            <h3 class="product__name"><a class="product__link" href="preentreno-nutrex-outrage.html">Outrage Ultra Stim Pre-Workout</a></h3>
+            <p class="product__size">30 porciones · 2 sabores</p>
+            <p class="pre-card__gancho">Pre-entreno ultra estimulante. Su etiqueta avisa que es más fuerte que otros.</p>
+            <span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span>
+            <p class="pre-precio"><span>Precio</span><i aria-hidden="true"></i><b>Al llegar</b></p>
+            <a class="btn btn--primary btn--full" href="preentreno-nutrex-outrage.html">Apartar <span class="btn__arrow" aria-hidden="true">→</span></a>
+          </div>
+        </article>
+        <article class="product pre-card reveal">
+          <span class="product__flag">Preventa</span>
+          <div class="product__photo"><picture><source srcset="assets/pre/bcaa-blue.webp" type="image/webp"><img src="assets/pre/bcaa-blue.png" alt="Envase de Rule 1 BCAA sabor Blue Raspberry" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__info">
+            <p class="product__brand">Rule 1</p>
+            <h3 class="product__name"><a class="product__link" href="bcaa-rule-1.html">BCAA 2:1:1</a></h3>
+            <p class="product__size">30 porciones · 2 sabores</p>
+            <p class="pre-card__gancho">5 g de BCAA en proporción 2:1:1, con solo 25 calorías por scoop.</p>
+            <span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span>
+            <p class="pre-precio"><span>Precio</span><i aria-hidden="true"></i><b>Al llegar</b></p>
+            <a class="btn btn--primary btn--full" href="bcaa-rule-1.html">Apartar <span class="btn__arrow" aria-hidden="true">→</span></a>
+          </div>
+        </article>
+        <article class="product pre-card reveal">
+          <span class="product__flag">Preventa</span>
+          <div class="product__photo"><picture><source srcset="assets/pre/vitaform.webp" type="image/webp"><img src="assets/pre/vitaform.png" alt="Frasco de AllMax Nutrition Premium Vitaform, multivitamínico de 60 tabletas" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__info">
+            <p class="product__brand">AllMax Nutrition</p>
+            <h3 class="product__name"><a class="product__link" href="multivitaminico-allmax-vitaform.html">Premium Vitaform</a></h3>
+            <p class="product__size">60 tabletas</p>
+            <p class="pre-card__gancho">Multivitamínico de 2 al día con 6 complejos. Fórmula con enfoque masculino.</p>
+            <span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span>
+            <p class="pre-precio"><span>Precio</span><i aria-hidden="true"></i><b>Al llegar</b></p>
+            <a class="btn btn--primary btn--full" href="multivitaminico-allmax-vitaform.html">Apartar <span class="btn__arrow" aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      </div>
+      <!-- preventa:tarjetas:fin -->
     </div>
   </section>
 
@@ -485,6 +553,10 @@
           <summary>¿Puedo rastrear mi pedido?</summary>
           <p>Sí. Con el número que te damos al hacer el pedido (empieza por <b>RV-</b>) puedes ver su estado en <a class="link" href="rastreo.html">la página de rastreo</a>, incluida la guía de la transportadora cuando ya salió.</p>
         </details>
+        <details class="faq__item reveal">
+          <summary>¿Venden proteína, pre-entreno, BCAA y multivitamínicos?</summary>
+          <p>Sí, están en preventa: Optimum Nutrition Gold Standard 100% Whey (2 lb), Nutrex Outrage (pre-entreno), Rule 1 BCAA y AllMax Vitaform (multivitamínico). La primera tanda es pequeña y las unidades están contadas. Se pueden apartar sin pagar; el precio definitivo se confirma cuando llegan. <a class="link" href="preventa.html">Ver la preventa</a>.</p>
+        </details>
       </div>
           <p class="disclaimer reveal">Los resultados dependen de tu entrenamiento, tu alimentación, tu descanso y tu constancia: la creatina acompaña ese trabajo, no lo reemplaza. Los suplementos no son medicamentos ni sustituyen una alimentación equilibrada. Si tienes alguna condición médica, estás embarazada o en lactancia, o tomas medicamentos, consulta a tu médico antes de consumirla.</p>
     </div>
@@ -550,6 +622,7 @@
         <a href="producto-on.html">ON Creatine 300 g</a>
         <a href="producto-mt.html">MT Platinum 400 g</a>
         <a href="producto-on120.html">ON Creatine 600 g</a>
+        <a href="preventa.html">Suplementos en preventa</a>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">

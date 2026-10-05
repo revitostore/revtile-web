@@ -151,5 +151,1128 @@
     "direccion_notificacion": "Bogotá D.C. · notificaciones al correo contacto@revtile.com.co",
     "tabla_nutricional": "pendiente de las etiquetas reales de cada presentación"
   },
-  "_nota_resenas": "Reseñas: SOLO frases reales de chats de clientes. Campos: quien (nombre corto o 'Cliente en <ciudad>'), ciudad, nota (1-5), texto, fecha (AAAA-MM-DD). Tras editar: node tools/build-fichas.mjs"
+  "_nota_resenas": "Reseñas: SOLO frases reales de chats de clientes. Campos: quien (nombre corto o 'Cliente en <ciudad>'), ciudad, nota (1-5), texto, fecha (AAAA-MM-DD). Tras editar: node tools/build-fichas.mjs",
+  "preventa": {
+    "_nota": "Suplementos en preventa. Cada producto genera su ficha con `node tools/build-preventa.mjs`. El stock de cada variante es el número REAL de unidades de la primera tanda: al apartar una, réstala aquí y vuelve a ejecutar la herramienta. `precio: null` mantiene el precio fuera de la página y del JSON-LD; al poner un número, aparece la oferta con disponibilidad PreOrder.",
+    "tanda": "Primera tanda",
+    "promesa": "Apartar es gratis: no pagas nada hoy. Cuando llegan te escribimos por WhatsApp con el precio definitivo y decides si la compras.",
+    "productos": [
+      {
+        "sku": "wgs",
+        "pagina": "whey-gold-standard-optimum-nutrition.html",
+        "categoria": "Proteína de suero (whey)",
+        "schema_categoria": "Proteína en polvo",
+        "rol": "Proteína",
+        "marca": "Optimum Nutrition",
+        "nombre": "Gold Standard 100% Whey",
+        "formato": "2 lb · 907 g",
+        "estado": "preventa",
+        "precio": null,
+        "titulo": "Whey Gold Standard 100% Optimum Nutrition 2 lb en preventa — REVTILE",
+        "meta": "Optimum Nutrition Gold Standard 100% Whey 2 lb (907 g) en preventa en Colombia: 24 g de proteína por scoop, sabores Double Rich Chocolate y Extreme Milk Chocolate. Apártala sin pagar. Envío gratis a toda Colombia.",
+        "gancho": "24 g de proteína por scoop. La whey insignia de Optimum Nutrition.",
+        "resumen": "La proteína insignia de Optimum Nutrition: 24 g de proteína y 5,5 g de BCAA por scoop según la etiqueta, con aislado de suero como fuente principal.",
+        "descripcion": "Proteína de suero de leche en polvo Optimum Nutrition Gold Standard 100% Whey, envase de 2 lb (907 g). Aporta 24 g de proteína y 5,5 g de BCAA por scoop según la etiqueta; el aislado de proteína de suero es la fuente principal.",
+        "destacados": [
+          [
+            "24 g",
+            "Proteína por scoop"
+          ],
+          [
+            "5,5 g",
+            "BCAA por scoop"
+          ],
+          [
+            "120",
+            "Calorías por scoop"
+          ],
+          [
+            "28–29",
+            "Porciones según sabor"
+          ]
+        ],
+        "datos": [
+          [
+            "Marca",
+            "Optimum Nutrition"
+          ],
+          [
+            "Producto",
+            "Gold Standard 100% Whey"
+          ],
+          [
+            "Tipo",
+            "Proteína de suero en polvo (whey)"
+          ],
+          [
+            "Contenido neto",
+            "2 lb (907 g)"
+          ],
+          [
+            "Sabores",
+            "Double Rich Chocolate · Extreme Milk Chocolate"
+          ],
+          [
+            "Fuente principal",
+            "Aislado de proteína de suero (según la etiqueta)"
+          ],
+          [
+            "Control",
+            "Sello «Banned Substance Tested» en el envase"
+          ],
+          [
+            "Origen",
+            "Fabricado en EE. UU. (según la etiqueta)"
+          ],
+          [
+            "Alérgenos",
+            "Contiene leche y soya"
+          ]
+        ],
+        "uso": {
+          "titulo": "Simple y sin complicarte",
+          "pasos": [
+            [
+              "1 scoop",
+              "Mezcla y agita",
+              "Según el envase: un scoop con 180 a 240 ml de agua fría u otra bebida, agitado unos 30 segundos."
+            ],
+            [
+              "30–60",
+              "Minutos después de entrenar",
+              "El fabricante sugiere tomarla entre 30 y 60 minutos después de entrenar, o en cualquier momento del día para sumar proteína a tu alimentación."
+            ],
+            [
+              "28–29",
+              "Porciones por envase",
+              "Según el sabor. Con un scoop al día te dura aproximadamente un mes."
+            ]
+          ]
+        },
+        "aviso": {
+          "tipo": "alergeno",
+          "titulo": "Contiene leche y soya",
+          "items": [
+            "La etiqueta de ambos sabores declara «Contains: milk and soy» (contiene leche y soya).",
+            "Lleva edulcorantes artificiales: acesulfame de potasio y, en Extreme Milk Chocolate, también sucralosa.",
+            "No sustituye una alimentación variada. Si tienes una condición médica, estás embarazada o en lactancia, consulta a tu médico."
+          ]
+        },
+        "faq": [
+          [
+            "¿Qué significa preventa?",
+            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+          ],
+          [
+            "¿Cuánto cuesta?",
+            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+          ],
+          [
+            "¿Es original?",
+            "Sí. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes esos datos con el fabricante. Las fotos de esta ficha son de referencia del fabricante."
+          ],
+          [
+            "¿Cuántos gramos de proteína tiene?",
+            "24 g por scoop según la etiqueta, con 5,5 g de BCAA. El scoop pesa 30,4 g en Double Rich Chocolate y 32 g en Extreme Milk Chocolate."
+          ],
+          [
+            "¿Cuántas unidades hay?",
+            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+          ]
+        ],
+        "variantes": [
+          {
+            "id": "dobles",
+            "sabor": "Double Rich Chocolate",
+            "stock": 2,
+            "porciones": "29",
+            "imagen": "assets/pre/wgs-dobles",
+            "alt": "Tarro de Optimum Nutrition Gold Standard 100% Whey de 2 lb, sabor Double Rich Chocolate",
+            "galeria": [
+              [
+                "assets/pre/wgs-dobles",
+                "Tarro de Optimum Nutrition Gold Standard 100% Whey de 2 lb, sabor Double Rich Chocolate"
+              ],
+              [
+                "assets/pre/wgs-dobles-tabla",
+                "Parte posterior del envase con la tabla nutricional y los ingredientes del sabor Double Rich Chocolate"
+              ],
+              [
+                "assets/pre/wgs-dobles-extra",
+                "Proteína en polvo sabor Double Rich Chocolate junto a un scoop y trozos de chocolate"
+              ]
+            ],
+            "nutricional": {
+              "foto": "assets/pre/wgs-dobles-tabla",
+              "porcion": "30,4 g (aproximadamente 1 scoop)",
+              "porciones": "29",
+              "filas": [
+                [
+                  "Calorías",
+                  "120",
+                  "—"
+                ],
+                [
+                  "Proteína",
+                  "24 g",
+                  "48 %"
+                ]
+              ],
+              "etiqueta_otros": "Ingredientes",
+              "otros": "Mezcla de proteínas (aislado de proteína de suero, concentrado de proteína de suero, proteína de suero hidrolizada), cacao en polvo (procesado con álcali), lecitina de girasol y/o soya, sabor natural y artificial, acesulfame de potasio. Contiene: leche y soya.",
+              "notas": [
+                "En la foto de la etiqueta está la tabla completa; aquí transcribimos los datos que se leen con claridad."
+              ],
+              "fuente": "Transcrito del envase de Optimum Nutrition Gold Standard 100% Whey, 2 lb, Double Rich Chocolate."
+            }
+          },
+          {
+            "id": "extreme",
+            "sabor": "Extreme Milk Chocolate",
+            "stock": 1,
+            "porciones": "28",
+            "imagen": "assets/pre/wgs-extreme",
+            "alt": "Tarro de Optimum Nutrition Gold Standard 100% Whey de 2 lb, sabor Extreme Milk Chocolate",
+            "galeria": [
+              [
+                "assets/pre/wgs-extreme",
+                "Tarro de Optimum Nutrition Gold Standard 100% Whey de 2 lb, sabor Extreme Milk Chocolate"
+              ],
+              [
+                "assets/pre/wgs-extreme-tabla",
+                "Parte posterior del envase con la tabla nutricional y los ingredientes del sabor Extreme Milk Chocolate"
+              ]
+            ],
+            "nutricional": {
+              "foto": "assets/pre/wgs-extreme-tabla",
+              "porcion": "Aproximadamente 1 scoop (32 g)",
+              "porciones": "28",
+              "filas": [
+                [
+                  "Calorías",
+                  "120",
+                  "—"
+                ],
+                [
+                  "Grasa total",
+                  "1,5 g",
+                  "2 %"
+                ],
+                [
+                  "Grasa saturada",
+                  "1 g",
+                  "5 %"
+                ],
+                [
+                  "Colesterol",
+                  "40 mg",
+                  "13 %"
+                ],
+                [
+                  "Sodio",
+                  "100 mg",
+                  "4 %"
+                ],
+                [
+                  "Carbohidratos totales",
+                  "3 g",
+                  "1 %"
+                ],
+                [
+                  "Fibra dietaria",
+                  "menos de 1 g",
+                  "2 %"
+                ],
+                [
+                  "Azúcares totales",
+                  "2 g",
+                  "—"
+                ],
+                [
+                  "Proteína",
+                  "24 g",
+                  "48 %"
+                ],
+                [
+                  "Calcio",
+                  "140 mg",
+                  "10 %"
+                ],
+                [
+                  "Hierro",
+                  "0,7 mg",
+                  "4 %"
+                ],
+                [
+                  "Potasio",
+                  "220 mg",
+                  "4 %"
+                ]
+              ],
+              "etiqueta_otros": "Ingredientes",
+              "otros": "Mezcla de proteínas (aislado de proteína de suero, concentrado de proteína de suero, péptidos de suero), cacao en polvo (procesado con álcali), sabor natural y artificial, lecitina, cremador (aceite de girasol, maltodextrina, almidón modificado de maíz, fosfato dipotásico, fosfato tricálcico, tocoferoles), sal, acesulfame de potasio, sucralosa, lactasa. Contiene: leche y soya.",
+              "notas": [
+                "No es fuente significativa de grasa trans, azúcares añadidos ni vitamina D (según la etiqueta)."
+              ],
+              "fuente": "Transcrito del envase de Optimum Nutrition Gold Standard 100% Whey, 2 lb, Extreme Milk Chocolate."
+            }
+          }
+        ]
+      },
+      {
+        "sku": "outrage",
+        "pagina": "preentreno-nutrex-outrage.html",
+        "categoria": "Pre-entreno",
+        "schema_categoria": "Pre-entreno en polvo",
+        "rol": "Pre-entreno",
+        "marca": "Nutrex Research",
+        "nombre": "Outrage Ultra Stim Pre-Workout",
+        "formato": "30 porciones · 7 g por scoop",
+        "estado": "preventa",
+        "precio": null,
+        "titulo": "Pre-entreno Nutrex Outrage Ultra Stim 30 porciones en preventa — REVTILE",
+        "meta": "Nutrex Outrage Ultra Stim Pre-Workout, 30 porciones, en preventa en Colombia: sabores Blue Raspberry y Fruit Punch. Pre-entreno de alta estimulación: lee el aviso antes de apartar. Envío gratis a toda Colombia.",
+        "gancho": "Pre-entreno ultra estimulante. Su etiqueta avisa que es más fuerte que otros.",
+        "resumen": "Un pre-entreno de alta estimulación de Nutrex Research: mezcla de beta-alanina, citrulina, creatina, cafeína, tirosina y extractos. El fabricante advierte que puede ser más fuerte que otros pre-entrenos que hayas probado.",
+        "descripcion": "Pre-entreno en polvo Nutrex Research Outrage Ultra Stim, 30 porciones de 7 g. Su mezcla Ultra-Stim de 4,5 g incluye beta-alanina, L-citrulina, monohidrato de creatina, cafeína anhidra, p-sinefrina, L-tirosina, yohimbe y rauwolscina, sin declarar la cantidad de cada ingrediente.",
+        "destacados": [
+          [
+            "30",
+            "Porciones"
+          ],
+          [
+            "7 g",
+            "Por scoop"
+          ],
+          [
+            "4,5 g",
+            "Mezcla Ultra-Stim"
+          ],
+          [
+            "1",
+            "Scoop máximo cada 24 h"
+          ]
+        ],
+        "datos": [
+          [
+            "Marca",
+            "Nutrex Research"
+          ],
+          [
+            "Producto",
+            "Outrage Ultra Stim Pre-Workout"
+          ],
+          [
+            "Tipo",
+            "Pre-entreno en polvo"
+          ],
+          [
+            "Porciones",
+            "30"
+          ],
+          [
+            "Porción",
+            "1 scoop (7 g)"
+          ],
+          [
+            "Sabores",
+            "Blue Raspberry · Fruit Punch"
+          ],
+          [
+            "Mezcla",
+            "Outrage Ultra-Stim Preworkout Blend, 4,5 g (las cantidades individuales no se declaran)"
+          ],
+          [
+            "Origen",
+            "Hecho en EE. UU., según el gráfico de la etiqueta"
+          ],
+          [
+            "Sellos que muestra el fabricante",
+            "Prácticas GMP certificadas, probado por terceros y sin colorantes artificiales (etiqueta del sabor Fruit Punch)"
+          ]
+        ],
+        "uso": {
+          "titulo": "Con cabeza",
+          "pasos": [
+            [
+              "1 scoop",
+              "Con 240 ml de agua fría",
+              "El fabricante indica agitar bien el envase y mezclar un scoop al ras con 8 oz (unos 240 ml) de agua fría."
+            ],
+            [
+              "30–45",
+              "Minutos antes de entrenar",
+              "Tómalo entre 30 y 45 minutos antes de tu entrenamiento y toma bastante agua durante el día."
+            ],
+            [
+              "1×",
+              "Una vez cada 24 horas",
+              "No excedas un scoop ni tomes más de una porción en 24 horas."
+            ]
+          ]
+        },
+        "aviso": {
+          "tipo": "estimulante",
+          "titulo": "Léelo antes de apartar: es un pre-entreno ultra estimulante",
+          "items": [
+            "La etiqueta advierte que puede ser más fuerte que otros pre-entrenos: nunca más de un scoop y una sola porción cada 24 horas.",
+            "Su mezcla incluye cafeína anhidra, yohimbe, rauwolscina y p-sinefrina. La etiqueta no declara la cantidad de cada uno.",
+            "Solo para adultos sanos. No es para menores de 18 años, embarazadas ni mujeres en lactancia. Si tienes hipertensión, problemas del corazón, ansiedad o tomas medicamentos, consulta a tu médico antes.",
+            "No lo combines con otros productos con cafeína y evita tomarlo cerca de la hora de dormir.",
+            "Contiene monohidrato de creatina dentro de la mezcla, sin declarar la cantidad por separado: tenlo en cuenta si ya tomas creatina.",
+            "Si nunca has usado un pre-entreno, empieza con medio scoop para ver cómo lo toleras. Si compites en un deporte con control antidopaje, revisa los ingredientes con tu federación."
+          ]
+        },
+        "faq": [
+          [
+            "¿Qué significa preventa?",
+            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+          ],
+          [
+            "¿Cuánto cuesta?",
+            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+          ],
+          [
+            "¿Es original?",
+            "Sí. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes esos datos con el fabricante. Las fotos de esta ficha son de referencia del fabricante."
+          ],
+          [
+            "¿Qué tan fuerte es?",
+            "Es un pre-entreno de alta estimulación: la etiqueta lo llama «Ultra-Stim» y advierte que puede ser más fuerte que otros. Incluye cafeína anhidra, yohimbe, rauwolscina y p-sinefrina sin declarar la cantidad de cada uno, así que si es tu primer pre-entreno empieza con medio scoop."
+          ],
+          [
+            "¿Puedo tomarlo si ya tomo creatina?",
+            "Contiene monohidrato de creatina dentro de su mezcla, sin declarar la cantidad por separado. Si ya tomas creatina aparte, estás sumando más; ante la duda, consulta a un profesional."
+          ],
+          [
+            "¿Para quién no es?",
+            "No es para menores de 18 años, embarazadas, mujeres en lactancia, ni personas con hipertensión, problemas del corazón o ansiedad, ni para quienes tomen medicamentos, salvo que su médico lo autorice."
+          ],
+          [
+            "¿Cuántas unidades hay?",
+            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+          ]
+        ],
+        "variantes": [
+          {
+            "id": "blue",
+            "sabor": "Blue Raspberry",
+            "stock": 2,
+            "porciones": "30",
+            "imagen": "assets/pre/outrage-blue",
+            "alt": "Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry",
+            "galeria": [
+              [
+                "assets/pre/outrage-blue",
+                "Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry"
+              ],
+              [
+                "assets/pre/outrage-blue-tabla",
+                "Parte posterior del envase con la tabla Supplement Facts y las instrucciones del sabor Blue Raspberry"
+              ]
+            ],
+            "nutricional": {
+              "foto": "assets/pre/outrage-blue-tabla"
+            }
+          },
+          {
+            "id": "fruit",
+            "sabor": "Fruit Punch",
+            "stock": 1,
+            "porciones": "30",
+            "imagen": "assets/pre/outrage-fruit",
+            "alt": "Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Fruit Punch",
+            "galeria": [
+              [
+                "assets/pre/outrage-fruit",
+                "Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Fruit Punch"
+              ],
+              [
+                "assets/pre/outrage-fruit-tabla",
+                "Tabla Supplement Facts del sabor Fruit Punch con los sellos del fabricante"
+              ],
+              [
+                "assets/pre/outrage-fruit-extra",
+                "Arte promocional de Nutrex Outrage: energía explosiva, bombeo extremo y fuerza y resistencia mejoradas"
+              ]
+            ],
+            "nutricional": {
+              "foto": "assets/pre/outrage-fruit-tabla"
+            }
+          }
+        ],
+        "nutricional": {
+          "porcion": "1 scoop (7 g)",
+          "porciones": "30",
+          "grupo": "Outrage Ultra-Stim Preworkout Blend · 4,5 g",
+          "filas": [
+            [
+              "Beta-alanina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "L-citrulina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Monohidrato de creatina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Cafeína anhidra",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Mezcla de extractos de Citrus aurantium (fruto), 25 % p-sinefrina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "L-tirosina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Extracto de skullcap (raíz)",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Extracto de dendrobium (tallo y hoja)",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Extracto de Rauwolfia vomitoria (raíz), 90 % rauwolscina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Yohimbe HCl",
+              "No declarada",
+              "—"
+            ]
+          ],
+          "etiqueta_otros": "Otros ingredientes",
+          "otros": "Sabores naturales y artificiales, ácido málico, dióxido de silicio, sucralosa, ácido cítrico, acesulfame de potasio.",
+          "notas": [
+            "Es una mezcla patentada: el fabricante declara el total de la mezcla (4,5 g por scoop) pero no la cantidad de cada ingrediente. Valor diario no establecido.",
+            "Uso recomendado por el fabricante: un scoop al ras con 8 oz de agua fría, 30 a 45 minutos antes de entrenar, una sola porción en 24 horas."
+          ],
+          "fuente": "Transcrito del envase de Nutrex Research Outrage Ultra Stim, 30 porciones."
+        }
+      },
+      {
+        "sku": "bcaa",
+        "pagina": "bcaa-rule-1.html",
+        "categoria": "Aminoácidos BCAA",
+        "schema_categoria": "BCAA en polvo",
+        "rol": "Recuperación",
+        "marca": "Rule 1",
+        "nombre": "BCAA 2:1:1",
+        "formato": "30 porciones · 8,5 g por scoop",
+        "estado": "preventa",
+        "precio": null,
+        "titulo": "BCAA Rule 1 2:1:1 30 porciones en preventa — REVTILE",
+        "meta": "Rule 1 BCAA 2:1:1, 30 porciones, en preventa en Colombia: 5 g de BCAA por scoop con solo 25 calorías, sabores Blue Raspberry y Fruit Punch. Apártalos sin pagar. Envío gratis a toda Colombia.",
+        "gancho": "5 g de BCAA en proporción 2:1:1, con solo 25 calorías por scoop.",
+        "resumen": "Aminoácidos de cadena ramificada de Rule One Proteins: 2,5 g de leucina, 1,25 g de isoleucina y 1,25 g de valina por scoop, en proporción 2:1:1.",
+        "descripcion": "BCAA en polvo Rule 1 (Rule One Proteins), 30 porciones de 8,5 g. Cada scoop aporta 5 g de aminoácidos de cadena ramificada en proporción 2:1:1: 2,5 g de L-leucina, 1,25 g de L-isoleucina y 1,25 g de L-valina, con 25 calorías.",
+        "destacados": [
+          [
+            "5 g",
+            "BCAA por scoop"
+          ],
+          [
+            "2:1:1",
+            "Leucina · isoleucina · valina"
+          ],
+          [
+            "25",
+            "Calorías por scoop"
+          ],
+          [
+            "30",
+            "Porciones"
+          ]
+        ],
+        "datos": [
+          [
+            "Marca",
+            "Rule One Proteins (Rule 1)"
+          ],
+          [
+            "Producto",
+            "BCAA — Performance & Recovery Support"
+          ],
+          [
+            "Tipo",
+            "BCAA en polvo"
+          ],
+          [
+            "Porciones",
+            "30"
+          ],
+          [
+            "Porción",
+            "Aproximadamente 1 scoop (8,5 g)"
+          ],
+          [
+            "Sabores",
+            "Blue Raspberry · Fruit Punch"
+          ],
+          [
+            "Proporción",
+            "2:1:1 (leucina, isoleucina, valina)"
+          ],
+          [
+            "Edulcorantes",
+            "Sucralosa y acesulfame de potasio"
+          ],
+          [
+            "Origen",
+            "Fabricado en EE. UU., según el envase"
+          ],
+          [
+            "Distribuye",
+            "Rule One Proteins, LLC · Downers Grove, Illinois, EE. UU."
+          ]
+        ],
+        "uso": {
+          "titulo": "Fácil de tomar",
+          "pasos": [
+            [
+              "1 scoop",
+              "Con 240 a 350 ml de agua",
+              "Según el envase: mezcla un scoop con 8 a 12 oz (240 a 350 ml) de agua fría."
+            ],
+            [
+              "Durante",
+              "O después de entrenar",
+              "El fabricante indica consumirlo durante o después del entrenamiento, junto con una alimentación equilibrada y ejercicio regular."
+            ],
+            [
+              "30",
+              "Porciones por envase",
+              "Un scoop por día de entrenamiento rinde 30 sesiones."
+            ]
+          ]
+        },
+        "aviso": {
+          "tipo": "general",
+          "titulo": "Antes de usarlo",
+          "items": [
+            "La etiqueta indica que es solo para adultos sanos y activos.",
+            "Consulta a tu médico antes de usarlo si tomas medicamentos, estás bajo atención médica por alguna condición o eres menor de 18 años.",
+            "No es para mujeres embarazadas, que intenten quedar embarazadas o estén en lactancia, según la etiqueta.",
+            "Lleva edulcorantes artificiales (sucralosa y acesulfame de potasio)."
+          ]
+        },
+        "faq": [
+          [
+            "¿Qué significa preventa?",
+            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+          ],
+          [
+            "¿Cuánto cuesta?",
+            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+          ],
+          [
+            "¿Es original?",
+            "Sí. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes esos datos con el fabricante. Las fotos de esta ficha son de referencia del fabricante."
+          ],
+          [
+            "¿Qué son los BCAA?",
+            "Son tres aminoácidos esenciales de cadena ramificada: leucina, isoleucina y valina. Este producto los aporta en proporción 2:1:1: por scoop, 2,5 g de leucina y 1,25 g de cada uno de los otros dos."
+          ],
+          [
+            "¿La tabla que veo es la de mi sabor?",
+            "La tabla de referencia es la del sabor Blue Raspberry; los saborizantes y colorantes dependen del sabor. Antes del despacho te enviamos la foto de la etiqueta del sabor que recibes."
+          ],
+          [
+            "¿Cuántas unidades hay?",
+            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+          ]
+        ],
+        "variantes": [
+          {
+            "id": "blue",
+            "sabor": "Blue Raspberry",
+            "stock": 2,
+            "porciones": "30",
+            "imagen": "assets/pre/bcaa-blue",
+            "alt": "Envase de Rule 1 BCAA sabor Blue Raspberry",
+            "galeria": [
+              [
+                "assets/pre/bcaa-blue",
+                "Envase de Rule 1 BCAA sabor Blue Raspberry"
+              ],
+              [
+                "assets/pre/bcaa-tabla",
+                "Parte posterior del envase de Rule 1 BCAA con la tabla Supplement Facts"
+              ],
+              [
+                "assets/pre/bcaa-extra",
+                "Panel posterior de Rule 1 BCAA con las indicaciones de uso y la proporción 2:1:1"
+              ]
+            ]
+          },
+          {
+            "id": "fruit",
+            "sabor": "Fruit Punch",
+            "stock": 1,
+            "porciones": "30",
+            "imagen": "assets/pre/bcaa-fruit",
+            "alt": "Envase de Rule 1 BCAA sabor Fruit Punch",
+            "galeria": [
+              [
+                "assets/pre/bcaa-fruit",
+                "Envase de Rule 1 BCAA sabor Fruit Punch"
+              ],
+              [
+                "assets/pre/bcaa-tabla",
+                "Etiqueta de referencia de Rule 1 BCAA (sabor Blue Raspberry) con la tabla Supplement Facts"
+              ],
+              [
+                "assets/pre/bcaa-extra",
+                "Panel posterior de Rule 1 BCAA con las indicaciones de uso y la proporción 2:1:1"
+              ]
+            ]
+          }
+        ],
+        "nutricional": {
+          "foto": "assets/pre/bcaa-tabla",
+          "porcion": "Aproximadamente 1 scoop (8,5 g)",
+          "porciones": "30",
+          "filas": [
+            [
+              "Calorías",
+              "25",
+              "—"
+            ],
+            [
+              "Carbohidratos totales",
+              "1 g",
+              "menos de 1 %"
+            ],
+            [
+              "L-leucina",
+              "2,5 g",
+              "—"
+            ],
+            [
+              "L-isoleucina",
+              "1,25 g",
+              "—"
+            ],
+            [
+              "L-valina",
+              "1,25 g",
+              "—"
+            ]
+          ],
+          "etiqueta_otros": "Otros ingredientes",
+          "otros": "Ácido cítrico, sabores naturales y artificiales, ácido málico, citrato de potasio, sucralosa, acesulfame de potasio, lecitina de girasol, FD&C Azul n.º 1.",
+          "notas": [
+            "Tabla de referencia del sabor Blue Raspberry: los saborizantes y colorantes dependen del sabor. Antes del despacho te enviamos la foto de la etiqueta del sabor que recibes.",
+            "Valor diario no establecido para los aminoácidos."
+          ],
+          "fuente": "Transcrito del envase de Rule 1 BCAA, 30 porciones, sabor Blue Raspberry."
+        }
+      },
+      {
+        "sku": "vitaform",
+        "pagina": "multivitaminico-allmax-vitaform.html",
+        "categoria": "Multivitamínico",
+        "schema_categoria": "Multivitamínico en tabletas",
+        "rol": "Bienestar",
+        "marca": "AllMax Nutrition",
+        "nombre": "Premium Vitaform",
+        "formato": "60 tabletas · 30 días",
+        "estado": "preventa",
+        "precio": null,
+        "titulo": "Multivitamínico AllMax Vitaform 60 tabletas en preventa — REVTILE",
+        "meta": "AllMax Nutrition Premium Vitaform, multivitamínico y mineral de 2 tabletas al día (60 tabletas, 30 días), en preventa en Colombia. Contiene glucosamina de mariscos: lee el aviso de alérgenos. Apártalo sin pagar.",
+        "gancho": "Multivitamínico de 2 al día con 6 complejos. Fórmula con enfoque masculino.",
+        "resumen": "Multivitamínico y mineral de AllMax Nutrition que se toma en 2 tabletas al día, con seis complejos funcionales: vitaminas esenciales, antioxidantes, enfoque mental, apoyo masculino, huesos y articulaciones, y minerales y electrolitos.",
+        "descripcion": "Multivitamínico y mineral AllMax Nutrition Premium Vitaform, 60 tabletas (30 días a 2 tabletas por porción). Seis complejos funcionales: Vitaplex, Power, Cogniforce, Virimax (apoyo masculino), Multiflex y Electromax. Contiene glucosamina de origen marisco y condroitina de origen bovino.",
+        "destacados": [
+          [
+            "60",
+            "Tabletas"
+          ],
+          [
+            "2",
+            "Tabletas por porción"
+          ],
+          [
+            "30",
+            "Días de suministro"
+          ],
+          [
+            "6",
+            "Complejos funcionales"
+          ]
+        ],
+        "datos": [
+          [
+            "Marca",
+            "AllMax Nutrition"
+          ],
+          [
+            "Producto",
+            "Premium Vitaform — Performance Vitamin, Complete 2-a-day"
+          ],
+          [
+            "Tipo",
+            "Multivitamínico y mineral en tabletas"
+          ],
+          [
+            "Contenido",
+            "60 tabletas"
+          ],
+          [
+            "Porción",
+            "2 tabletas"
+          ],
+          [
+            "Porciones",
+            "30 (suministro de 30 días)"
+          ],
+          [
+            "Enfoque",
+            "Masculino: incluye el complejo Virimax de apoyo masculino"
+          ],
+          [
+            "Alérgenos",
+            "Contiene glucosamina de origen marisco y condroitina de origen bovino"
+          ]
+        ],
+        "uso": {
+          "titulo": "Una porción, dos tabletas",
+          "pasos": [
+            [
+              "2",
+              "Tabletas por porción",
+              "El envase la presenta como fórmula «2 al día»: una porción son 2 tabletas."
+            ],
+            [
+              "30",
+              "Días con un envase",
+              "60 tabletas a 2 por día alcanzan para 30 días."
+            ],
+            [
+              "Etiqueta",
+              "Instrucciones del fabricante",
+              "Sigue las indicaciones impresas en tu envase y no excedas la dosis indicada."
+            ]
+          ]
+        },
+        "aviso": {
+          "tipo": "alergeno",
+          "titulo": "Importante si tienes alergias o dieta especial",
+          "items": [
+            "Contiene glucosamina de origen marisco: la etiqueta dice «sourced from shellfish». Si eres alérgico a los mariscos o crustáceos, no la consumas.",
+            "Contiene condroitina de origen bovino: no es apta para vegetarianos ni veganos.",
+            "Es una fórmula con enfoque masculino (complejo Virimax). Incluye extractos como ginseng, ginkgo biloba y saw palmetto: si tomas anticoagulantes u otros medicamentos, o tienes una condición médica, consulta a tu médico antes.",
+            "Varios nutrientes superan el 100 % del valor diario por porción (por ejemplo zinc 273 %, selenio 236 %, vitamina B12 500 %, biotina 1667 %): no la combines con otros multivitamínicos sin consultar.",
+            "Revisa la etiqueta completa en la foto: tu envase puede traer advertencias adicionales."
+          ]
+        },
+        "faq": [
+          [
+            "¿Qué significa preventa?",
+            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+          ],
+          [
+            "¿Cuánto cuesta?",
+            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+          ],
+          [
+            "¿Es original?",
+            "Sí. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes esos datos con el fabricante. Las fotos de esta ficha son de referencia del fabricante."
+          ],
+          [
+            "¿Tiene alérgenos?",
+            "Sí: contiene glucosamina de origen marisco y condroitina de origen bovino, según la etiqueta. Si eres alérgico a mariscos o crustáceos, no la consumas. Revisa también la etiqueta completa en la foto."
+          ],
+          [
+            "¿Es para mujeres?",
+            "La etiqueta presenta una fórmula con enfoque masculino (complejo Virimax de apoyo masculino). Si buscas un multivitamínico para mujer, escríbenos antes de apartar."
+          ],
+          [
+            "¿Es apta para vegetarianos?",
+            "No: incluye condroitina de origen bovino y glucosamina de mariscos."
+          ],
+          [
+            "¿Cuántas unidades hay?",
+            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+          ]
+        ],
+        "variantes": [
+          {
+            "id": "unica",
+            "sabor": null,
+            "stock": 3,
+            "porciones": "30",
+            "imagen": "assets/pre/vitaform",
+            "alt": "Frasco de AllMax Nutrition Premium Vitaform, multivitamínico de 60 tabletas",
+            "galeria": [
+              [
+                "assets/pre/vitaform",
+                "Frasco de AllMax Nutrition Premium Vitaform, multivitamínico de 60 tabletas"
+              ],
+              [
+                "assets/pre/vitaform-tabla",
+                "Tabla Medicinal Ingredients de AllMax Vitaform con los seis complejos: Vitaplex, Power, Cogniforce, Virimax, Multiflex y Electromax"
+              ]
+            ]
+          }
+        ],
+        "nutricional": {
+          "foto": "assets/pre/vitaform-tabla",
+          "porcion": "2 tabletas",
+          "porciones": "30",
+          "grupos": [
+            [
+              "1 · Vitaplex — complejo de vitaminas esenciales",
+              [
+                [
+                  "Vitamina A (palmitato)",
+                  "1500 mcg RAE (5000 UI)",
+                  "167 %"
+                ],
+                [
+                  "Vitamina C (ascorbato de calcio y ácido ascórbico)",
+                  "180 mg",
+                  "200 %"
+                ],
+                [
+                  "Vitamina E (acetato de dl-alfa tocoferilo)",
+                  "13,5 mg (30 UI)",
+                  "90 %"
+                ],
+                [
+                  "Vitamina B1 (clorhidrato de tiamina)",
+                  "1,5 mg",
+                  "125 %"
+                ],
+                [
+                  "Vitamina B2 (riboflavina)",
+                  "1,7 mg",
+                  "130 %"
+                ],
+                [
+                  "Vitamina B3 (niacinamida y niacina)",
+                  "20 mg",
+                  "125 %"
+                ],
+                [
+                  "Vitamina B5 (d-pantotenato de calcio)",
+                  "10 mg",
+                  "200 %"
+                ],
+                [
+                  "Vitamina B6 (clorhidrato de piridoxina)",
+                  "2 mg",
+                  "120 %"
+                ],
+                [
+                  "Vitamina B9 (ácido fólico)",
+                  "400 mcg (668 mcg DFE)",
+                  "167 %"
+                ],
+                [
+                  "Vitamina B12 (metilcobalamina)",
+                  "12 mcg",
+                  "500 %"
+                ],
+                [
+                  "Biotina",
+                  "500 mcg",
+                  "1667 %"
+                ],
+                [
+                  "Inositol granular",
+                  "25 mg",
+                  "†"
+                ],
+                [
+                  "Colina (bitartrato)",
+                  "24 mg",
+                  "†"
+                ]
+              ]
+            ],
+            [
+              "2 · Power — mezcla antioxidante",
+              [
+                [
+                  "Extracto de té verde (hoja), 95 % polifenoles, 45 % EGCG",
+                  "50 mg",
+                  "†"
+                ],
+                [
+                  "Extracto de semilla de uva, 95 % polifenoles",
+                  "25 mg",
+                  "†"
+                ],
+                [
+                  "N-acetilcisteína",
+                  "25 mg",
+                  "†"
+                ],
+                [
+                  "Extracto de cúrcuma (rizoma), 95 % curcuminoides",
+                  "25 mg",
+                  "†"
+                ],
+                [
+                  "Ácido alfa lipoico",
+                  "20 mg",
+                  "†"
+                ]
+              ]
+            ],
+            [
+              "3 · Cogniforce — enfoque y apoyo mental",
+              [
+                [
+                  "Extracto de ginseng asiático (raíz)",
+                  "45 mg",
+                  "†"
+                ],
+                [
+                  "L-teanina",
+                  "30 mg",
+                  "†"
+                ],
+                [
+                  "Extracto de ginkgo biloba (hoja)",
+                  "25 mg",
+                  "†"
+                ]
+              ]
+            ],
+            [
+              "4 · Virimax — complejo de apoyo masculino",
+              [
+                [
+                  "Zinc (quelato de aminoácidos y citrato)",
+                  "30 mg",
+                  "273 %"
+                ],
+                [
+                  "Selenio (selenato de sodio)",
+                  "130 mcg",
+                  "236 %"
+                ],
+                [
+                  "Extracto de ginseng americano (raíz)",
+                  "100 mg",
+                  "†"
+                ],
+                [
+                  "Saw palmetto (fruto), en polvo",
+                  "40 mg",
+                  "†"
+                ],
+                [
+                  "Extracto de granada (fruto)",
+                  "20 mg",
+                  "†"
+                ],
+                [
+                  "Boro (citrato de boro)",
+                  "20 mcg",
+                  "†"
+                ]
+              ]
+            ],
+            [
+              "5 · Multiflex — huesos y articulaciones",
+              [
+                [
+                  "Vitamina D3 (colecalciferol)",
+                  "20 mcg (800 UI)",
+                  "100 %"
+                ],
+                [
+                  "Vitamina K1 (fitonadiona)",
+                  "80 mcg",
+                  "67 %"
+                ],
+                [
+                  "Calcio (carbonato, ascorbato y quelato de aminoácidos)",
+                  "250 mg",
+                  "19 %"
+                ],
+                [
+                  "MSM (metilsulfonilmetano)",
+                  "150 mg",
+                  "†"
+                ],
+                [
+                  "Clorhidrato de glucosamina (de origen marisco)",
+                  "75 mg",
+                  "†"
+                ],
+                [
+                  "Sulfato de condroitina (de origen bovino)",
+                  "75 mg",
+                  "†"
+                ]
+              ]
+            ],
+            [
+              "6 · Electromax — minerales y electrolitos",
+              [
+                [
+                  "Cromo (polinicotinato)",
+                  "120 mcg",
+                  "343 %"
+                ],
+                [
+                  "Cobre (quelato de aminoácidos)",
+                  "2 mg",
+                  "222 %"
+                ],
+                [
+                  "Manganeso (quelato de aminoácidos)",
+                  "2 mg",
+                  "87 %"
+                ],
+                [
+                  "Magnesio (óxido)",
+                  "150 mg",
+                  "36 %"
+                ],
+                [
+                  "Yodo (yoduro de potasio)",
+                  "150 mcg",
+                  "100 %"
+                ],
+                [
+                  "Molibdeno (quelato de aminoácidos)",
+                  "75 mcg",
+                  "167 %"
+                ]
+              ]
+            ]
+          ],
+          "etiqueta_otros": "Otros ingredientes",
+          "otros": "Celulosa microcristalina, croscarmelosa sódica, ácido esteárico, dióxido de silicio, estearato de magnesio y recubrimiento (hipromelosa, hidroxipropilcelulosa, dióxido de titanio, polietilenglicol, riboflavina como color, caramelo como color).",
+          "notas": [
+            "† Valor diario no establecido.",
+            "El envase titula esta tabla «Medicinal Ingredients» (ingredientes medicinales)."
+          ],
+          "fuente": "Transcrito del envase de AllMax Nutrition Premium Vitaform, 60 tabletas."
+        }
+      }
+    ]
+  }
 }

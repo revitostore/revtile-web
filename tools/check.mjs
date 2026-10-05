@@ -65,6 +65,36 @@ for (const p of data.productos)
   if (p.precio_antes && !p.precio_antes_confirmado)
     avisos.push(`"${p.sku}": el precio tachado ${cop(p.precio_antes)} está sin confirmar como precio realmente cobrado`);
 
+/* 6 · preventa: stock real, sin precio inventado, avisos de seguridad y SEO al día */
+const pv = (data.preventa && data.preventa.productos) || [];
+const llms = read('llms.txt');
+const mapa = read('sitemap.xml');
+const portada = read('index.html');
+const existe = (p) => { try { readFileSync(join(ROOT, p)); return true; } catch { return false; } };
+for (const p of pv) {
+  let html;
+  try { html = read(p.pagina); } catch { errores.push(`Falta la ficha de preventa ${p.pagina}`); continue; }
+  const ldBloques = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+  for (const b of ldBloques) { try { JSON.parse(b[1]); } catch { errores.push(`${p.pagina}: un bloque JSON-LD no es JSON válido`); } }
+  if (p.precio == null && /"price"\s*:/.test(html))
+    errores.push(`${p.pagina}: tiene "price" en el JSON-LD pero el precio no está confirmado (precio: null)`);
+  if (p.precio != null && !html.includes(cop(p.precio)))
+    errores.push(`${p.pagina} no muestra el precio ${cop(p.precio)}`);
+  if (!p.aviso || !p.aviso.items || !p.aviso.items.length)
+    errores.push(`${p.sku}: una ficha de suplemento necesita su aviso de seguridad`);
+  for (const v of p.variantes) {
+    if (!Number.isInteger(v.stock) || v.stock < 0) errores.push(`${p.sku}/${v.id}: el stock debe ser un entero >= 0`);
+    const marca = v.stock > 0 ? `Quedan ${v.stock} ${v.stock === 1 ? 'unidad' : 'unidades'}` : 'aria-label="Agotado"';
+    if (!html.includes(marca)) errores.push(`${p.pagina}: no muestra el stock real de "${v.sabor || v.id}" (${v.stock})`);
+    for (const [src] of v.galeria) if (!existe(src + '.webp')) errores.push(`${p.sku}/${v.id}: falta la imagen ${src}.webp`);
+    if (!existe(v.imagen + '.png')) errores.push(`${p.sku}/${v.id}: falta ${v.imagen}.png`);
+  }
+  if (!llms.includes(p.pagina)) errores.push(`llms.txt no menciona ${p.pagina}`);
+  if (!mapa.includes(p.pagina)) errores.push(`sitemap.xml no incluye ${p.pagina}`);
+  if (!portada.includes(p.pagina)) errores.push(`index.html no enlaza ${p.pagina}`);
+}
+if (pv.length && !mapa.includes('preventa.html')) errores.push('sitemap.xml no incluye preventa.html');
+
 for (const a of avisos) console.log('  aviso   ' + a);
 for (const e of errores) console.error('  ERROR   ' + e);
 console.log(errores.length ? `\n${errores.length} error(es).` : '\nTodo coherente.');
