@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css?v=78">
-  <link rel="stylesheet" href="css/preventa.css?v=7a60d6a3">
+  <link rel="stylesheet" href="css/preventa.css?v=98644f0a">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -143,7 +143,7 @@
       </div>
 
       <div class="hero__art hero__art--trio">
-        <picture><source media="(max-width: 620px)" srcset="assets/hero-linea-m.webp" type="image/webp"><source srcset="assets/hero-linea.webp" type="image/webp"><img width="1637" height="640" src="assets/hero-linea.png" alt="Suplementos de REVTILE: creatina Optimum Nutrition, whey Gold Standard, pre-entreno Nutrex Outrage, BCAA Rule 1 y multivitamínico AllMax Vitaform" fetchpriority="high"></picture>
+        <picture><source media="(max-width: 620px)" srcset="assets/hero-linea-m.webp" type="image/webp"><source srcset="assets/hero-linea.webp" type="image/webp"><img width="1611" height="875" src="assets/hero-linea.png" alt="Suplementos de REVTILE: creatina Optimum Nutrition, whey Gold Standard, pre-entreno Nutrex Outrage, BCAA Rule 1 y multivitamínico AllMax Vitaform" fetchpriority="high"></picture>
       </div>
     </div>
     <div class="ticker" aria-hidden="true">
@@ -269,6 +269,36 @@
     </div>
   </section>
 
+  <!-- ===== CALCULADORA ===== -->
+  <section class="calc section--alt" id="calculadora">
+    <div class="calc__inner">
+      <p class="section-eyebrow reveal"><b>02</b> Creatina · costo real</p>
+      <h2 class="section-title reveal">Cuánto te dura la creatina<br>y cuánto te cuesta el día<span class="accent">.</span></h2>
+      <p class="section-lead reveal">Un tarro no se compra por lo que cuesta el tarro. Se compra por lo que cuesta cada día que lo tomas.</p>
+
+      <div class="calc__box reveal">
+        <div class="calc__tabs" role="tablist" aria-label="Presentación">
+          <button class="calc__tab is-active" role="tab" aria-selected="true" data-serv-gramos="300" data-precio="120000">ON · 300 g</button>
+          <button class="calc__tab" role="tab" aria-selected="false" data-serv-gramos="400" data-precio="140000">MT · 400 g</button>
+          <button class="calc__tab" role="tab" aria-selected="false" data-serv-gramos="600" data-precio="170000">ON · 600 g</button>
+        </div>
+        <div class="calc__dose">
+          <span id="calcDoseLabel">Tu dosis diaria</span>
+          <div class="calc__dose-btns" role="group" aria-labelledby="calcDoseLabel">
+            <button class="calc__dosebtn" data-g="3" aria-pressed="false">3 g</button>
+            <button class="calc__dosebtn is-active" data-g="5" aria-pressed="true">5 g</button>
+          </div>
+        </div>
+        <div class="calc__result" aria-live="polite">
+          <div class="calc__stat"><b id="calcDias">60</b><span>días de toma diaria</span></div>
+          <div class="calc__stat"><b id="calcMeses">2</b><span>meses completos</span></div>
+          <div class="calc__stat"><b id="calcDia">$2.000</b><span>te cuesta el día</span></div>
+        </div>
+        <p class="calc__note" id="calcNote"></p>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== PREVENTA ===== -->
   <section class="pre" id="preventa" aria-labelledby="preTitulo">
     <div class="pre__inner">
@@ -336,36 +366,6 @@
         </article>
       </div>
       <!-- preventa:tarjetas:fin -->
-    </div>
-  </section>
-
-  <!-- ===== CALCULADORA ===== -->
-  <section class="calc section--alt" id="calculadora">
-    <div class="calc__inner">
-      <p class="section-eyebrow reveal"><b>02</b> Costo real</p>
-      <h2 class="section-title reveal">Cuánto te dura<br>y cuánto te cuesta el día<span class="accent">.</span></h2>
-      <p class="section-lead reveal">Un tarro no se compra por lo que cuesta el tarro. Se compra por lo que cuesta cada día que lo tomas.</p>
-
-      <div class="calc__box reveal">
-        <div class="calc__tabs" role="tablist" aria-label="Presentación">
-          <button class="calc__tab is-active" role="tab" aria-selected="true" data-serv-gramos="300" data-precio="120000">ON · 300 g</button>
-          <button class="calc__tab" role="tab" aria-selected="false" data-serv-gramos="400" data-precio="140000">MT · 400 g</button>
-          <button class="calc__tab" role="tab" aria-selected="false" data-serv-gramos="600" data-precio="170000">ON · 600 g</button>
-        </div>
-        <div class="calc__dose">
-          <span id="calcDoseLabel">Tu dosis diaria</span>
-          <div class="calc__dose-btns" role="group" aria-labelledby="calcDoseLabel">
-            <button class="calc__dosebtn" data-g="3" aria-pressed="false">3 g</button>
-            <button class="calc__dosebtn is-active" data-g="5" aria-pressed="true">5 g</button>
-          </div>
-        </div>
-        <div class="calc__result" aria-live="polite">
-          <div class="calc__stat"><b id="calcDias">60</b><span>días de toma diaria</span></div>
-          <div class="calc__stat"><b id="calcMeses">2</b><span>meses completos</span></div>
-          <div class="calc__stat"><b id="calcDia">$2.000</b><span>te cuesta el día</span></div>
-        </div>
-        <p class="calc__note" id="calcNote"></p>
-      </div>
     </div>
   </section>
 
@@ -634,7 +634,11 @@
         <a href="producto-on.html">ON Creatine 300 g</a>
         <a href="producto-mt.html">MT Platinum 400 g</a>
         <a href="producto-on120.html">ON Creatine 600 g</a>
-        <a href="preventa.html">Suplementos en preventa</a>
+        <a href="whey-gold-standard-optimum-nutrition.html">Whey Gold Standard</a>
+        <a href="preentreno-nutrex-outrage.html">Pre-entreno Outrage</a>
+        <a href="bcaa-rule-1.html">BCAA Rule 1</a>
+        <a href="multivitaminico-allmax-vitaform.html">Multivitamínico Vitaform</a>
+        <a href="preventa.html">Toda la preventa</a>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">
@@ -681,7 +685,7 @@
       </div>
       <div class="buybar__text">
         <b>Desde $120.000</b>
-        <span>Envío gratis a toda Colombia · Selladas</span>
+        <span>Envío gratis a toda Colombia · Sellados</span>
       </div>
     </div>
     <a class="btn btn--primary buybar__btn" href="pedido.html" tabindex="-1">Hacer mi pedido</a>

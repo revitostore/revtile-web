@@ -331,15 +331,19 @@
 .cats__item:hover .cats__nom { color: var(--accent-text); }
 @media (max-width: 860px) {
   .cats { margin-top: 14px; }
-  .cats__lista { display: flex; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-inline: 0; }
-  .cats__lista::-webkit-scrollbar { display: none; }
-  .cats__lista li { flex: 0 0 auto; scroll-snap-align: start; }
-  .cats__item, .cats__lista li + li .cats__item { min-width: 148px; padding: 13px 18px; }
-  .cats__lista li:first-child .cats__item { padding-left: var(--gutter); }
+  .cats__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cats__item, .cats__lista li + li .cats__item { padding: 12px 8px 12px 0; border-left: 0; gap: 6px; }
+  .cats__lista li:nth-child(3n+2) .cats__item,
+  .cats__lista li:nth-child(3n) .cats__item { padding-left: 12px; border-left: 1px solid var(--line-2); }
+  .cats__lista li:last-child { grid-column: span 2; }
+  .cats__nom { font-size: 17px; }
+  .cats__est { font-size: 9.5px; letter-spacing: .08em; gap: 6px; }
+  .cats__est::before { width: 7px; height: 7px; }
 }
 
 /* La lista de marcas del hero: completa en escritorio, resumida en celular */
-.hero__label .hl-d { letter-spacing: .1em; }
+.hero__label .hl-d { white-space: nowrap; font-size: 10px; letter-spacing: .06em; }
+@media (min-width: 1100px) { .hero__label .hl-d { font-size: 11px; letter-spacing: .1em; } }
 .hero__label .hl-m { letter-spacing: .1em; }
 .hero__label .hl-m { display: none; }
 @media (max-width: 620px) {

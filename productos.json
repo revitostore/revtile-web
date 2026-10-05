@@ -147,7 +147,7 @@
   ],
   "_pendientes": {
     "razon_social": null,
-    "nit": "1050672185 (persona natural comerciante)",
+    "nit": "1050672185",
     "direccion_notificacion": "Bogotá D.C. · notificaciones al correo contacto@revtile.com.co",
     "tabla_nutricional": "pendiente de las etiquetas reales de cada presentación"
   },
@@ -417,7 +417,8 @@
               "fuente": "Transcrito del envase de Optimum Nutrition Gold Standard 100% Whey, 2 lb, Extreme Milk Chocolate."
             }
           }
-        ]
+        ],
+        "corto": "Whey Gold Standard"
       },
       {
         "sku": "outrage",
@@ -664,7 +665,8 @@
             "Uso recomendado por el fabricante: un scoop al ras con 8 oz de agua fría, 30 a 45 minutos antes de entrenar, una sola porción en 24 horas."
           ],
           "fuente": "Transcrito del envase de Nutrex Research Outrage Ultra Stim, 30 porciones."
-        }
+        },
+        "corto": "Pre-entreno Outrage"
       },
       {
         "sku": "bcaa",
@@ -882,7 +884,8 @@
             "Valor diario no establecido para los aminoácidos."
           ],
           "fuente": "Transcrito del envase de Rule 1 BCAA, 30 porciones, sabor Blue Raspberry."
-        }
+        },
+        "corto": "BCAA Rule 1"
       },
       {
         "sku": "vitaform",
@@ -1271,7 +1274,8 @@
             "El envase titula esta tabla «Medicinal Ingredients» (ingredientes medicinales)."
           ],
           "fuente": "Transcrito del envase de AllMax Nutrition Premium Vitaform, 60 tabletas."
-        }
+        },
+        "corto": "Multivitamínico Vitaform"
       }
     ]
   }

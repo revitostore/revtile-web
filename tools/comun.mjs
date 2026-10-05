@@ -30,7 +30,8 @@ ${SOCIALES}
         <p class="footer__title">Tienda</p>
         <a href="index.html#productos">Catálogo</a>
 ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'MuscleTech' ? 'MT' : 'ON'} ${p.gramos} g</a>`).join('\n')}
-        <a href="preventa.html">Suplementos en preventa</a>
+${(data.preventa ? data.preventa.productos : []).map((p) => `        <a href="${p.pagina}">${p.corto}</a>`).join('\n')}
+        <a href="preventa.html">Toda la preventa</a>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">
