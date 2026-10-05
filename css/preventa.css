@@ -285,3 +285,64 @@
   .pre-card .pre-precio b { font-size: 14px; }
   .pre-sabor { flex-basis: 100%; }
 }
+
+/* ── Fila de categorías, bajo el hero ────────────────────────────────
+   Dice de una vez que REVTILE vende suplementos, no solo creatina, y qué
+   hay hoy (casilla de tinta) y qué viene en preventa (casilla roja). */
+.cats { margin-top: 24px; }
+.cats__lista {
+  list-style: none;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.cats__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 16px 16px 0;
+  border-top: 1.5px solid var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+.cats__lista li + li .cats__item { padding-left: 18px; border-left: 1px solid var(--line-2); }
+.cats__nom {
+  font-family: 'Anton', 'Barlow', sans-serif;
+  font-size: clamp(18px, 2.1vw, 26px);
+  line-height: 1;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  transition: color var(--t);
+}
+.cats__est {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.cats__est::before { content: ''; width: 8px; height: 8px; background: var(--accent); flex: none; }
+.cats__est.is-ok::before { background: var(--ink); }
+.cats__item:hover .cats__nom { color: var(--accent-text); }
+@media (max-width: 860px) {
+  .cats { margin-top: 14px; }
+  .cats__lista { display: flex; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-inline: 0; }
+  .cats__lista::-webkit-scrollbar { display: none; }
+  .cats__lista li { flex: 0 0 auto; scroll-snap-align: start; }
+  .cats__item, .cats__lista li + li .cats__item { min-width: 148px; padding: 13px 18px; }
+  .cats__lista li:first-child .cats__item { padding-left: var(--gutter); }
+}
+
+/* La lista de marcas del hero: completa en escritorio, resumida en celular */
+.hero__label .hl-d { letter-spacing: .1em; }
+.hero__label .hl-m { letter-spacing: .1em; }
+.hero__label .hl-m { display: none; }
+@media (max-width: 620px) {
+  .hero__label .hl-d { display: none; }
+  .hero__label .hl-m { display: inline; }
+}

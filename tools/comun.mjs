@@ -23,7 +23,7 @@ export const footer = (data) => `  <footer class="footer">
     <div class="footer__grid">
       <div class="footer__brand">
         <p class="footer__logo">REVTILE<span class="nav__dot">.</span></p>
-        <p class="footer__tag">Creatina original, sellada de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp, envío gratis a toda Colombia.</p>
+        <p class="footer__tag">Suplementos originales, sellados de fábrica y con lote verificable. Pedido en línea, confirmación por WhatsApp, envío gratis a toda Colombia.</p>
 ${SOCIALES}
       </div>
       <nav class="footer__col" aria-label="Tienda">
@@ -55,7 +55,7 @@ ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'Muscle
       ${fila('Dirección de notificación', data._pendientes.direccion_notificacion)}
     </div>
     <div class="footer__base">
-      <p>© 2026 REVTILE · Creatina original, sellada y verificable</p>
+      <p>© 2026 REVTILE · Suplementos originales, sellados y verificables</p>
       <p class="footer__note">Los suplementos no son medicamentos y no sustituyen una alimentación equilibrada. Si tienes una condición médica, consulta a tu médico. REVTILE documenta el estado observable de cada producto antes del despacho; no es un laboratorio ni una entidad certificadora.</p>
     </div>
   </footer>`;

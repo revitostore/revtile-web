@@ -57,9 +57,10 @@ const cupos = (n) => n > 0
 const pic = (base, alt, extra = '') =>
   `<picture><source srcset="${base}.webp" type="image/webp"><img src="${base}.png" alt="${esc(alt)}" width="1000" height="1000"${extra}></picture>`;
 
+/* Sin precio confirmado no se escribe nada: ni "al llegar" ni un precio inventado. */
 const precioLinea = (p, etiqueta = 'Precio de preventa') => p.precio != null
   ? `<p class="pre-precio"><span>${etiqueta}</span><i aria-hidden="true"></i><b>${cop(p.precio)}</b></p>`
-  : `<p class="pre-precio"><span>${etiqueta}</span><i aria-hidden="true"></i><b>Al llegar</b></p>`;
+  : '';
 
 /* ── Tarjeta (portada, índice y "otras en preventa") ──────────────── */
 function tarjeta(p) {
