@@ -90,7 +90,7 @@ const nutricional = (p) => {
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { footer as footerComun } from './comun.mjs';
+import { footer as footerComun, huella } from './comun.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const data = JSON.parse(readFileSync(join(ROOT, 'productos.json'), 'utf8'));
@@ -202,6 +202,8 @@ function ficha(p) {
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=78">
+  <link rel="stylesheet" href="css/maleta.css?v=${huella('css/maleta.css')}">
+  <link rel="stylesheet" href="css/scoop.css?v=${huella('css/scoop.css')}">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -277,6 +279,7 @@ ${c.galeria.map(([src, alt], i) => `          <button class="pp-gal__thumb${i ==
         </ul>
 
         <a class="btn btn--primary btn--full btn--big" href="pedido.html?producto=${p.sku}">Pedir esta creatina <span class="btn__arrow" aria-hidden="true">→</span></a>
+        <button type="button" class="btn btn--ghost btn--full" data-maleta-add="${p.sku}:u" data-maleta-img="#ppMain">Añadir a la maleta</button>
         <p class="pp-note">Armas el pedido aquí y lo confirmas por WhatsApp. Contraentrega disponible en todo el país.</p>
 
         <div class="pp-stats">
@@ -452,6 +455,9 @@ ${footer()}
     <a class="btn btn--primary" href="pedido.html?producto=${p.sku}" tabindex="-1">Pedir <span class="btn__arrow" aria-hidden="true">→</span></a>
   </div>
 
+  <script src="js/catalogo.js?v=${huella('js/catalogo.js')}" defer></script>
+  <script src="js/maleta.js?v=${huella('js/maleta.js')}" defer></script>
+  <script src="js/scoop.js?v=${huella('js/scoop.js')}" defer></script>
   <script src="js/product.js?v=3" defer></script>
 </body>
 </html>

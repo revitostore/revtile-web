@@ -95,6 +95,32 @@ for (const p of pv) {
 }
 if (pv.length && !mapa.includes('preventa.html')) errores.push('sitemap.xml no incluye preventa.html');
 
+/* 7 · la maleta: catálogo del navegador, catálogo del servidor y páginas que los cargan */
+{
+  const cat = read('js/catalogo.js');
+  const srv = read('functions/api/_catalogo.js');
+  const claves = [
+    ...data.productos.map((p) => `${p.sku}:u`),
+    ...pv.flatMap((p) => p.variantes.map((v) => `${p.sku}:${v.id}`)),
+  ];
+  for (const k of claves) {
+    if (!cat.includes(`"k":"${k}"`)) errores.push(`js/catalogo.js no tiene ${k} (ejecuta node tools/build-preventa.mjs)`);
+    if (!existe((data.bolsa || {})[k] ? data.bolsa[k].img.replace(/\.webp$/, '') + '.webp' : 'no-existe'))
+      errores.push(`Falta la imagen de la maleta de ${k} (productos.json → bolsa)`);
+  }
+  for (const p of pv) for (const v of p.variantes) {
+    const m = srv.match(new RegExp(`"${p.sku}:${v.id}": \\{\\s*"stock": (\\d+)`));
+    if (!m) errores.push(`functions/api/_catalogo.js no tiene ${p.sku}:${v.id}`);
+    else if (Number(m[1]) !== v.stock) errores.push(`El stock del servidor de ${p.sku}:${v.id} (${m[1]}) no coincide con productos.json (${v.stock}); ejecuta node tools/build-preventa.mjs`);
+  }
+  for (const f of ['index.html', 'pedido.html', ...data.productos.map((p) => p.pagina), ...pv.map((p) => p.pagina), 'preventa.html']) {
+    const h = read(f);
+    if (!h.includes('js/maleta.js') || !h.includes('js/catalogo.js')) errores.push(`${f} no carga la maleta (js/catalogo.js y js/maleta.js)`);
+  }
+  if (!read('pedido.html').includes('data-maleta-estante')) errores.push('pedido.html perdió el estante de la maleta');
+  if (!read('pedido.html').includes('js/scoop.js')) errores.push('pedido.html no carga el juego del scoop');
+}
+
 for (const a of avisos) console.log('  aviso   ' + a);
 for (const e of errores) console.error('  ERROR   ' + e);
 console.log(errores.length ? `\n${errores.length} error(es).` : '\nTodo coherente.');

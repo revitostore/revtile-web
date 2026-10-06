@@ -39,15 +39,18 @@ function pintar(p) {
 
   /* la etapa "verificado" habla distinto según el método: en contraentrega no hay pago aún */
   const esCE = p.metodo_pago === 'contraentrega';
-  $('rasVerifTitulo').textContent = esCE ? 'Pedido confirmado' : 'Pago verificado';
-  $('rasVerifTxt').textContent = esCE
+  const esAp = p.metodo_pago === 'apartado';
+  $('rasVerifTitulo').textContent = esAp ? 'Apartado confirmado' : esCE ? 'Pedido confirmado' : 'Pago verificado';
+  $('rasVerifTxt').textContent = esAp
+    ? 'Tu unidad quedó apartada — te escribimos con el precio cuando llegue la tanda'
+    : esCE
     ? 'Confirmamos tu pedido y los datos de entrega — pagas al recibir'
     : p.metodo_pago === 'wompi'
       ? 'Tu pago en línea fue aprobado'
       : 'Confirmamos tu pago Bre-B';
 
   let [txt, color] = BADGES[p.estado] || BADGES.nuevo;
-  if (p.estado === 'verificado' && !esCE) txt = 'Pago verificado';
+  if (p.estado === 'verificado' && !esCE) txt = esAp ? 'Apartado' : 'Pago verificado';
   const badge = $('rasResBadge');
   badge.textContent = txt;
   badge.className = 'ras__badge ras__badge--' + color;
@@ -98,7 +101,7 @@ function pintar(p) {
 
     $('rasDespachadoTxt').textContent = skyEstado
       ? `En vivo desde la transportadora: ${skyEstado}`
-      : 'Tu creatina va en camino con guía ' + p.guia;
+      : 'Tu pedido va en camino con guía ' + p.guia;
   } else {
     $('rasGuia').hidden = true;
   }
@@ -106,13 +109,17 @@ function pintar(p) {
   /* productos (sin datos personales) */
   /* el pedido en grande, con la foto de cada tarro */
   const imgDe = (nombre) => {
+    if (/whey|gold standard/i.test(nombre)) return /extreme/i.test(nombre) ? 'assets/bolsa/wgs-extreme.webp' : 'assets/bolsa/wgs-dobles.webp';
+    if (/outrage/i.test(nombre)) return /fruit/i.test(nombre) ? 'assets/bolsa/outrage-fruit.webp' : 'assets/bolsa/outrage-blue.webp';
+    if (/bcaa/i.test(nombre)) return /fruit/i.test(nombre) ? 'assets/bolsa/bcaa-fruit.webp' : 'assets/bolsa/bcaa-blue.webp';
+    if (/vitaform/i.test(nombre)) return 'assets/bolsa/vitaform.webp';
     if (/600/.test(nombre)) return 'assets/on120.png';
     if (/platinum|muscletech|\bmt\b|400/i.test(nombre)) return 'assets/muscletech.png';
     return 'assets/on.png';
   };
   $('rasItems').innerHTML = '<p class="ras__items-titulo">Tu pedido</p>' + (p.items || [])
-    .map((i) => `<div class="ras__item"><img src="${imgDe(i.nombre)}" alt="" width="56" height="56" loading="lazy"><span><b>${i.c}×</b> ${i.nombre}</span></div>`)
-    .join('') + `<p class="ras__total">Total: <b>$${Number(p.total).toLocaleString('es-CO')}</b>${p.metodo_pago === 'contraentrega' ? ' (pagas al recibir)' : ''}</p>`;
+    .map((i) => `<div class="ras__item"><img src="${imgDe(i.nombre)}" alt="" width="56" height="56" loading="lazy"><span><b>${i.c}×</b> ${i.nombre}${i.pre ? ' <em style="font:500 9.5px DM Mono,monospace;letter-spacing:.12em;text-transform:uppercase;font-style:normal;background:#14140F;color:#fff;padding:2px 5px;margin-left:6px;vertical-align:1px">apartado</em>' : ''}</span></div>`)
+    .join('') + `<p class="ras__total">${esAp ? 'Sin pago hoy' : 'Total: <b>$' + Number(p.total).toLocaleString('es-CO') + '</b>' + (p.metodo_pago === 'contraentrega' ? ' (pagas al recibir)' : '')}</p>`;
 
   $('rasWa').href = 'https://wa.me/573214569600?text=' + encodeURIComponent(`Hola Revtile 🦎, pregunta sobre mi pedido ${p.id}`);
 }

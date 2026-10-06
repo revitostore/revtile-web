@@ -1278,5 +1278,57 @@
         "corto": "Multivitamínico Vitaform"
       }
     ]
+  },
+  "bolsa": {
+    "on:u": {
+      "img": "assets/bolsa/on.webp",
+      "ar": 0.842,
+      "esc": 0.86
+    },
+    "mt:u": {
+      "img": "assets/bolsa/mt.webp",
+      "ar": 0.645,
+      "esc": 0.94
+    },
+    "on120:u": {
+      "img": "assets/bolsa/on120.webp",
+      "ar": 0.589,
+      "esc": 1.0
+    },
+    "wgs:dobles": {
+      "img": "assets/bolsa/wgs-dobles.webp",
+      "ar": 0.587,
+      "esc": 1.08
+    },
+    "wgs:extreme": {
+      "img": "assets/bolsa/wgs-extreme.webp",
+      "ar": 0.582,
+      "esc": 1.08
+    },
+    "outrage:blue": {
+      "img": "assets/bolsa/outrage-blue.webp",
+      "ar": 0.784,
+      "esc": 0.98
+    },
+    "outrage:fruit": {
+      "img": "assets/bolsa/outrage-fruit.webp",
+      "ar": 1.082,
+      "esc": 0.98
+    },
+    "bcaa:blue": {
+      "img": "assets/bolsa/bcaa-blue.webp",
+      "ar": 0.739,
+      "esc": 0.94
+    },
+    "bcaa:fruit": {
+      "img": "assets/bolsa/bcaa-fruit.webp",
+      "ar": 0.739,
+      "esc": 0.94
+    },
+    "vitaform:unica": {
+      "img": "assets/bolsa/vitaformnica.webp",
+      "ar": 0.566,
+      "esc": 0.76
+    }
   }
 }

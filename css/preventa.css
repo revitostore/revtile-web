@@ -350,3 +350,13 @@
   .hero__label .hl-d { display: none; }
   .hero__label .hl-m { display: inline; }
 }
+
+/* la maleta en las fichas de preventa */
+.pre-ver {
+  align-self: center; font-size: 13.5px; color: var(--ink-2);
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2);
+}
+.pre-ver:hover { color: var(--accent-text); }
+.pre-agotado { font-size: 14px; color: var(--ink-2); text-align: center; }
+.pre-agotado[hidden] { display: none; }
+.pre-agotado a { color: var(--accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }

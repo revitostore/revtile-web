@@ -71,3 +71,27 @@ Pasos únicos tras el deploy del sistema v2:
 - El archivo `_headers` funciona igual en Cloudflare Pages (CSP, etc.).
 - Límites gratis de Cloudflare: 500 deploys/mes, 100.000 requests/día a la API,
   5 GB en D1 — sobra por años.
+
+---
+
+## La maleta y el juego del scoop
+
+**La maleta (carrito) y los apartados no necesitan nada nuevo:** funcionan con la base de datos
+que ya tienes. Los productos de preventa se reservan dentro de `pedidos` y el stock en vivo
+(`/api/stock`) sale de `productos.json` menos lo ya apartado. Cancelar un pedido desde el Centro
+de mando devuelve la unidad al stock automáticamente.
+
+**El juego "Llena el scoop" sí necesita dos pasos (si no los haces, el juego simplemente no aparece
+y todo lo demás sigue igual):**
+
+1. **Migración v5.** Cloudflare → D1 → `revtile-db` → Console → pegar `db/schema-v5.sql` y ejecutar.
+   (Agrega `vence_en` a los cupones y crea `scoop_jugadas`. Si D1 avisa que `vence_en` ya existe, ignóralo.)
+2. **Llave del juego.** Pages → `revtile-web` → Settings → Variables and Secrets →
+   `SCOOP_SECRET` = una frase larga al azar (Production). Luego **Retry deployment**.
+   (Sin esta variable el juego usa `WOMPI_INTEGRITY` o `ADMIN_KEY`, pero es mejor tener la propia.)
+
+Cada jugada la reparte y la valida el servidor: una jugada por jugador y día, premio máximo 5 %,
+cupón de un solo uso que vence en 48 horas (aparece en el panel de cupones como `SCOOP5XXXXX`).
+
+**Cuando cambies un precio o el stock de la preventa:** edita `productos.json` y ejecuta
+`node tools/build-preventa.mjs` y luego `node tools/check.mjs`.

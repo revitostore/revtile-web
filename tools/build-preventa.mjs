@@ -5,6 +5,8 @@
      · preventa.html: el índice de la categoría (CollectionPage + ItemList)
      · las tarjetas de la portada (entre los marcadores de index.html)
      · el bloque de preventa de llms.txt y las URLs del sitemap.xml
+     · js/catalogo.js (catálogo para el navegador: la maleta) y functions/api/_catalogo.js
+       (stock base y nombres para el servidor: apartados y stock en vivo)
    Para sumar un producto: agrégalo en productos.json y ejecuta
      node tools/build-preventa.mjs   (y después `node tools/check.mjs`) */
 
@@ -27,6 +29,41 @@ const hash = (p) => createHash('md5').update(readFileSync(join(ROOT, p))).digest
 const CSS_V = leer('index.html').match(/css\/styles\.css\?v=(\d+)/)[1];
 const PRE_CSS_V = hash('css/preventa.css');
 const PRE_JS_V = hash('js/preventa.js');
+const MAL_CSS_V = hash('css/maleta.css');
+const MAL_JS_V = hash('js/maleta.js');
+const SC_CSS_V = hash('css/scoop.css');
+const SC_JS_V = hash('js/scoop.js');
+
+/* ── Catálogo para el navegador (la maleta) y para el servidor (apartados) ────
+   Una sola fuente: productos.json. Si una clave no tiene imagen de maleta, se detiene. */
+const CAT_CORTA = { wgs: 'Proteína', outrage: 'Pre-entreno', bcaa: 'BCAA', vitaform: 'Multivitamínico' };
+const dePila = (k) => {
+  const b = (data.bolsa || {})[k];
+  if (!b) throw new Error(`Falta la imagen de la maleta para "${k}" (productos.json → bolsa)`);
+  return { k, img: b.img, ar: b.ar, esc: b.esc };
+};
+const catalogoCliente = {
+  max: 10,
+  items: [
+    ...data.productos.map((p) => ({
+      id: p.sku, cat: 'Creatina', marca: p.marca, nombre: p.nombre, tam: `${p.gramos} g · ${p.servicios} servicios`,
+      precio: p.precio, pre: false, pagina: p.pagina, vars: [{ id: 'u', sabor: null, stock: null, ...dePila(`${p.sku}:u`) }],
+    })),
+    ...P.map((p) => ({
+      id: p.sku, cat: CAT_CORTA[p.sku] || p.rol, marca: p.marca, nombre: p.nombre, tam: p.formato,
+      precio: p.precio ?? null, pre: true, pagina: p.pagina,
+      vars: p.variantes.map((v) => ({ id: v.id, sabor: v.sabor, stock: v.stock, ...dePila(`${p.sku}:${v.id}`) })),
+    })),
+  ],
+};
+const catalogoServidor = {};
+for (const p of P) for (const v of p.variantes) {
+  catalogoServidor[`${p.sku}:${v.id}`] = { stock: v.stock, nombre: `${p.marca} ${p.nombre}${v.sabor ? ' · ' + v.sabor : ''}` };
+}
+escribir('js/catalogo.js', `/* GENERADO por tools/build-preventa.mjs desde productos.json. No editar a mano. */\nwindow.CATALOGO = ${JSON.stringify(catalogoCliente)};\n`);
+escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-preventa.mjs desde productos.json. No editar a mano.\n   Stock base de la primera tanda; lo apartado se descuenta en /api/stock y /api/pedido. */\nexport const PREVENTA = ${JSON.stringify(catalogoServidor, null, 2)};\n`);
+const CAT_JS_V = hash('js/catalogo.js');
+
 
 /* ── Utilidades ───────────────────────────────────────────────────── */
 const total = (p) => p.variantes.reduce((a, v) => a + v.stock, 0);
@@ -74,7 +111,7 @@ function tarjeta(p) {
             <h3 class="product__name"><a class="product__link" href="${p.pagina}">${esc(p.nombre)}</a></h3>
             <p class="product__size">${esc(tamano(p))}</p>
             <p class="pre-card__gancho">${esc(p.gancho)}</p>
-            ${cupos(n)}
+            <span data-cupos-keys="${p.variantes.map((v) => p.sku + ':' + v.id).join(',')}">${cupos(n)}</span>
             ${precioLinea(p, 'Precio')}
             <a class="btn btn--primary btn--full" href="${p.pagina}">${n > 0 ? 'Apartar' : 'Ver ficha'} <span class="btn__arrow" aria-hidden="true">→</span></a>
           </div>
@@ -218,6 +255,8 @@ const cabecera = ({ titulo, meta, canonica, og, ogTipo, preload, ld }) => `<!DOC
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 ${preload ? `  <link rel="preload" as="image" href="${preload}" fetchpriority="high">\n` : ''}  <link rel="stylesheet" href="css/styles.css?v=${CSS_V}">
   <link rel="stylesheet" href="css/preventa.css?v=${PRE_CSS_V}">
+  <link rel="stylesheet" href="css/maleta.css?v=${MAL_CSS_V}">
+  <link rel="stylesheet" href="css/scoop.css?v=${SC_CSS_V}">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
 ${ld.map((o) => `  <script type="application/ld+json">\n${jsonLd(o)}\n  </script>`).join('\n')}
@@ -266,7 +305,7 @@ function ficha(p) {
           <div class="pre-sabores__fila">
 ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor${i === 0 ? ' is-active' : ''}" role="radio" aria-checked="${i === 0}" data-var="${v.id}">
               <span class="pre-sabor__nom">${esc(v.sabor)}</span>
-              ${cupos(v.stock)}
+              <span data-cupos-k="${p.sku}:${v.id}">${cupos(v.stock)}</span>
             </button>`).join('\n')}
           </div>
         </div>` : '';
@@ -276,9 +315,8 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
     variantes: p.variantes.map((v) => ({
       id: v.id,
       sabor: v.sabor,
-      cupos: cupos(v.stock),
-      wa: waUrl(p, v),
-      cta: v.stock > 0 ? 'Apartar mi unidad' : 'Avísame si reponen',
+      k: `${p.sku}:${v.id}`,
+      wa: waUrl(p, { ...v, stock: 0 }),
       galeria: v.galeria,
     })),
   };
@@ -297,7 +335,7 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Toda la preventa', 'preventa.html', 'Apartar', waUrl(p, v0), ' data-wa target="_blank" rel="noopener"')}
+${nav('← Toda la preventa', 'preventa.html', 'Mi maleta', 'pedido.html')}
 
   <main id="ficha">
 
@@ -321,12 +359,14 @@ ${g0.map(([src, alt], i) => `          <button class="pp-gal__thumb${i === 0 ? '
         <h1>${esc(p.nombre)}</h1>
         <p class="product__size">${esc(p.formato)}</p>
 ${selector}
-${multi ? '' : `        <div class="pre-cupos-box" id="preCupos">${cupos(v0.stock)}</div>
+${multi ? '' : `        <div class="pre-cupos-box" id="preCupos" data-cupos-k="${p.sku}:${v0.id}">${cupos(v0.stock)}</div>
 `}
         ${precioLinea(p)}
         <a class="pre-alerta pre-alerta--${p.aviso.tipo}" href="#aviso">${esc(p.aviso.titulo)}</a>
 
-        <a class="btn btn--primary btn--full btn--big" id="preCta" data-wa href="${waUrl(p, v0)}" target="_blank" rel="noopener"><span data-wa-txt>${v0.stock > 0 ? 'Apartar mi unidad' : 'Avísame si reponen'}</span> <span class="btn__arrow" aria-hidden="true">→</span></a>
+        <button type="button" class="btn btn--primary btn--full btn--big" id="preCta" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain"><span data-cta-txt>Apartar en mi maleta</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
+        <p class="pre-agotado" id="preAgotado" hidden>Se agotó este. <a data-wa href="${waUrl(p, { ...v0, stock: 0 })}" target="_blank" rel="noopener">Avísame si reponen</a></p>
+        <a class="pre-ver" href="pedido.html">Ir a mi maleta →</a>
         <p class="pre-promesa">${esc(pre.promesa)}</p>
 
         <div class="pp-stats">
@@ -433,10 +473,13 @@ ${footer(data)}
       <b>Preventa</b>
       <span>${esc(p.marca)} · apártala sin pagar</span>
     </div>
-    <a class="btn btn--primary" data-wa href="${waUrl(p, v0)}" target="_blank" rel="noopener" tabindex="-1">Apartar <span class="btn__arrow" aria-hidden="true">→</span></a>
+    <button type="button" class="btn btn--primary" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain" tabindex="-1">Apartar <span class="btn__arrow" aria-hidden="true">→</span></button>
   </div>
 
   <script type="application/json" id="preData">${jsonLd(preData)}</script>
+  <script src="js/catalogo.js?v=${CAT_JS_V}" defer></script>
+  <script src="js/maleta.js?v=${MAL_JS_V}" defer></script>
+  <script src="js/scoop.js?v=${SC_JS_V}" defer></script>
   <script src="js/product.js?v=3" defer></script>
   <script src="js/preventa.js?v=${PRE_JS_V}" defer></script>
 </body>
@@ -483,7 +526,7 @@ function indice() {
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Volver a la tienda', 'index.html#productos', 'WhatsApp', `https://wa.me/${WA}?text=${encodeURIComponent('Hola REVTILE, quiero apartar algo de la preventa')}`, ' target="_blank" rel="noopener"')}
+${nav('← Volver a la tienda', 'index.html#productos', 'Mi maleta', 'pedido.html')}
 
   <main id="ficha">
 
@@ -524,6 +567,9 @@ ${faqHtml(HUB_FAQ, 'Preguntas sobre la preventa', '03')}
 
 ${footer(data)}
 
+  <script src="js/catalogo.js?v=${CAT_JS_V}" defer></script>
+  <script src="js/maleta.js?v=${MAL_JS_V}" defer></script>
+  <script src="js/scoop.js?v=${SC_JS_V}" defer></script>
   <script src="js/product.js?v=3" defer></script>
 </body>
 </html>
@@ -537,13 +583,22 @@ escribir('preventa.html', indice()); console.log('  escrita  preventa.html');
 /* ── Portada: tarjetas entre marcadores ───────────────────────────── */
 const INI = '<!-- preventa:tarjetas:inicio -->';
 const FIN = '<!-- preventa:tarjetas:fin -->';
+/* versiones de los archivos compartidos, en las dos páginas que los cargan a mano */
+const versionar = (html) => html
+  .replace(/css\/preventa\.css\?v=\w+/g, `css/preventa.css?v=${PRE_CSS_V}`)
+  .replace(/css\/maleta\.css\?v=\w+/g, `css/maleta.css?v=${MAL_CSS_V}`)
+  .replace(/css\/scoop\.css\?v=\w+/g, `css/scoop.css?v=${SC_CSS_V}`)
+  .replace(/js\/catalogo\.js\?v=\w+/g, `js/catalogo.js?v=${CAT_JS_V}`)
+  .replace(/js\/maleta\.js\?v=\w+/g, `js/maleta.js?v=${MAL_JS_V}`)
+  .replace(/js\/scoop\.js\?v=\w+/g, `js/scoop.js?v=${SC_JS_V}`);
 let index = leer('index.html');
 if (index.includes(INI) && index.includes(FIN)) {
   index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), `${INI}\n${grilla(P)}\n      ${FIN}`);
-  index = index.replace(/css\/preventa\.css\?v=\w+/g, `css/preventa.css?v=${PRE_CSS_V}`);
-  escribir('index.html', index);
+  escribir('index.html', versionar(index));
   console.log('  portada  tarjetas de preventa al día');
 } else console.log('  AVISO    index.html no tiene los marcadores de preventa');
+escribir('pedido.html', versionar(leer('pedido.html')));
+console.log('  pedido   versiones de la maleta al día');
 
 /* ── llms.txt: bloque de preventa ─────────────────────────────────── */
 const bloqueLlms = `## Preventa (primera tanda de suplementos)

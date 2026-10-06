@@ -1,6 +1,15 @@
 /* Piezas que comparten los generadores de páginas (fichas de creatina y
    preventa): pie de página, escape de HTML y fila de datos legales. */
 
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
+/* versión para el cache: huella corta del contenido del archivo */
+export const huella = (ruta) => createHash('md5').update(readFileSync(join(RAIZ, ruta))).digest('hex').slice(0, 8);
+
 export const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -32,6 +41,7 @@ ${SOCIALES}
 ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'MuscleTech' ? 'MT' : 'ON'} ${p.gramos} g</a>`).join('\n')}
 ${(data.preventa ? data.preventa.productos : []).map((p) => `        <a href="${p.pagina}">${p.corto}</a>`).join('\n')}
         <a href="preventa.html">Toda la preventa</a>
+        <button type="button" class="mal-scoop-foot" data-scoop-abrir hidden>Gana más descuento</button>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">

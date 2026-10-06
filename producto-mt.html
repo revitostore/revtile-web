@@ -21,6 +21,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/muscletech.png" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=78">
+  <link rel="stylesheet" href="css/maleta.css?v=9c109634">
+  <link rel="stylesheet" href="css/scoop.css?v=5da3c0f4">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -103,6 +105,7 @@
         </ul>
 
         <a class="btn btn--primary btn--full btn--big" href="pedido.html?producto=mt">Pedir esta creatina <span class="btn__arrow" aria-hidden="true">→</span></a>
+        <button type="button" class="btn btn--ghost btn--full" data-maleta-add="mt:u" data-maleta-img="#ppMain">Añadir a la maleta</button>
         <p class="pp-note">Armas el pedido aquí y lo confirmas por WhatsApp. Contraentrega disponible en todo el país.</p>
 
         <div class="pp-stats">
@@ -379,6 +382,7 @@
         <a href="bcaa-rule-1.html">BCAA Rule 1</a>
         <a href="multivitaminico-allmax-vitaform.html">Multivitamínico Vitaform</a>
         <a href="preventa.html">Toda la preventa</a>
+        <button type="button" class="mal-scoop-foot" data-scoop-abrir hidden>Gana más descuento</button>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">
@@ -417,6 +421,9 @@
     <a class="btn btn--primary" href="pedido.html?producto=mt" tabindex="-1">Pedir <span class="btn__arrow" aria-hidden="true">→</span></a>
   </div>
 
+  <script src="js/catalogo.js?v=47eb9f99" defer></script>
+  <script src="js/maleta.js?v=93493af4" defer></script>
+  <script src="js/scoop.js?v=f22d344b" defer></script>
   <script src="js/product.js?v=3" defer></script>
 </body>
 </html>

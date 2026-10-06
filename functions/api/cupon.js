@@ -13,6 +13,7 @@ export async function validarCupon(db, codigo, total) {
   const c = await db.prepare('SELECT * FROM cupones WHERE codigo = ?').bind(codigo).first();
   if (!c) return { ok: false, error: 'Ese cupón no existe' };
   if (!c.activo) return { ok: false, error: 'Ese cupón ya no está activo' };
+  if (c.vence_en && Date.parse(c.vence_en) < Date.now()) return { ok: false, error: 'Ese cupón ya venció' };
   if (c.max_usos != null && c.usos >= c.max_usos) return { ok: false, error: 'Ese cupón ya se agotó' };
   if (total < c.min_total) return { ok: false, error: `Ese cupón aplica desde $${c.min_total.toLocaleString('es-CO')} de compra` };
   const descuento = c.tipo === 'porcentaje'

@@ -65,7 +65,7 @@ export async function onRequestGet({ request, env }) {
     if (!p) return json({ ok: false, error: 'No encontramos ese pedido' }, 404);
 
     let items = [];
-    try { items = JSON.parse(p.items).map((i) => ({ c: i.c, nombre: i.nombre })); } catch (e) { /* nada */ }
+    try { items = JSON.parse(p.items).map((i) => ({ c: i.c, nombre: i.nombre, k: i.k, pre: i.pre ? 1 : 0 })); } catch (e) { /* nada */ }
 
     const skydropx = await trackingSkydropx(env, p.guia);
 

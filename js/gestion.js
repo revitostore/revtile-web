@@ -116,8 +116,8 @@ function tarjetaPedido(p) {
     <div class="adm__ped-body">
       <p>👤 <b>${p.nombre}</b> · <a href="https://wa.me/57${p.telefono}" target="_blank" rel="noopener">📱 ${p.telefono}</a></p>
       <p>📍 ${p.direccion}, ${p.ciudad}${p.apto ? ' · ' + p.apto : ''}${p.porteria ? ' · deja en portería ✓' : ''}</p>
-      <p>🛒 ${items.map((i) => `${i.c}× ${i.nombre}`).join(' + ') || p.items}</p>
-      <p>${p.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA — cobrar ' + fmt(p.total) + ' al entregar' : p.metodo_pago === 'wompi' ? '💳 Pagado en línea (Wompi)' : '⚡ Anticipado Bre-B'}
+      <p>🛒 ${items.map((i) => `${i.c}× ${i.nombre}${i.pre ? ' (apartado)' : ''}`).join(' + ') || p.items}</p>
+      <p>${p.metodo_pago === 'apartado' ? '📌 APARTADO de preventa — sin pago; avisar el precio cuando llegue' : p.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA — cobrar ' + fmt(p.total) + ' al entregar' : p.metodo_pago === 'wompi' ? '💳 Pagado en línea (Wompi)' : '⚡ Anticipado Bre-B'}
          ${p.entrega_dia ? ` · 📦 <b>${p.entrega_dia} ${p.entrega_hora || ''}</b>` : ''}
          ${p.cupon ? ` · 🎟 ${p.cupon} (−${fmt(p.descuento)})` : ''}</p>
       ${p.direccion_mapa ? `<p>🗺 Según el mapa: ${p.direccion_mapa}${p.lat ? ` · <a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">ver punto</a>` : ''}</p>` : ''}
@@ -160,12 +160,23 @@ function tarjetaPedido(p) {
     const transp = el.querySelector('[data-campo="transportadora"]').value;
     const nombrePila = (p.nombre || '').trim().split(/\s+/)[0];
     const esCE = p.metodo_pago === 'contraentrega';
-    const lineas = [
+    const esAp = p.metodo_pago === 'apartado';
+    const apartados = items.filter((i) => i.pre).map((i) => `▪ ${i.c}× ${i.nombre}`);
+    const lineas = esAp ? [
+      `Hola ${nombrePila}! Soy David de REVTILE 🦎`,
+      '¡Ya llegó la tanda y tu apartado está listo! ✅',
+      '',
+      `🧾 Código de apartado: *${p.id}*`,
+      ...apartados,
+      '',
+      'Te cuento el precio definitivo y, si quieres confirmarlo, lo despacho con las fotos del sello y el lote 👇',
+    ] : [
       `Hola ${nombrePila}! Soy David de REVTILE 🦎`,
       `¡Gracias por tu compra! Tu pedido quedó confirmado ✅${esCE ? ' — pagas al recibirlo.' : ''}`,
       '',
       `🧾 Código de pedido: *${p.id}*`,
     ];
+    if (!esAp && apartados.length) lineas.push('Tus apartados de preventa te los confirmo aparte cuando lleguen:', ...apartados);
     if (guia) lineas.push(`🚚 Guía de envío: *${guia}*${transp ? ' (' + transp + ')' : ''}`);
     lineas.push(
       `🔎 Síguelo en vivo aquí: revtile.com.co/rastreo?id=${p.id}`,

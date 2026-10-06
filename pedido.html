@@ -21,6 +21,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
   <link rel="stylesheet" href="css/styles.css?v=78">
+  <link rel="stylesheet" href="css/preventa.css?v=d9e08ba8">
+  <link rel="stylesheet" href="css/maleta.css?v=9c109634">
+  <link rel="stylesheet" href="css/scoop.css?v=5da3c0f4">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
 </head>
@@ -49,42 +52,11 @@
       <!-- ════════ COLUMNA IZQUIERDA · LOS PASOS ════════ -->
       <div class="co__pasos">
 
-        <!-- ── 01 · Producto ── -->
-        <section class="co__card">
-          <p class="section-eyebrow"><b>01</b> Qué llevas — puedes mezclar</p>
-          <div class="co__products co__products--3" id="coProducts">
-            <div class="co__prod is-active" data-prod="on">
-              <picture><source srcset="assets/on.webp" type="image/webp"><img src="assets/on.png" alt="Optimum Nutrition Micronized Creatine 300 g" width="800" height="800"></picture>
-              <span class="co__prod-name">ON Micronized<br>300 g · 60 servicios</span>
-              <span class="co__prod-price">$120.000</span>
-              <div class="co__step">
-                <button type="button" class="co__step-minus" aria-label="Quitar un tarro de ON 300 g">−</button>
-                <b class="co__step-val">1</b>
-                <button type="button" class="co__step-plus" aria-label="Agregar un tarro de ON 300 g">+</button>
-              </div>
-            </div>
-            <div class="co__prod" data-prod="mt">
-              <picture><source srcset="assets/muscletech.webp" type="image/webp"><img src="assets/muscletech.png" alt="MuscleTech Platinum Creatine 400 g" width="800" height="800"></picture>
-              <span class="co__prod-name">MT Platinum<br>400 g · 80 servicios</span>
-              <span class="co__prod-price">$140.000</span>
-              <div class="co__step">
-                <button type="button" class="co__step-minus" aria-label="Quitar un tarro de MT 400 g">−</button>
-                <b class="co__step-val">0</b>
-                <button type="button" class="co__step-plus" aria-label="Agregar un tarro de MT 400 g">+</button>
-              </div>
-            </div>
-            <div class="co__prod co__prod--nuevo" data-prod="on120">
-              <span class="co__nuevo">Mejor precio</span>
-              <picture><source srcset="assets/on120.webp" type="image/webp"><img src="assets/on120.png" alt="Optimum Nutrition Micronized Creatine 600 g" width="800" height="800"></picture>
-              <span class="co__prod-name">ON Micronized<br>600 g · 120 servicios</span>
-              <span class="co__prod-price">$170.000</span>
-              <div class="co__step">
-                <button type="button" class="co__step-minus" aria-label="Quitar un tarro de ON 600 g">−</button>
-                <b class="co__step-val">0</b>
-                <button type="button" class="co__step-plus" aria-label="Agregar un tarro de ON 600 g">+</button>
-              </div>
-            </div>
-          </div>
+        <!-- ── 01 · La maleta ── -->
+        <section class="co__card" id="paso01">
+          <p class="section-eyebrow"><b>01</b> Tu maleta — mezcla lo que quieras</p>
+          <div class="mal-bag-wrap mal-bag-wrap--paso" data-maleta-bolsa></div>
+          <div class="mal-estante" id="malEstante" data-maleta-estante></div>
           <p class="co__combo" id="coCombo" hidden><b id="coComboTxt">Combo Gymbro aplicado</b></p>
         </section>
 
@@ -147,7 +119,7 @@
         </section>
 
         <!-- ── 03 · Método de pago ── -->
-        <section class="co__card">
+        <section class="co__card" id="metodosCard">
           <p class="section-eyebrow"><b>03</b> Cómo prefieres pagar</p>
           <div class="co__metodos">
             <button type="button" class="co__metodo co__metodo--premium is-active" data-pago="anticipado">
@@ -185,12 +157,18 @@
             </label>
           </div>
 
-          <div class="co__cupon">
-            <label class="sr-only" for="fCupon">Código de cupón</label>
-            <input type="text" id="fCupon" placeholder="¿Tienes un cupón?" autocomplete="off" spellcheck="false" maxlength="20">
-            <button type="button" class="btn btn--ghost" id="btnCupon">Aplicar</button>
+          <div id="cuponBox">
+            <div class="co__cupon">
+              <label class="sr-only" for="fCupon">Código de cupón</label>
+              <input type="text" id="fCupon" placeholder="¿Tienes un cupón?" autocomplete="off" spellcheck="false" maxlength="20">
+              <button type="button" class="btn btn--ghost" id="btnCupon">Aplicar</button>
+            </div>
+            <p class="co__cupon-msg" id="cuponMsg" hidden></p>
           </div>
-          <p class="co__cupon-msg" id="cuponMsg" hidden></p>
+
+          <div class="co__solo-apartado" id="soloApartado" hidden>
+            <b>Apartar es gratis: no pagas nada hoy.</b> Los productos de preventa se apartan con tu nombre y tu WhatsApp. Cuando llega la tanda te escribimos con el precio definitivo y decides si los compras.
+          </div>
 
           <!-- Pago anticipado -->
           <div class="co__pay" id="payAnticipado">
@@ -256,6 +234,7 @@
 
       <!-- ════════ COLUMNA DERECHA · RESUMEN ════════ -->
       <aside class="co__resumen" aria-label="Resumen del pedido">
+        <div class="mal-bag-wrap mal-bag-wrap--aside" data-maleta-bolsa></div>
         <p class="co__resumen-head">Tu pedido</p>
         <div class="co__total">
           <div class="co__total-lines" id="resItems"></div>
@@ -269,6 +248,7 @@
         </div>
         <div class="co__resumen-pie">
           <button type="button" class="btn btn--primary btn--full" id="btnIrPagarResumen"><span class="pagar-txt">Ir a pagar ↓</span></button>
+          <button type="button" class="mal-scoop-link" data-scoop-abrir hidden>Gana más descuento</button>
           <p class="co__resumen-nota">Envío gratis a toda Colombia, sin mínimo de compra. En Bogotá, pagando anticipado, eliges el día y la hora de la entrega.</p>
         </div>
       </aside>
@@ -292,6 +272,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <script src="js/checkout.js?v=15"></script>
+  <script src="js/catalogo.js?v=47eb9f99"></script>
+  <script src="js/maleta.js?v=93493af4"></script>
+  <script src="js/checkout.js?v=17"></script>
+  <script src="js/scoop.js?v=f22d344b" defer></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
 
 import { validarCupon } from './cupon.js';
 import { copiarAHoja } from './_sheets.js';
+import { PREVENTA } from './_catalogo.js';
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -17,12 +18,12 @@ const fmt = (n) => '$' + Number(n || 0).toLocaleString('es-CO');
 /* Aviso de pedido nuevo por email (Resend). Nunca bloquea el registro. */
 async function avisarPedido(env, d) {
   if (!env.RESEND_KEY || !env.NOTIF_EMAIL) return;
-  const items = d.items.map((i) => `${i.c}× ${i.nombre}`).join('<br>');
+  const items = d.items.map((i) => `${i.c}× ${i.nombre}${i.pre ? ' <b>(apartado, sin pago)</b>' : ''}`).join('<br>');
   const entrega = d.entrega_dia ? `⚡ Programada: <b>${d.entrega_dia} · ${d.entrega_hora}</b>` : 'Estándar (2-3 días hábiles)';
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;background:#0d0f17;color:#f7f8fa;padding:24px;border-radius:14px">
       <h2 style="color:#e41c34;margin:0 0 4px">🦎 Pedido nuevo ${d.id}</h2>
-      <p style="color:#9aa2b5;margin:0 0 16px">${d.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA (cobrar al entregar)' : '⚡ Pago anticipado Bre-B (esperar comprobante)'}</p>
+      <p style="color:#9aa2b5;margin:0 0 16px">${d.metodo_pago === 'apartado' ? '📌 SOLO APARTADOS (preventa, sin pago hoy)' : d.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA (cobrar al entregar)' : '⚡ Pago anticipado Bre-B (esperar comprobante)'}</p>
       <p>${items}</p>
       ${d.cupon ? `<p>🎟 Cupón <b>${d.cupon}</b>: −${fmt(d.descuento)}</p>` : ''}
       <p style="font-size:20px"><b>Total: ${fmt(d.total)}</b> ${d.envio ? `(incluye envío ${fmt(d.envio)})` : '(envío gratis)'}</p>
@@ -62,17 +63,36 @@ export async function onRequestPost(context) {
   const nombre = String(p.nombre || '').trim().slice(0, 120);
   const telefono = String(p.telefono || '').replace(/\D/g, '');
   const ciudad = String(p.ciudad || '').trim().slice(0, 80);
-  const direccion = String(p.direccion || '').trim().slice(0, 200);
-  const metodo = ['contraentrega', 'wompi'].includes(p.metodo_pago) ? p.metodo_pago : 'anticipado';
+  /* Apartados de preventa: se valida contra el catálogo del servidor (nombre, stock). Nunca se
+     confía en lo que mande el navegador. Las unidades iguales se suman antes de comprobar el stock. */
+  const apartados = [];
+  if (Array.isArray(p.apartados)) {
+    const suma = {};
+    for (const a of p.apartados.slice(0, 20)) {
+      const k = String(a && a.k);
+      const c = Math.floor(Number(a && a.c));
+      if (!PREVENTA[k] || !(c >= 1)) return json({ ok: false, error: 'Producto de preventa inválido' }, 400);
+      suma[k] = (suma[k] || 0) + c;
+    }
+    for (const [k, c] of Object.entries(suma)) {
+      if (c > PREVENTA[k].stock) return json({ ok: false, error: `Solo hay ${PREVENTA[k].stock} de ${PREVENTA[k].nombre}`, agotado: k }, 409);
+      apartados.push({ k, c, nombre: PREVENTA[k].nombre, valor: 0, pre: 1 });
+    }
+  }
+  const hayPagables = Array.isArray(p.items) && p.items.length > 0;
+  const soloApartados = !hayPagables && apartados.length > 0;
+  /* un pedido solo de apartados no necesita dirección: se pide cuando llegue la tanda */
+  const direccion = String(p.direccion || '').trim().slice(0, 200) || (soloApartados ? 'Por confirmar' : '');
+  const metodo = soloApartados ? 'apartado' : ['contraentrega', 'wompi'].includes(p.metodo_pago) ? p.metodo_pago : 'anticipado';
 
   if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
   if (!nombre) return json({ ok: false, error: 'Falta el nombre' }, 400);
   if (!/^3\d{9}$/.test(telefono)) return json({ ok: false, error: 'Teléfono inválido' }, 400);
   if (!ciudad || !direccion) return json({ ok: false, error: 'Faltan datos de entrega' }, 400);
-  if (!Array.isArray(p.items) || p.items.length === 0) return json({ ok: false, error: 'Pedido vacío' }, 400);
+  if (!hayPagables && !apartados.length) return json({ ok: false, error: 'Pedido vacío' }, 400);
 
-  const total = Number(p.total);
-  if (!Number.isFinite(total) || total < 10000 || total > 5000000) {
+  const total = soloApartados ? 0 : Number(p.total);
+  if (!soloApartados && (!Number.isFinite(total) || total < 10000 || total > 5000000)) {
     return json({ ok: false, error: 'Total fuera de rango' }, 400);
   }
 
@@ -80,7 +100,7 @@ export async function onRequestPost(context) {
     /* cupón: re-validación en servidor (el cliente solo sugiere) */
     let cupon = null;
     let descuento = 0;
-    if (p.cupon) {
+    if (p.cupon && !soloApartados) {
       try {
         const codigo = String(p.cupon).trim().toUpperCase();
         const base = (Number(p.subtotal) || total) - (Number(p.combo) || 0);
@@ -93,12 +113,12 @@ export async function onRequestPost(context) {
     const camposBase = [
       id,
       metodo,
-      p.entrega_dia ? String(p.entrega_dia).slice(0, 40) : null,
-      p.entrega_hora ? String(p.entrega_hora).slice(0, 20) : null,
-      JSON.stringify(p.items).slice(0, 2000),
-      Number(p.subtotal) || 0,
-      Number(p.combo) || 0,
-      Number(p.envio) || 0,
+      p.entrega_dia && !soloApartados ? String(p.entrega_dia).slice(0, 40) : null,
+      p.entrega_hora && !soloApartados ? String(p.entrega_hora).slice(0, 20) : null,
+      JSON.stringify([...(hayPagables ? p.items : []), ...apartados]).slice(0, 2000),
+      soloApartados ? 0 : Number(p.subtotal) || 0,
+      soloApartados ? 0 : Number(p.combo) || 0,
+      soloApartados ? 0 : Number(p.envio) || 0,
       total,
       nombre,
       telefono,
@@ -111,22 +131,37 @@ export async function onRequestPost(context) {
       p.lat ? Number(p.lat) : null,
       p.lng ? Number(p.lng) : null,
     ];
+    /* Condición de stock dentro del mismo INSERT: la base cuenta lo ya apartado y solo inserta si
+       alcanza. Así dos personas apartando la última unidad a la vez no pueden llevársela las dos. */
+    const condStock = apartados.length
+      ? apartados.map(() => `(? - COALESCE((SELECT SUM(CAST(json_extract(j.value, '$.c') AS INTEGER))
+            FROM pedidos pp, json_each(CASE WHEN json_valid(pp.items) THEN pp.items ELSE '[]' END) j
+           WHERE json_extract(j.value, '$.k') = ? AND json_extract(j.value, '$.pre') = 1 AND pp.estado <> 'cancelado'), 0)) >= ?`).join(' AND ')
+      : '1';
+    const bindStock = apartados.flatMap((a) => [PREVENTA[a.k].stock, a.k, a.c]);
+    const ph = (n) => Array(n).fill('?').join(',');
     let res;
     try {
       res = await env.DB.prepare(
         `INSERT OR IGNORE INTO pedidos
           (id, metodo_pago, entrega_dia, entrega_hora, items, subtotal, combo, envio, total,
            nombre, telefono, ciudad, direccion, vivienda, apto, porteria, direccion_mapa, lat, lng, cupon, descuento)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-      ).bind(...camposBase, cupon, descuento).run();
+         SELECT ${ph(21)} WHERE ${condStock}`
+      ).bind(...camposBase, cupon, descuento, ...bindStock).run();
     } catch (e) {
       /* base sin migrar a v2 (sin columnas cupon/descuento): guardar igual con el esquema viejo */
       res = await env.DB.prepare(
         `INSERT OR IGNORE INTO pedidos
           (id, metodo_pago, entrega_dia, entrega_hora, items, subtotal, combo, envio, total,
            nombre, telefono, ciudad, direccion, vivienda, apto, porteria, direccion_mapa, lat, lng)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-      ).bind(...camposBase).run();
+         SELECT ${ph(19)} WHERE ${condStock}`
+      ).bind(...camposBase, ...bindStock).run();
+    }
+
+    /* 0 filas: o el ID ya existía (reintento legítimo → idempotente) o se acabó el stock */
+    if (res.meta.changes === 0) {
+      const ya = await env.DB.prepare('SELECT id FROM pedidos WHERE id = ?').bind(id).first();
+      if (!ya) return json({ ok: false, error: 'Alguien apartó esa unidad justo antes que tú. Revisa tu maleta.', agotado: true }, 409);
     }
 
     /* solo si el pedido es nuevo (no repetido): contar uso del cupón y avisar */
@@ -135,7 +170,7 @@ export async function onRequestPost(context) {
         await env.DB.prepare('UPDATE cupones SET usos = usos + 1 WHERE codigo = ?').bind(cupon).run();
       }
       context.waitUntil(avisarPedido(env, {
-        id, metodo_pago: metodo, items: p.items, total, nombre, telefono, ciudad, direccion,
+        id, metodo_pago: metodo, items: [...(hayPagables ? p.items : []), ...apartados], total, nombre, telefono, ciudad, direccion,
         entrega_dia: p.entrega_dia, entrega_hora: p.entrega_hora, envio: Number(p.envio) || 0, cupon, descuento,
       }));
 
@@ -154,7 +189,7 @@ export async function onRequestPost(context) {
       })());
     }
 
-    return json({ ok: true, id, cupon, descuento });
+    return json({ ok: true, id, cupon, descuento, apartados: apartados.length });
   } catch (e) {
     /* DB no configurada o caída: el checkout usará el mensaje completo por WhatsApp */
     return json({ ok: false, error: 'DB no disponible' }, 500);

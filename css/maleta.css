@@ -1,0 +1,176 @@
+/* ── La maleta ───────────────────────────────────────────────────────
+   El carrito de REVTILE como objeto: un estante de productos, una maleta
+   que se llena, un ícono en el menú. Líneas finas, tinta y un solo rojo. */
+
+/* ícono en el menú */
+.nav__bolsa {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-right: 6px;
+  color: var(--ink);
+  flex: none;
+}
+.nav__bolsa[hidden] { display: none; }
+.nav__bolsa svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.nav__bolsa:hover { color: var(--accent-text); }
+.nav__bolsa-n {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: #fff;
+  font: 500 10.5px/1 'DM Mono', ui-monospace, monospace;
+}
+
+/* aviso breve al añadir */
+.mal-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: calc(100vw - 32px);
+  padding: 13px 18px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  transform: translate(-50%, 24px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .25s;
+}
+.mal-toast.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.mal-toast a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+body.buybar-on .mal-toast, body.pp-sticky-on .mal-toast { bottom: 86px; }
+
+/* el botón "+" sobre la foto de las tarjetas */
+.product__photo { position: relative; }
+.product__photo .mal-mas {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  border-radius: var(--radius-sm);
+  transition: background .18s, color .18s;
+}
+.product__photo .mal-mas:hover { background: var(--ink); color: #fff; }
+.mal-mas svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: square; }
+
+/* unidades que quedan: las casillas que se usan salen vacías */
+.pre-cupos__sq i.off { background: transparent; box-shadow: inset 0 0 0 1.5px var(--line-2); }
+
+/* ── la maleta dibujada ── */
+.mal-bag { position: relative; width: 100%; aspect-ratio: 360 / 280; transform-origin: 50% 90%; color: var(--ink); }
+.mal-bag__s { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.mal-bag__jars { position: absolute; inset: 0; }
+.mal-jar {
+  position: absolute;
+  width: auto;
+  transform: translateX(-50%);
+  transition: left .38s cubic-bezier(.3,.8,.3,1), top .38s cubic-bezier(.3,.8,.3,1), height .38s cubic-bezier(.3,.8,.3,1);
+  pointer-events: none;
+  filter: drop-shadow(0 5px 6px rgba(20,20,15,.16));
+}
+.mal-jar.nuevo { animation: mal-cae .42s cubic-bezier(.2,.9,.3,1.12); }
+@keyframes mal-cae {
+  from { transform: translate(-50%, -110px) rotate(-7deg); opacity: 0; }
+  60%  { opacity: 1; }
+  to   { transform: translate(-50%, 0) rotate(0); }
+}
+.mal-bag__n {
+  position: absolute;
+  right: 3%;
+  top: 3%;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: #fff;
+  font: 500 12px 'DM Mono', ui-monospace, monospace;
+}
+.mal-bag__n[hidden] { display: none; }
+.mal-bag-wrap { padding: 4px 8px 10px; }
+.mal-bag-wrap--paso { display: none; max-width: 300px; margin: 0 auto 6px; }
+@media (max-width: 1020px) {
+  .mal-bag-wrap--aside { display: none; }
+  .mal-bag-wrap--paso { display: block; }
+}
+
+/* ── el estante ── */
+.mal-estante { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1.5px solid var(--ink); }
+.mal-it { display: flex; flex-direction: column; gap: 7px; padding: 16px 18px 18px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.mal-it:nth-child(even) { padding-left: 18px; padding-right: 0; border-left: 1px solid var(--line); }
+.mal-it__top { display: flex; justify-content: space-between; align-items: center; min-height: 20px; color: var(--ink-dim); }
+.mal-mono { font-family: 'DM Mono', ui-monospace, monospace; font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+.mal-tag { background: var(--ink); color: #fff; padding: 4px 7px; font: 500 10px/1 'DM Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; }
+.mal-it__foto { height: 132px; margin-block: 2px; }
+.mal-it__foto img { width: 100%; height: 100%; object-fit: contain; }
+.mal-it__marca { color: var(--ink-dim); font-size: 10px; }
+.mal-it__nom { font: 700 16px/1.2 'Barlow', system-ui, sans-serif; letter-spacing: -.01em; }
+.mal-it__tam { font-size: 12.5px; color: var(--ink-dim); }
+.mal-sab { display: flex; flex-wrap: wrap; gap: 6px; }
+.mal-sab__b { padding: 6px 10px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); font: 600 12px 'Barlow', system-ui, sans-serif; color: var(--ink-2); background: transparent; cursor: pointer; transition: border-color .2s, background .2s; }
+.mal-sab__b:hover { border-color: var(--ink); }
+.mal-sab__b.is-on { border-color: var(--accent-text); background: var(--accent-wash); color: var(--ink); }
+.mal-it__cup { min-height: 16px; }
+.mal-it__pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 8px; flex-wrap: wrap; }
+.mal-it__precio { font: 700 19px 'Barlow', system-ui, sans-serif; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.mal-it__precio.x { font: 500 10.5px 'DM Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
+.mal-agot { color: var(--ink-dim); }
+.mal-add, .mal-stp button {
+  width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer;
+  box-shadow: inset 0 0 0 1.5px var(--ink); border-radius: var(--radius-sm); background: transparent; color: var(--ink);
+  transition: background .18s, color .18s;
+}
+.mal-add:hover:not([disabled]), .mal-stp button:hover:not([disabled]) { background: var(--ink); color: #fff; }
+.mal-add[disabled], .mal-stp button[disabled] { opacity: .3; cursor: not-allowed; }
+.mal-add svg, .mal-stp svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: square; }
+.mal-stp { display: flex; align-items: center; gap: 2px; }
+.mal-stp button { width: 36px; height: 36px; }
+.mal-stp output { min-width: 28px; text-align: center; font: 700 16px 'Barlow', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .mal-it { padding-right: 12px; }
+  .mal-it:nth-child(even) { padding-left: 12px; }
+  .mal-it__foto { height: 104px; }
+  .mal-it__nom { font-size: 14.5px; }
+  .mal-it__precio { font-size: 16px; }
+}
+
+/* ── líneas de apartados en el resumen del pedido ── */
+.co__apartado { color: var(--ink-2); }
+.co__apartado em { font: 500 9.5px 'DM Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; font-style: normal; background: var(--ink); color: #fff; padding: 2px 5px; margin-left: 6px; vertical-align: 1px; }
+.co__solo-apartado { padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--accent-wash); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); margin-bottom: var(--s3); }
+.co__solo-apartado b { color: var(--ink); }
+.mal-scoop-link {
+  display: block; width: 100%; margin-top: 12px; padding: 12px 0 2px; border-top: 1px solid var(--line);
+  text-align: left; font: 500 11px 'DM Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); cursor: pointer;
+}
+.mal-scoop-link:hover { color: var(--accent-text); }
+.mal-scoop-link[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .mal-jar.nuevo { animation: none; } .mal-toast { transition: none; } }
+
+/* el enlace del juego en el pie: un botón que se ve como los demás enlaces */
+.footer__col .mal-scoop-foot {
+  padding: 0; border: 0; background: none; text-align: left; cursor: pointer;
+  font: inherit; font-size: 14px; color: var(--accent-text); font-weight: 600; transition: color var(--t);
+}
+.footer__col .mal-scoop-foot:hover { color: var(--ink); }
+.footer__col .mal-scoop-foot[hidden] { display: none; }
