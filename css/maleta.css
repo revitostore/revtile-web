@@ -155,18 +155,5 @@ body.buybar-on .mal-toast, body.pp-sticky-on .mal-toast { bottom: 86px; }
   .mal-it__precio { font-size: 16px; }
 }
 
-.mal-scoop-link {
-  display: block; width: 100%; margin-top: 12px; padding: 12px 0 2px; border-top: 1px solid var(--line);
-  text-align: left; font: 500 11px 'DM Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); cursor: pointer;
-}
-.mal-scoop-link:hover { color: var(--accent-text); }
-.mal-scoop-link[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { .mal-jar.nuevo { animation: none; } .mal-toast { transition: none; } }
 
-/* el enlace del juego en el pie: un botón que se ve como los demás enlaces */
-.footer__col .mal-scoop-foot {
-  padding: 0; border: 0; background: none; text-align: left; cursor: pointer;
-  font: inherit; font-size: 14px; color: var(--accent-text); font-weight: 600; transition: color var(--t);
-}
-.footer__col .mal-scoop-foot:hover { color: var(--ink); }
-.footer__col .mal-scoop-foot[hidden] { display: none; }

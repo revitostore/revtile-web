@@ -41,7 +41,6 @@ ${SOCIALES}
 ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'MuscleTech' ? 'MT' : 'ON'} ${p.gramos} g</a>`).join('\n')}
 ${(data.suplementos ? data.suplementos.productos : []).map((p) => `        <a href="${p.pagina}">${p.corto}</a>`).join('\n')}
         <a href="suplementos.html">Todos los suplementos</a>
-        <button type="button" class="mal-scoop-foot" data-scoop-abrir hidden>Gana más descuento</button>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">

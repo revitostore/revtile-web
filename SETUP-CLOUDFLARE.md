@@ -74,7 +74,7 @@ Pasos únicos tras el deploy del sistema v2:
 
 ---
 
-## La maleta y el juego del scoop
+## La maleta
 
 **La maleta (carrito) y la venta de suplementos no necesitan nada nuevo:** funcionan con la base
 de datos que ya tienes. Cada suplemento vendido se descuenta del stock dentro de `pedidos` y el stock
@@ -82,18 +82,6 @@ en vivo (`/api/stock`) sale de `productos.json` menos lo ya vendido en pedidos n
 revisa el precio de cada suplemento contra el catálogo (si alguien lo manipula, rechaza el pedido) y
 cancelar un pedido desde el Centro de mando devuelve la unidad al stock automáticamente. Ojo: un pedido
 que nunca se paga sigue reservando su unidad hasta que lo canceles.
-
-**El juego "Llena el scoop" sí necesita dos pasos (si no los haces, el juego simplemente no aparece
-y todo lo demás sigue igual):**
-
-1. **Migración v5.** Cloudflare → D1 → `revtile-db` → Console → pegar `db/schema-v5.sql` y ejecutar.
-   (Agrega `vence_en` a los cupones y crea `scoop_jugadas`. Si D1 avisa que `vence_en` ya existe, ignóralo.)
-2. **Llave del juego.** Pages → `revtile-web` → Settings → Variables and Secrets →
-   `SCOOP_SECRET` = una frase larga al azar (Production). Luego **Retry deployment**.
-   (Sin esta variable el juego usa `WOMPI_INTEGRITY` o `ADMIN_KEY`, pero es mejor tener la propia.)
-
-Cada jugada la reparte y la valida el servidor: una jugada por jugador y día, premio máximo 5 %,
-cupón de un solo uso que vence en 48 horas (aparece en el panel de cupones como `SCOOP5XXXXX`).
 
 **Cuando cambies un precio o repongas stock de un suplemento:** edita `precio`, `precio_antes` (el
 tachado) o el `stock` de cada variante en `productos.json` (clave `suplementos`) y ejecuta

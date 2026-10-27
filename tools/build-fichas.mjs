@@ -203,7 +203,6 @@ function ficha(p) {
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=78">
   <link rel="stylesheet" href="css/maleta.css?v=${huella('css/maleta.css')}">
-  <link rel="stylesheet" href="css/scoop.css?v=${huella('css/scoop.css')}">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -457,7 +456,6 @@ ${footer()}
 
   <script src="js/catalogo.js?v=${huella('js/catalogo.js')}" defer></script>
   <script src="js/maleta.js?v=${huella('js/maleta.js')}" defer></script>
-  <script src="js/scoop.js?v=${huella('js/scoop.js')}" defer></script>
   <script src="js/product.js?v=3" defer></script>
 </body>
 </html>

@@ -30,8 +30,6 @@ const SUP_CSS_V = hash('css/suplementos.css');
 const SUP_JS_V = hash('js/suplementos.js');
 const MAL_CSS_V = hash('css/maleta.css');
 const MAL_JS_V = hash('js/maleta.js');
-const SC_CSS_V = hash('css/scoop.css');
-const SC_JS_V = hash('js/scoop.js');
 
 /* ── Catálogo para el navegador (la maleta) y para el servidor (pedidos y stock) ────
    Una sola fuente: productos.json. Si una clave no tiene imagen de maleta, se detiene. */
@@ -253,7 +251,6 @@ const cabecera = ({ titulo, meta, canonica, og, ogTipo, preload, ld }) => `<!DOC
 ${preload ? `  <link rel="preload" as="image" href="${preload}" fetchpriority="high">\n` : ''}  <link rel="stylesheet" href="css/styles.css?v=${CSS_V}">
   <link rel="stylesheet" href="css/suplementos.css?v=${SUP_CSS_V}">
   <link rel="stylesheet" href="css/maleta.css?v=${MAL_CSS_V}">
-  <link rel="stylesheet" href="css/scoop.css?v=${SC_CSS_V}">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
 ${ld.map((o) => `  <script type="application/ld+json">\n${jsonLd(o)}\n  </script>`).join('\n')}
@@ -482,7 +479,6 @@ ${footer(data)}
   <script type="application/json" id="preData">${jsonLd(preData)}</script>
   <script src="js/catalogo.js?v=${CAT_JS_V}" defer></script>
   <script src="js/maleta.js?v=${MAL_JS_V}" defer></script>
-  <script src="js/scoop.js?v=${SC_JS_V}" defer></script>
   <script src="js/product.js?v=3" defer></script>
   <script src="js/suplementos.js?v=${SUP_JS_V}" defer></script>
 </body>
@@ -571,7 +567,6 @@ ${footer(data)}
 
   <script src="js/catalogo.js?v=${CAT_JS_V}" defer></script>
   <script src="js/maleta.js?v=${MAL_JS_V}" defer></script>
-  <script src="js/scoop.js?v=${SC_JS_V}" defer></script>
   <script src="js/product.js?v=3" defer></script>
 </body>
 </html>
@@ -589,10 +584,8 @@ const FIN = '<!-- suplementos:tarjetas:fin -->';
 const versionar = (html) => html
   .replace(/css\/preventa\.css\?v=\w+/g, `css/suplementos.css?v=${SUP_CSS_V}`)
   .replace(/css\/maleta\.css\?v=\w+/g, `css/maleta.css?v=${MAL_CSS_V}`)
-  .replace(/css\/scoop\.css\?v=\w+/g, `css/scoop.css?v=${SC_CSS_V}`)
   .replace(/js\/catalogo\.js\?v=\w+/g, `js/catalogo.js?v=${CAT_JS_V}`)
   .replace(/js\/maleta\.js\?v=\w+/g, `js/maleta.js?v=${MAL_JS_V}`)
-  .replace(/js\/scoop\.js\?v=\w+/g, `js/scoop.js?v=${SC_JS_V}`);
 let index = leer('index.html');
 if (index.includes(INI) && index.includes(FIN)) {
   index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), () => `${INI}\n${grilla(P)}\n      ${FIN}`);

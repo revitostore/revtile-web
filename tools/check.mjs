@@ -129,7 +129,6 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
     if (!h.includes('js/maleta.js') || !h.includes('js/catalogo.js')) errores.push(`${f} no carga la maleta (js/catalogo.js y js/maleta.js)`);
   }
   if (!read('pedido.html').includes('data-maleta-estante')) errores.push('pedido.html perdió el estante de la maleta');
-  if (!read('pedido.html').includes('js/scoop.js')) errores.push('pedido.html no carga el juego del scoop');
 }
 
 /* 8 · la preventa terminó: ninguna página pública puede seguir hablando de apartar ni de preventa */

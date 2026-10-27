@@ -302,22 +302,6 @@ function render() {
   $('resTotalLista').hidden = !items.length;
   $('resTotal').textContent = fmt(total);
   $('barTotal').textContent = fmt(total);
-  intentarCuponGuardado();
-}
-
-/* El cupón que se gana en el juego del scoop queda guardado en el navegador:
-   se aplica solo, una vez, cuando hay algo que pagar. */
-let cuponGuardadoProbado = false;
-/* el juego del scoop avisa cuando se gana un cupón: se aplica sin recargar */
-window.addEventListener('scoop:cupon', () => { cuponGuardadoProbado = false; render(); });
-function intentarCuponGuardado() {
-  if (cuponGuardadoProbado || state.cupon || !(state.cant.on + state.cant.mt + state.cant.on120 + state.supl.length)) return;
-  let c = null;
-  try { c = JSON.parse(localStorage.getItem('rev_cupon_scoop')); } catch (e) { /* nada guardado */ }
-  if (!c || !c.codigo || (c.vence && Date.parse(c.vence) < Date.now())) return;
-  cuponGuardadoProbado = true;
-  $('fCupon').value = c.codigo;
-  $('btnCupon').click();
 }
 
 /* --- Mapa (OpenStreetMap + Leaflet, pin arrastrable) --- */
@@ -806,12 +790,8 @@ $('btnEnviar').addEventListener('click', async () => {
   cerrarPedido();
 });
 
-/* Pedido registrado: la maleta se vacía y el cupón del scoop, si se usó, se consume */
+/* Pedido registrado: la maleta se vacía */
 function cerrarPedido() {
-  try {
-    const g = JSON.parse(localStorage.getItem('rev_cupon_scoop'));
-    if (g && state.cupon && g.codigo === state.cupon.codigo) localStorage.removeItem('rev_cupon_scoop');
-  } catch (e) { /* nada guardado */ }
   Maleta.vaciar();
 }
 
