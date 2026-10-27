@@ -1,5 +1,5 @@
 /* Piezas que comparten los generadores de páginas (fichas de creatina y
-   preventa): pie de página, escape de HTML y fila de datos legales. */
+   suplementos): pie de página, escape de HTML y fila de datos legales. */
 
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -39,8 +39,8 @@ ${SOCIALES}
         <p class="footer__title">Tienda</p>
         <a href="index.html#productos">Catálogo</a>
 ${data.productos.map((p) => `        <a href="${p.pagina}">${p.marca === 'MuscleTech' ? 'MT' : 'ON'} ${p.gramos} g</a>`).join('\n')}
-${(data.preventa ? data.preventa.productos : []).map((p) => `        <a href="${p.pagina}">${p.corto}</a>`).join('\n')}
-        <a href="preventa.html">Toda la preventa</a>
+${(data.suplementos ? data.suplementos.productos : []).map((p) => `        <a href="${p.pagina}">${p.corto}</a>`).join('\n')}
+        <a href="suplementos.html">Todos los suplementos</a>
         <button type="button" class="mal-scoop-foot" data-scoop-abrir hidden>Gana más descuento</button>
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>

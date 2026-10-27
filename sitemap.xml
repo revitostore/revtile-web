@@ -39,9 +39,9 @@
   <url>
     <loc>https://revtile.com.co/rastreo.html</loc>
   </url>
-  <!-- preventa:inicio -->
+  <!-- suplementos:inicio -->
   <url>
-    <loc>https://revtile.com.co/preventa.html</loc>
+    <loc>https://revtile.com.co/suplementos.html</loc>
     <priority>0.8</priority>
   </url>
   <url>
@@ -60,5 +60,5 @@
     <loc>https://revtile.com.co/multivitaminico-allmax-vitaform.html</loc>
     <priority>0.7</priority>
   </url>
-  <!-- preventa:fin -->
+  <!-- suplementos:fin -->
 </urlset>

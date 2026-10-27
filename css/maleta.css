@@ -133,6 +133,7 @@ body.buybar-on .mal-toast, body.pp-sticky-on .mal-toast { bottom: 86px; }
 .mal-it__cup { min-height: 16px; }
 .mal-it__pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 8px; flex-wrap: wrap; }
 .mal-it__precio { font: 700 19px 'Barlow', system-ui, sans-serif; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.mal-it__precio s { font: 400 12px 'Barlow', system-ui, sans-serif; color: var(--ink-dim); margin-left: 4px; }
 .mal-it__precio.x { font: 500 10.5px 'DM Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
 .mal-agot { color: var(--ink-dim); }
 .mal-add, .mal-stp button {
@@ -154,11 +155,6 @@ body.buybar-on .mal-toast, body.pp-sticky-on .mal-toast { bottom: 86px; }
   .mal-it__precio { font-size: 16px; }
 }
 
-/* ── líneas de apartados en el resumen del pedido ── */
-.co__apartado { color: var(--ink-2); }
-.co__apartado em { font: 500 9.5px 'DM Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; font-style: normal; background: var(--ink); color: #fff; padding: 2px 5px; margin-left: 6px; vertical-align: 1px; }
-.co__solo-apartado { padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--accent-wash); font-size: 14.5px; line-height: 1.55; color: var(--ink-2); margin-bottom: var(--s3); }
-.co__solo-apartado b { color: var(--ink); }
 .mal-scoop-link {
   display: block; width: 100%; margin-top: 12px; padding: 12px 0 2px; border-top: 1px solid var(--line);
   text-align: left; font: 500 11px 'DM Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); cursor: pointer;

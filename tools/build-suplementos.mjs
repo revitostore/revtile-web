@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-/* Genera todo lo de la preventa a partir de productos.json (clave `preventa`):
+/* Genera los suplementos a partir de productos.json (clave `suplementos`):
      · una ficha por producto, con sus variantes (sabores), aviso de seguridad,
        tabla nutricional transcrita, FAQ y JSON-LD (Product + FAQPage + Breadcrumb)
-     · preventa.html: el índice de la categoría (CollectionPage + ItemList)
+     · suplementos.html: el índice de la categoría (CollectionPage + ItemList)
      · las tarjetas de la portada (entre los marcadores de index.html)
-     · el bloque de preventa de llms.txt y las URLs del sitemap.xml
+     · el bloque de suplementos de llms.txt y las URLs del sitemap.xml
      · js/catalogo.js (catálogo para el navegador: la maleta) y functions/api/_catalogo.js
-       (stock base y nombres para el servidor: apartados y stock en vivo)
+       (stock base, nombres y PRECIOS para el servidor: valida pedidos y stock en vivo)
    Para sumar un producto: agrégalo en productos.json y ejecuta
-     node tools/build-preventa.mjs   (y después `node tools/check.mjs`) */
+     node tools/build-suplementos.mjs   (y después `node tools/check.mjs`) */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -20,21 +20,20 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const leer = (p) => readFileSync(join(ROOT, p), 'utf8');
 const escribir = (p, s) => writeFileSync(join(ROOT, p), s, 'utf8');
 const data = JSON.parse(leer('productos.json'));
-const pre = data.preventa;
-const P = pre.productos;
+const P = data.suplementos.productos;
 const SITIO = 'https://revtile.com.co/';
 const WA = data.whatsapp;
 const cop = (n) => '$' + n.toLocaleString('es-CO');
 const hash = (p) => createHash('md5').update(readFileSync(join(ROOT, p))).digest('hex').slice(0, 8);
 const CSS_V = leer('index.html').match(/css\/styles\.css\?v=(\d+)/)[1];
-const PRE_CSS_V = hash('css/preventa.css');
-const PRE_JS_V = hash('js/preventa.js');
+const SUP_CSS_V = hash('css/suplementos.css');
+const SUP_JS_V = hash('js/suplementos.js');
 const MAL_CSS_V = hash('css/maleta.css');
 const MAL_JS_V = hash('js/maleta.js');
 const SC_CSS_V = hash('css/scoop.css');
 const SC_JS_V = hash('js/scoop.js');
 
-/* ── Catálogo para el navegador (la maleta) y para el servidor (apartados) ────
+/* ── Catálogo para el navegador (la maleta) y para el servidor (pedidos y stock) ────
    Una sola fuente: productos.json. Si una clave no tiene imagen de maleta, se detiene. */
 const CAT_CORTA = { wgs: 'Proteína', outrage: 'Pre-entreno', bcaa: 'BCAA', vitaform: 'Multivitamínico' };
 const dePila = (k) => {
@@ -47,21 +46,21 @@ const catalogoCliente = {
   items: [
     ...data.productos.map((p) => ({
       id: p.sku, cat: 'Creatina', marca: p.marca, nombre: p.nombre, tam: `${p.gramos} g · ${p.servicios} servicios`,
-      precio: p.precio, pre: false, pagina: p.pagina, vars: [{ id: 'u', sabor: null, stock: null, ...dePila(`${p.sku}:u`) }],
+      precio: p.precio, antes: p.precio_antes, lim: false, pagina: p.pagina, vars: [{ id: 'u', sabor: null, stock: null, ...dePila(`${p.sku}:u`) }],
     })),
     ...P.map((p) => ({
       id: p.sku, cat: CAT_CORTA[p.sku] || p.rol, marca: p.marca, nombre: p.nombre, tam: p.formato,
-      precio: p.precio ?? null, pre: true, pagina: p.pagina,
+      precio: p.precio, antes: p.precio_antes, lim: true, pagina: p.pagina,
       vars: p.variantes.map((v) => ({ id: v.id, sabor: v.sabor, stock: v.stock, ...dePila(`${p.sku}:${v.id}`) })),
     })),
   ],
 };
 const catalogoServidor = {};
 for (const p of P) for (const v of p.variantes) {
-  catalogoServidor[`${p.sku}:${v.id}`] = { stock: v.stock, nombre: `${p.marca} ${p.nombre}${v.sabor ? ' · ' + v.sabor : ''}` };
+  catalogoServidor[`${p.sku}:${v.id}`] = { stock: v.stock, precio: p.precio, nombre: `${p.marca} ${p.nombre}${v.sabor ? ' · ' + v.sabor : ''}` };
 }
-escribir('js/catalogo.js', `/* GENERADO por tools/build-preventa.mjs desde productos.json. No editar a mano. */\nwindow.CATALOGO = ${JSON.stringify(catalogoCliente)};\n`);
-escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-preventa.mjs desde productos.json. No editar a mano.\n   Stock base de la primera tanda; lo apartado se descuenta en /api/stock y /api/pedido. */\nexport const PREVENTA = ${JSON.stringify(catalogoServidor, null, 2)};\n`);
+escribir('js/catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano. */\nwindow.CATALOGO = ${JSON.stringify(catalogoCliente)};\n`);
+escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.\n   Stock base y precio de cada suplemento; lo vendido se descuenta en /api/stock y /api/pedido. */\nexport const SUPLEMENTOS = ${JSON.stringify(catalogoServidor, null, 2)};\n`);
 const CAT_JS_V = hash('js/catalogo.js');
 
 
@@ -77,16 +76,14 @@ const tamano = (p) => {
   return p.formato.split(' · ')[0] + (n > 1 ? ` · ${n} sabores` : '');
 };
 
-/* El mensaje de WhatsApp que se abre al apartar: ya trae el producto y el sabor */
+/* El mensaje de WhatsApp para quien llegó cuando ya no hay unidades */
 const waUrl = (p, v) => {
   const que = `${nombreLargo(p)} (${p.formato})${v.sabor ? ' — ' + v.sabor : ''}`;
-  const msg = v.stock > 0
-    ? `Hola REVTILE, quiero apartar en preventa: ${que}. ¿Me avisan el precio cuando llegue?`
-    : `Hola REVTILE, vi que se agotó en preventa: ${que}. ¿Me avisan si llegan más unidades?`;
+  const msg = `Hola REVTILE, vi que se agotó: ${que}. ¿Me avisan si llegan más unidades?`;
   return `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
 };
 
-/* Unidades reales de la tanda, dibujadas como casillas. Nunca se inventa un número. */
+/* Unidades reales que tienes, dibujadas como casillas. Nunca se inventa un número. */
 const cupos = (n) => n > 0
   ? `<span class="pre-cupos" role="img" aria-label="Quedan ${unidades(n)}"><span class="pre-cupos__sq" aria-hidden="true">${'<i></i>'.repeat(Math.min(n, 12))}</span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>${n}</b></span></span>`
   : `<span class="pre-cupos is-agotado" role="img" aria-label="Agotado"><span class="pre-cupos__sq" aria-hidden="true"><i></i></span><span class="pre-cupos__txt" aria-hidden="true"><b>Agotado</b></span></span>`;
@@ -94,17 +91,20 @@ const cupos = (n) => n > 0
 const pic = (base, alt, extra = '') =>
   `<picture><source srcset="${base}.webp" type="image/webp"><img src="${base}.png" alt="${esc(alt)}" width="1000" height="1000"${extra}></picture>`;
 
-/* Sin precio confirmado no se escribe nada: ni "al llegar" ni un precio inventado. */
-const precioLinea = (p, etiqueta = 'Precio de preventa') => p.precio != null
-  ? `<p class="pre-precio"><span>${etiqueta}</span><i aria-hidden="true"></i><b>${cop(p.precio)}</b></p>`
-  : '';
+/* Precio con el de antes tachado (mismo estilo que las creatinas) y cuánto se ahorra */
+const ahorro = (p) => p.precio_antes - p.precio;
+const pctAhorro = (p) => Math.round((ahorro(p) / p.precio_antes) * 100);
+const preciosCard = (p) => `<div class="product__pricing">
+              <span class="product__price">${cop(p.precio)} <small>COP</small></span>
+              <span class="product__price-old">${cop(p.precio_antes)}</span>
+            </div>`;
 
-/* ── Tarjeta (portada, índice y "otras en preventa") ──────────────── */
+/* ── Tarjeta (portada, índice y "más suplementos") ────────────────── */
 function tarjeta(p) {
   const v0 = p.variantes[0];
   const n = total(p);
   return `        <article class="product pre-card reveal">
-          <span class="product__flag">Preventa</span>
+          <span class="product__flag">${esc(CAT_CORTA[p.sku] || p.rol)}</span>
           <div class="product__photo">${pic(v0.imagen, v0.alt, ' loading="lazy"')}</div>
           <div class="product__info">
             <p class="product__brand">${esc(p.marca)}</p>
@@ -112,8 +112,8 @@ function tarjeta(p) {
             <p class="product__size">${esc(tamano(p))}</p>
             <p class="pre-card__gancho">${esc(p.gancho)}</p>
             <span data-cupos-keys="${p.variantes.map((v) => p.sku + ':' + v.id).join(',')}">${cupos(n)}</span>
-            ${precioLinea(p, 'Precio')}
-            <a class="btn btn--primary btn--full" href="${p.pagina}">${n > 0 ? 'Apartar' : 'Ver ficha'} <span class="btn__arrow" aria-hidden="true">→</span></a>
+            ${preciosCard(p)}
+            <a class="btn btn--primary btn--full" href="${p.pagina}">${n > 0 ? 'Comprar' : 'Ver ficha'} <span class="btn__arrow" aria-hidden="true">→</span></a>
           </div>
         </article>`;
 }
@@ -174,8 +174,7 @@ ${bloques.join('\n')}
 /* ── JSON-LD ──────────────────────────────────────────────────────── */
 function ldProducto(p) {
   const props = p.datos.map(([k, v]) => ({ '@type': 'PropertyValue', name: k, value: v }));
-  props.push({ '@type': 'PropertyValue', name: 'Estado', value: 'Preventa (primera tanda)' });
-  props.push({ '@type': 'PropertyValue', name: 'Unidades disponibles en la primera tanda', value: String(total(p)) });
+  props.push({ '@type': 'PropertyValue', name: 'Unidades disponibles', value: String(total(p)) });
   const o = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -197,29 +196,27 @@ function ldProducto(p) {
       additionalProperty: [
         { '@type': 'PropertyValue', name: 'Sabor', value: v.sabor },
         { '@type': 'PropertyValue', name: 'Porciones por envase', value: v.porciones },
-        { '@type': 'PropertyValue', name: 'Unidades disponibles en la primera tanda', value: String(v.stock) },
+        { '@type': 'PropertyValue', name: 'Unidades disponibles', value: String(v.stock) },
       ],
     }));
   }
-  /* Sin precio confirmado no se publica oferta: nunca un precio inventado. */
-  if (p.precio != null) {
-    o.offers = {
-      '@type': 'Offer',
-      url: SITIO + p.pagina,
-      priceCurrency: data.moneda,
-      price: String(p.precio),
-      availability: total(p) > 0 ? 'https://schema.org/PreOrder' : 'https://schema.org/OutOfStock',
-      itemCondition: 'https://schema.org/NewCondition',
-      seller: { '@type': 'Organization', name: 'REVTILE' },
-      shippingDetails: {
-        '@type': 'OfferShippingDetails',
-        shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: data.moneda },
-        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'CO' },
-      },
-    };
-  }
+  o.offers = {
+    '@type': 'Offer',
+    url: SITIO + p.pagina,
+    priceCurrency: data.moneda,
+    price: String(p.precio),
+    availability: total(p) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    seller: { '@type': 'Organization', name: 'REVTILE' },
+    shippingDetails: {
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: data.moneda },
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'CO' },
+    },
+  };
   return o;
 }
+const faqDe = (p) => p.faq.map(([q, a]) => [q, a.replace(/\{precio\}/g, cop(p.precio)).replace(/\{antes\}/g, cop(p.precio_antes))]);
 const ldFaq = (faq) => ({
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -254,7 +251,7 @@ const cabecera = ({ titulo, meta, canonica, og, ogTipo, preload, ld }) => `<!DOC
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 ${preload ? `  <link rel="preload" as="image" href="${preload}" fetchpriority="high">\n` : ''}  <link rel="stylesheet" href="css/styles.css?v=${CSS_V}">
-  <link rel="stylesheet" href="css/preventa.css?v=${PRE_CSS_V}">
+  <link rel="stylesheet" href="css/suplementos.css?v=${SUP_CSS_V}">
   <link rel="stylesheet" href="css/maleta.css?v=${MAL_CSS_V}">
   <link rel="stylesheet" href="css/scoop.css?v=${SC_CSS_V}">
   <script>document.documentElement.classList.add('js');</script>
@@ -323,8 +320,8 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
 
   const ld = [
     ldProducto(p),
-    ldFaq(p.faq),
-    ldMigas([['Inicio', SITIO], ['Preventa', SITIO + 'preventa.html'], [nombreLargo(p), url]]),
+    ldFaq(faqDe(p)),
+    ldMigas([['Inicio', SITIO], ['Suplementos', SITIO + 'suplementos.html'], [nombreLargo(p), url]]),
   ];
 
   return `${cabecera({
@@ -335,7 +332,7 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Toda la preventa', 'preventa.html', 'Mi maleta', 'pedido.html')}
+${nav('← Todos los suplementos', 'suplementos.html', 'Mi maleta', 'pedido.html')}
 
   <main id="ficha">
 
@@ -354,20 +351,26 @@ ${g0.map(([src, alt], i) => `          <button class="pp-gal__thumb${i === 0 ? '
       </div>
 
       <div class="pp-buy">
-        <p class="pre-tag">Preventa · ${esc(pre.tanda)}</p>
+        <p class="pre-tag">${esc(p.rol)}</p>
         <p class="product__brand">${esc(p.marca)}</p>
         <h1>${esc(p.nombre)}</h1>
         <p class="product__size">${esc(p.formato)}</p>
 ${selector}
 ${multi ? '' : `        <div class="pre-cupos-box" id="preCupos" data-cupos-k="${p.sku}:${v0.id}">${cupos(v0.stock)}</div>
 `}
-        ${precioLinea(p)}
+        <div class="pp-buy__price">
+          <span class="now">${cop(p.precio)}</span>
+          <span class="was">${cop(p.precio_antes)}</span>
+        </div>
+        <p class="pp-buy__unit">Ahorras <b>${cop(ahorro(p))}</b> (${pctAhorro(p)} %) frente al precio de antes</p>
+        <span class="sello">Envío gratis a toda Colombia</span>
         <a class="pre-alerta pre-alerta--${p.aviso.tipo}" href="#aviso">${esc(p.aviso.titulo)}</a>
 
-        <button type="button" class="btn btn--primary btn--full btn--big" id="preCta" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain"><span data-cta-txt>Apartar en mi maleta</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
+        <button type="button" class="btn btn--primary btn--full btn--big" id="preComprar" data-comprar="${p.sku}:${v0.id}"><span data-cta-txt>Comprar ahora</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
+        <button type="button" class="btn btn--ghost btn--full" id="preCta" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain"><span data-cta-txt>Añadir a la maleta</span></button>
         <p class="pre-agotado" id="preAgotado" hidden>Se agotó este. <a data-wa href="${waUrl(p, { ...v0, stock: 0 })}" target="_blank" rel="noopener">Avísame si reponen</a></p>
         <a class="pre-ver" href="pedido.html">Ir a mi maleta →</a>
-        <p class="pre-promesa">${esc(pre.promesa)}</p>
+        <p class="pp-note">Pagas por Bre-B, tarjeta, PSE o Nequi, o contraentrega en todo el país. Tu pedido queda registrado con un número único para rastrearlo.</p>
 
         <div class="pp-stats">
 ${p.destacados.map(([b, s]) => `          <div class="pp-stat"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join('\n')}
@@ -396,7 +399,7 @@ ${p.aviso.items.map((t) => `          <li>${esc(t)}</li>`).join('\n')}
       <h2 class="reveal">Qué registramos de tu unidad<span class="accent">.</span></h2>
       <div class="pp-cols">
         <div class="reveal">
-          <p class="section-lead">Cuando llega la tanda, la unidad que apartaste viene sellada de fábrica. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de esa unidad y te enviamos las fotos, para que contrastes los datos con el fabricante.</p>
+          <p class="section-lead">Tu unidad viene sellada de fábrica. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de esa unidad y te enviamos las fotos, para que contrastes los datos con el fabricante.</p>
           <p class="disclaimer">REVTILE documenta lo que puede observarse del producto: el sello, el lote, la fecha y el estado del envase. No somos un laboratorio ni una entidad certificadora, y una inspección visual no reemplaza la verificación con el fabricante. Por eso te damos los datos: para que la verificación la puedas hacer tú.</p>
         </div>
         <div class="reveal">
@@ -422,19 +425,19 @@ ${pasos(p.uso.pasos)}
   </section>
 ${nutricional(p)}
 
-  <!-- ===== PREVENTA, ENVÍO Y PAGO ===== -->
+  <!-- ===== COMPRA, ENVÍO Y PAGO ===== -->
   <section class="pp-section">
     <div class="pp-section__inner">
-      <p class="section-eyebrow reveal"><b>04</b> Preventa, envío y pago</p>
+      <p class="section-eyebrow reveal"><b>04</b> Compra, envío y pago</p>
       <h2 class="reveal">Cómo funciona<span class="accent">.</span></h2>
       <div class="pp-cols">
         <div class="reveal">
           <table class="spec">
-            <caption>La preventa</caption>
+            <caption>Tu compra</caption>
             <tbody>
-              <tr><th scope="row">Apartar</th><td>Gratis y sin pagar: escríbenos por WhatsApp desde el botón de esta ficha</td></tr>
-              <tr><th scope="row">Cuándo llega</th><td>Aún no hay fecha confirmada: te escribimos por WhatsApp apenas llegue la tanda</td></tr>
-              <tr><th scope="row">Precio</th><td>Se confirma al llegar; decides si la compras</td></tr>
+              <tr><th scope="row">Precio</th><td>${cop(p.precio)} COP (antes ${cop(p.precio_antes)})</td></tr>
+              <tr><th scope="row">Unidades</th><td>Contadas: el número de arriba es el real</td></tr>
+              <tr><th scope="row">Verificación</th><td>Fotos del sello y el lote de tu unidad antes del despacho</td></tr>
             </tbody>
           </table>
         </div>
@@ -443,7 +446,7 @@ ${nutricional(p)}
             <caption>Envío y pago</caption>
             <tbody>
               <tr><th scope="row">Envío</th><td>Gratis a toda Colombia, ${data.envio.dias_habiles} días hábiles, con guía</td></tr>
-              <tr><th scope="row">Pago</th><td>Los medios de la tienda: contraentrega, Bre-B, o tarjeta, PSE y Nequi</td></tr>
+              <tr><th scope="row">Pago</th><td>Contraentrega, Bre-B, o tarjeta, PSE y Nequi</td></tr>
               <tr><th scope="row">Seguimiento</th><td>Número propio <span class="mono">RV-</span> rastreable en la página</td></tr>
             </tbody>
           </table>
@@ -452,12 +455,12 @@ ${nutricional(p)}
     </div>
   </section>
 
-${faqHtml(p.faq, `Sobre ${esc(p.nombre)}`, '05')}
+${faqHtml(faqDe(p), `Sobre ${esc(p.nombre)}`, '05')}
 
-  <!-- ===== OTRAS EN PREVENTA ===== -->
+  <!-- ===== MÁS SUPLEMENTOS ===== -->
   <section class="pp-section">
     <div class="pp-section__inner">
-      <p class="section-eyebrow reveal">También en preventa</p>
+      <p class="section-eyebrow reveal">Más suplementos</p>
       <div class="products__grid pre__grid" style="margin-top:16px">
 ${otros.map(tarjeta).join('\n')}
       </div>
@@ -470,10 +473,10 @@ ${footer(data)}
 
   <div class="pp-sticky" id="ppSticky" aria-hidden="true">
     <div class="pp-sticky__price">
-      <b>Preventa</b>
-      <span>${esc(p.marca)} · apártala sin pagar</span>
+      <b>${cop(p.precio)}</b>
+      <span>${esc(p.marca)} · envío gratis</span>
     </div>
-    <button type="button" class="btn btn--primary" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain" tabindex="-1">Apartar <span class="btn__arrow" aria-hidden="true">→</span></button>
+    <button type="button" class="btn btn--primary" data-comprar="${p.sku}:${v0.id}" tabindex="-1">Comprar <span class="btn__arrow" aria-hidden="true">→</span></button>
   </div>
 
   <script type="application/json" id="preData">${jsonLd(preData)}</script>
@@ -481,31 +484,31 @@ ${footer(data)}
   <script src="js/maleta.js?v=${MAL_JS_V}" defer></script>
   <script src="js/scoop.js?v=${SC_JS_V}" defer></script>
   <script src="js/product.js?v=3" defer></script>
-  <script src="js/preventa.js?v=${PRE_JS_V}" defer></script>
+  <script src="js/suplementos.js?v=${SUP_JS_V}" defer></script>
 </body>
 </html>
 `;
 }
 
-/* ── Índice de la preventa ────────────────────────────────────────── */
+/* ── Índice de los suplementos ────────────────────────────────────── */
 const HUB_FAQ = [
-  ['¿Qué es la preventa de REVTILE?', 'Es la primera tanda de suplementos que viene en camino: proteína, pre-entreno, BCAA y un multivitamínico. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue.'],
-  ['¿Cuánto cuestan?', 'El precio definitivo de cada uno se confirma cuando llega la tanda. Si apartas, te lo enviamos por WhatsApp y decides si lo compras: apartar no te obliga a nada.'],
-  ['¿Cuándo llegan?', 'Todavía no tenemos una fecha confirmada. Te escribimos por WhatsApp apenas lleguen.'],
-  ['¿Cómo aparto una unidad?', 'Entra a la ficha del producto, elige el sabor y toca «Apartar»: se abre WhatsApp con tu mensaje listo.'],
-  ['¿Cuántas unidades hay?', 'La primera tanda es pequeña y contamos las unidades de cada producto y sabor. El número que ves en cada ficha es el real; cuando se agota, la ficha lo marca como agotado.'],
-  ['¿Son originales?', 'Sí. Antes del despacho fotografiamos el sello, el lote y la fecha de vencimiento de tu unidad y te enviamos las fotos. Las fotos de las fichas son de referencia del fabricante.'],
-  ['¿Alguno tiene alérgenos o requiere cuidado?', 'Cada ficha trae su aviso. La whey contiene leche y soya; el multivitamínico contiene glucosamina de origen marisco y condroitina bovina; el pre-entreno es de alta estimulación y trae contraindicaciones. Léelos antes de apartar.'],
+  ['¿Qué suplementos vende REVTILE?', 'Proteína whey Optimum Nutrition Gold Standard, pre-entreno Nutrex Outrage, BCAA Rule 1 y el multivitamínico AllMax Vitaform, además de creatina monohidratada. Todos originales y sellados de fábrica.'],
+  ['¿Cuánto cuestan?', `Proteína ${cop(P[0].precio)}, pre-entreno ${cop(P[1].precio)}, BCAA ${cop(P[2].precio)} y multivitamínico ${cop(P[3].precio)}, todos con envío gratis a toda Colombia. Cada ficha muestra el precio de antes tachado.`],
+  ['¿Cómo compro?', 'Entra a la ficha, elige el sabor y toca «Comprar ahora» o «Añadir a la maleta». En tu maleta eliges cómo pagar: contraentrega, Bre-B, o tarjeta, PSE y Nequi.'],
+  ['¿Cuánto tarda en llegar?', `Envío gratis a toda Colombia en ${data.envio.dias_habiles} días hábiles, con guía de la transportadora y un número RV- para rastrear tu pedido.`],
+  ['¿Cuántas unidades hay?', 'Contamos las unidades de cada producto y sabor. El número que ves en cada ficha es el real; cuando se agota, la ficha lo marca como agotado.'],
+  ['¿Son originales?', 'Sí. Antes del despacho fotografiamos el sello, el lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes los datos con el fabricante.'],
+  ['¿Alguno tiene alérgenos o requiere cuidado?', 'Cada ficha trae su aviso. La whey contiene leche y soya; el multivitamínico contiene glucosamina de origen marisco y condroitina bovina; el pre-entreno es de alta estimulación y trae contraindicaciones. Léelos antes de comprar.'],
 ];
 
 function indice() {
   const hayFamilia = existsSync(join(ROOT, 'assets/pre/familia.png'));
-  const titulo = 'Suplementos en preventa: whey, pre-entreno, BCAA y multivitamínico — REVTILE';
-  const meta = 'Primera tanda de suplementos originales en preventa en Colombia: Optimum Nutrition Gold Standard Whey, Nutrex Outrage, Rule 1 BCAA y AllMax Vitaform. Apártalos sin pagar. Envío gratis a toda Colombia.';
+  const titulo = 'Suplementos originales: whey, pre-entreno, BCAA y multivitamínico — REVTILE';
+  const meta = 'Suplementos originales en Colombia: Optimum Nutrition Gold Standard Whey, Nutrex Outrage, Rule 1 BCAA y AllMax Vitaform, sellados de fábrica. Precios con descuento y envío gratis a toda Colombia.';
   const ld = [
     {
       '@context': 'https://schema.org', '@type': 'CollectionPage',
-      name: 'Suplementos en preventa — REVTILE', url: SITIO + 'preventa.html', description: meta,
+      name: 'Suplementos originales — REVTILE', url: SITIO + 'suplementos.html', description: meta,
       mainEntity: {
         '@type': 'ItemList',
         numberOfItems: P.length,
@@ -515,10 +518,10 @@ function indice() {
       },
     },
     ldFaq(HUB_FAQ),
-    ldMigas([['Inicio', SITIO], ['Preventa', SITIO + 'preventa.html']]),
+    ldMigas([['Inicio', SITIO], ['Suplementos', SITIO + 'suplementos.html']]),
   ];
   return `${cabecera({
-    titulo, meta, canonica: 'preventa.html',
+    titulo, meta, canonica: 'suplementos.html',
     og: hayFamilia ? SITIO + 'assets/pre/familia.png' : abs(P[0].variantes[0].imagen), ogTipo: 'website',
     preload: hayFamilia ? 'assets/pre/familia.webp' : '', ld,
   })}
@@ -533,35 +536,34 @@ ${nav('← Volver a la tienda', 'index.html#productos', 'Mi maleta', 'pedido.htm
   <section class="pp-section pre-hub">
     <div class="pp-section__inner pre-hub__grid">
       <div class="pre-hub__txt">
-        <p class="pre-tag">Preventa · ${esc(pre.tanda)}</p>
-        <h1>Suplementos en preventa<span class="accent">.</span></h1>
-        <p class="section-lead">Proteína, pre-entreno, BCAA y multivitamínico de marcas originales. Cada unidad está contada: el número que ves en cada ficha es el real.</p>
-        <p class="pre-promesa">${esc(pre.promesa)}</p>
+        <p class="pre-tag">Suplementos</p>
+        <h1>Suplementos originales<span class="accent">.</span></h1>
+        <p class="section-lead">Proteína, pre-entreno, BCAA y multivitamínico de marcas originales, con descuento y envío gratis. Cada unidad está contada: el número que ves en cada ficha es el real.</p>
       </div>
-${hayFamilia ? `      <div class="pre-hub__img"><picture><source srcset="assets/pre/familia.webp" type="image/webp"><img src="assets/pre/familia.png" alt="Los cuatro suplementos en preventa de REVTILE: Gold Standard Whey, Nutrex Outrage, Rule 1 BCAA y AllMax Vitaform" width="1800" height="900" fetchpriority="high"></picture></div>` : ''}
+${hayFamilia ? `      <div class="pre-hub__img"><picture><source srcset="assets/pre/familia.webp" type="image/webp"><img src="assets/pre/familia.png" alt="Los cuatro suplementos de REVTILE: Gold Standard Whey, Nutrex Outrage, Rule 1 BCAA y AllMax Vitaform" width="1800" height="900" fetchpriority="high"></picture></div>` : ''}
     </div>
   </section>
 
   <section class="pp-section pp-section--alt">
     <div class="pp-section__inner">
-      <p class="section-eyebrow reveal"><b>01</b> La primera tanda</p>
+      <p class="section-eyebrow reveal"><b>01</b> Los cuatro</p>
 ${grilla(P)}
     </div>
   </section>
 
   <section class="pp-section">
     <div class="pp-section__inner">
-      <p class="section-eyebrow reveal"><b>02</b> Cómo funciona</p>
-      <h2 class="reveal">Tres pasos, ninguno con pago<span class="accent">.</span></h2>
+      <p class="section-eyebrow reveal"><b>02</b> Cómo comprar</p>
+      <h2 class="reveal">Tres pasos<span class="accent">.</span></h2>
 ${pasos([
-  ['01', 'Aparta tu unidad', 'Entra a la ficha, elige el sabor y toca «Apartar». Se abre WhatsApp con tu mensaje listo. No pagas nada.'],
-  ['02', 'Te avisamos al llegar', 'Cuando llega la tanda te escribimos con el precio definitivo. Decides si la compras.'],
-  ['03', 'Verificas y recibes', 'Antes del despacho te enviamos las fotos del sello y el lote de tu unidad. Envío gratis a toda Colombia.'],
+  ['01', 'Elige tu suplemento', 'Entra a la ficha, elige el sabor y toca «Comprar ahora» o «Añadir a la maleta».'],
+  ['02', 'Paga como prefieras', 'En tu maleta eliges contraentrega, Bre-B, o tarjeta, PSE y Nequi. Envío gratis a toda Colombia.'],
+  ['03', 'Verificas y recibes', 'Antes del despacho te enviamos las fotos del sello y el lote de tu unidad.'],
 ])}
     </div>
   </section>
 
-${faqHtml(HUB_FAQ, 'Preguntas sobre la preventa', '03')}
+${faqHtml(HUB_FAQ, 'Preguntas sobre los suplementos', '03')}
 
   </main>
 
@@ -578,14 +580,14 @@ ${footer(data)}
 
 /* ── Escritura de páginas ─────────────────────────────────────────── */
 for (const p of P) { escribir(p.pagina, ficha(p)); console.log('  escrita  ' + p.pagina); }
-escribir('preventa.html', indice()); console.log('  escrita  preventa.html');
+escribir('suplementos.html', indice()); console.log('  escrita  suplementos.html');
 
 /* ── Portada: tarjetas entre marcadores ───────────────────────────── */
-const INI = '<!-- preventa:tarjetas:inicio -->';
-const FIN = '<!-- preventa:tarjetas:fin -->';
+const INI = '<!-- suplementos:tarjetas:inicio -->';
+const FIN = '<!-- suplementos:tarjetas:fin -->';
 /* versiones de los archivos compartidos, en las dos páginas que los cargan a mano */
 const versionar = (html) => html
-  .replace(/css\/preventa\.css\?v=\w+/g, `css/preventa.css?v=${PRE_CSS_V}`)
+  .replace(/css\/preventa\.css\?v=\w+/g, `css/suplementos.css?v=${SUP_CSS_V}`)
   .replace(/css\/maleta\.css\?v=\w+/g, `css/maleta.css?v=${MAL_CSS_V}`)
   .replace(/css\/scoop\.css\?v=\w+/g, `css/scoop.css?v=${SC_CSS_V}`)
   .replace(/js\/catalogo\.js\?v=\w+/g, `js/catalogo.js?v=${CAT_JS_V}`)
@@ -593,36 +595,36 @@ const versionar = (html) => html
   .replace(/js\/scoop\.js\?v=\w+/g, `js/scoop.js?v=${SC_JS_V}`);
 let index = leer('index.html');
 if (index.includes(INI) && index.includes(FIN)) {
-  index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), `${INI}\n${grilla(P)}\n      ${FIN}`);
+  index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), () => `${INI}\n${grilla(P)}\n      ${FIN}`);
   escribir('index.html', versionar(index));
-  console.log('  portada  tarjetas de preventa al día');
-} else console.log('  AVISO    index.html no tiene los marcadores de preventa');
+  console.log('  portada  tarjetas de suplementos al día');
+} else console.log('  AVISO    index.html no tiene los marcadores de suplementos');
 escribir('pedido.html', versionar(leer('pedido.html')));
 console.log('  pedido   versiones de la maleta al día');
 
-/* ── llms.txt: bloque de preventa ─────────────────────────────────── */
-const bloqueLlms = `## Preventa (primera tanda de suplementos)
-Estado: preventa. Apartar es gratis y sin pagar; el precio definitivo se confirma cuando llega la tanda. Las unidades están contadas y el número de cada ficha es el real. Envío gratis a toda Colombia. Todos los productos se verifican con fotos del sello y el lote antes del despacho.
-- [Índice de la preventa](${SITIO}preventa.html): los cuatro suplementos, con unidades disponibles
+/* ── llms.txt: bloque de suplementos ──────────────────────────────── */
+const bloqueLlms = `## Suplementos (disponibles)
+Estado: disponibles para comprar, con envío gratis a toda Colombia. Las unidades están contadas y el número de cada ficha es el real. Todos los productos se verifican con fotos del sello y el lote antes del despacho.
+- [Índice de suplementos](${SITIO}suplementos.html): los cuatro suplementos, con precio y unidades disponibles
 ${P.map((p) => {
   const sab = sabores(p).map((v) => `${v.sabor} (${v.stock})`).join(', ');
-  return `- [${nombreLargo(p)}, ${p.formato.replace(' · ', ', ')}](${SITIO}${p.pagina}): ${p.gancho}${sab ? ` Sabores y unidades: ${sab}.` : ` Unidades: ${total(p)}.`} ${p.aviso.titulo}.`;
+  return `- [${nombreLargo(p)}, ${p.formato.replace(' · ', ', ')}](${SITIO}${p.pagina}): ${cop(p.precio)} COP (antes ${cop(p.precio_antes)}). ${p.gancho}${sab ? ` Sabores y unidades: ${sab}.` : ` Unidades: ${total(p)}.`} ${p.aviso.titulo}.`;
 }).join('\n')}
 `;
 let llms = leer('llms.txt');
-if (/## Preventa[\s\S]*?(?=\n## )/.test(llms)) llms = llms.replace(/## Preventa[\s\S]*?(?=\n## )/, bloqueLlms.trimEnd() + '\n');
-else llms = llms.replace('## Paginas clave', bloqueLlms + '\n## Paginas clave');
+if (/## (Preventa|Suplementos)[\s\S]*?(?=\n## )/.test(llms)) llms = llms.replace(/## (Preventa|Suplementos)[\s\S]*?(?=\n## )/, () => bloqueLlms.trimEnd() + '\n');
+else llms = llms.replace('## Paginas clave', () => bloqueLlms + '\n## Paginas clave');
 escribir('llms.txt', llms);
-console.log('  llms.txt bloque de preventa al día');
+console.log('  llms.txt bloque de suplementos al día');
 
 /* ── sitemap.xml ──────────────────────────────────────────────────── */
-const urlsMapa = [['preventa.html', '0.8'], ...P.map((p) => [p.pagina, '0.7'])]
+const urlsMapa = [['suplementos.html', '0.8'], ...P.map((p) => [p.pagina, '0.7'])]
   .map(([u, pr]) => `  <url>\n    <loc>${SITIO}${u}</loc>\n    <priority>${pr}</priority>\n  </url>`).join('\n');
 let mapa = leer('sitemap.xml');
-const MI = '<!-- preventa:inicio -->', MF = '<!-- preventa:fin -->';
+const MI = '<!-- suplementos:inicio -->', MF = '<!-- suplementos:fin -->';
 if (mapa.includes(MI)) mapa = mapa.replace(new RegExp(`${MI}[\\s\\S]*?${MF}`), `${MI}\n${urlsMapa}\n  ${MF}`);
 else mapa = mapa.replace('</urlset>', `  ${MI}\n${urlsMapa}\n  ${MF}\n</urlset>`);
 escribir('sitemap.xml', mapa);
-console.log('  sitemap  URLs de preventa al día');
+console.log('  sitemap  URLs de suplementos al día');
 
-console.log(`\nPreventa generada: ${P.length} fichas + índice. Unidades en total: ${P.reduce((a, p) => a + total(p), 0)}.`);
+console.log(`\nSuplementos generados: ${P.length} fichas + índice. Unidades en total: ${P.reduce((a, p) => a + total(p), 0)}.`);

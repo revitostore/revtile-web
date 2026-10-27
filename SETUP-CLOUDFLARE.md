@@ -76,10 +76,12 @@ Pasos únicos tras el deploy del sistema v2:
 
 ## La maleta y el juego del scoop
 
-**La maleta (carrito) y los apartados no necesitan nada nuevo:** funcionan con la base de datos
-que ya tienes. Los productos de preventa se reservan dentro de `pedidos` y el stock en vivo
-(`/api/stock`) sale de `productos.json` menos lo ya apartado. Cancelar un pedido desde el Centro
-de mando devuelve la unidad al stock automáticamente.
+**La maleta (carrito) y la venta de suplementos no necesitan nada nuevo:** funcionan con la base
+de datos que ya tienes. Cada suplemento vendido se descuenta del stock dentro de `pedidos` y el stock
+en vivo (`/api/stock`) sale de `productos.json` menos lo ya vendido en pedidos no cancelados. El servidor
+revisa el precio de cada suplemento contra el catálogo (si alguien lo manipula, rechaza el pedido) y
+cancelar un pedido desde el Centro de mando devuelve la unidad al stock automáticamente. Ojo: un pedido
+que nunca se paga sigue reservando su unidad hasta que lo canceles.
 
 **El juego "Llena el scoop" sí necesita dos pasos (si no los haces, el juego simplemente no aparece
 y todo lo demás sigue igual):**
@@ -93,5 +95,7 @@ y todo lo demás sigue igual):**
 Cada jugada la reparte y la valida el servidor: una jugada por jugador y día, premio máximo 5 %,
 cupón de un solo uso que vence en 48 horas (aparece en el panel de cupones como `SCOOP5XXXXX`).
 
-**Cuando cambies un precio o el stock de la preventa:** edita `productos.json` y ejecuta
-`node tools/build-preventa.mjs` y luego `node tools/check.mjs`.
+**Cuando cambies un precio o repongas stock de un suplemento:** edita `precio`, `precio_antes` (el
+tachado) o el `stock` de cada variante en `productos.json` (clave `suplementos`) y ejecuta
+`node tools/build-suplementos.mjs` y luego `node tools/check.mjs`. Eso regenera las fichas, la portada,
+`llms.txt`, el sitemap y el catálogo del servidor. Después sube los cambios y Cloudflare los publica.

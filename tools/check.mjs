@@ -65,21 +65,28 @@ for (const p of data.productos)
   if (p.precio_antes && !p.precio_antes_confirmado)
     avisos.push(`"${p.sku}": el precio tachado ${cop(p.precio_antes)} está sin confirmar como precio realmente cobrado`);
 
-/* 6 · preventa: stock real, sin precio inventado, avisos de seguridad y SEO al día */
-const pv = (data.preventa && data.preventa.productos) || [];
+/* 6 · suplementos: precio y tachado coherentes, stock real, avisos de seguridad y SEO al día */
+const pv = (data.suplementos && data.suplementos.productos) || [];
 const llms = read('llms.txt');
 const mapa = read('sitemap.xml');
 const portada = read('index.html');
 const existe = (p) => { try { readFileSync(join(ROOT, p)); return true; } catch { return false; } };
 for (const p of pv) {
   let html;
-  try { html = read(p.pagina); } catch { errores.push(`Falta la ficha de preventa ${p.pagina}`); continue; }
+  try { html = read(p.pagina); } catch { errores.push(`Falta la ficha del suplemento ${p.pagina}`); continue; }
   const ldBloques = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   for (const b of ldBloques) { try { JSON.parse(b[1]); } catch { errores.push(`${p.pagina}: un bloque JSON-LD no es JSON válido`); } }
-  if (p.precio == null && /"price"\s*:/.test(html))
-    errores.push(`${p.pagina}: tiene "price" en el JSON-LD pero el precio no está confirmado (precio: null)`);
-  if (p.precio != null && !html.includes(cop(p.precio)))
-    errores.push(`${p.pagina} no muestra el precio ${cop(p.precio)}`);
+  if (!Number.isInteger(p.precio) || !Number.isInteger(p.precio_antes) || p.precio >= p.precio_antes)
+    errores.push(`${p.sku}: necesita precio y precio_antes (tachado) enteros, y el de antes mayor`);
+  else {
+    if (!html.includes(cop(p.precio))) errores.push(`${p.pagina} no muestra el precio ${cop(p.precio)}`);
+    if (!html.includes(cop(p.precio_antes))) errores.push(`${p.pagina} no muestra el precio de antes ${cop(p.precio_antes)}`);
+    const ld = html.match(/"price"\s*:\s*"?(\d+)"?/);
+    if (!ld) errores.push(`${p.pagina} no tiene precio en el JSON-LD`);
+    else if (Number(ld[1]) !== p.precio) errores.push(`${p.pagina}: el JSON-LD dice ${cop(Number(ld[1]))} y la ficha ${cop(p.precio)}`);
+    if (!portada.includes(cop(p.precio))) errores.push(`index.html no muestra el precio ${cop(p.precio)} de ${p.sku}`);
+    if (!llms.includes(cop(p.precio))) errores.push(`llms.txt no menciona el precio ${cop(p.precio)} de ${p.sku}`);
+  }
   if (!p.aviso || !p.aviso.items || !p.aviso.items.length)
     errores.push(`${p.sku}: una ficha de suplemento necesita su aviso de seguridad`);
   for (const v of p.variantes) {
@@ -93,7 +100,7 @@ for (const p of pv) {
   if (!mapa.includes(p.pagina)) errores.push(`sitemap.xml no incluye ${p.pagina}`);
   if (!portada.includes(p.pagina)) errores.push(`index.html no enlaza ${p.pagina}`);
 }
-if (pv.length && !mapa.includes('preventa.html')) errores.push('sitemap.xml no incluye preventa.html');
+if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml no incluye suplementos.html');
 
 /* 7 · la maleta: catálogo del navegador, catálogo del servidor y páginas que los cargan */
 {
@@ -104,21 +111,32 @@ if (pv.length && !mapa.includes('preventa.html')) errores.push('sitemap.xml no i
     ...pv.flatMap((p) => p.variantes.map((v) => `${p.sku}:${v.id}`)),
   ];
   for (const k of claves) {
-    if (!cat.includes(`"k":"${k}"`)) errores.push(`js/catalogo.js no tiene ${k} (ejecuta node tools/build-preventa.mjs)`);
+    if (!cat.includes(`"k":"${k}"`)) errores.push(`js/catalogo.js no tiene ${k} (ejecuta node tools/build-suplementos.mjs)`);
     if (!existe((data.bolsa || {})[k] ? data.bolsa[k].img.replace(/\.webp$/, '') + '.webp' : 'no-existe'))
       errores.push(`Falta la imagen de la maleta de ${k} (productos.json → bolsa)`);
   }
   for (const p of pv) for (const v of p.variantes) {
     const m = srv.match(new RegExp(`"${p.sku}:${v.id}": \\{\\s*"stock": (\\d+)`));
     if (!m) errores.push(`functions/api/_catalogo.js no tiene ${p.sku}:${v.id}`);
-    else if (Number(m[1]) !== v.stock) errores.push(`El stock del servidor de ${p.sku}:${v.id} (${m[1]}) no coincide con productos.json (${v.stock}); ejecuta node tools/build-preventa.mjs`);
+    else if (Number(m[1]) !== v.stock) errores.push(`El stock del servidor de ${p.sku}:${v.id} (${m[1]}) no coincide con productos.json (${v.stock}); ejecuta node tools/build-suplementos.mjs`);
   }
-  for (const f of ['index.html', 'pedido.html', ...data.productos.map((p) => p.pagina), ...pv.map((p) => p.pagina), 'preventa.html']) {
+  for (const p of pv) for (const v of p.variantes) {
+    const m = srv.match(new RegExp(`"${p.sku}:${v.id}": \\{[^}]*"precio": (\\d+)`));
+    if (!m || Number(m[1]) !== p.precio) errores.push(`El precio del servidor de ${p.sku}:${v.id} no coincide con productos.json (${p.precio}); ejecuta node tools/build-suplementos.mjs`);
+  }
+  for (const f of ['index.html', 'pedido.html', ...data.productos.map((p) => p.pagina), ...pv.map((p) => p.pagina), 'suplementos.html']) {
     const h = read(f);
     if (!h.includes('js/maleta.js') || !h.includes('js/catalogo.js')) errores.push(`${f} no carga la maleta (js/catalogo.js y js/maleta.js)`);
   }
   if (!read('pedido.html').includes('data-maleta-estante')) errores.push('pedido.html perdió el estante de la maleta');
   if (!read('pedido.html').includes('js/scoop.js')) errores.push('pedido.html no carga el juego del scoop');
+}
+
+/* 8 · la preventa terminó: ninguna página pública puede seguir hablando de apartar ni de preventa */
+for (const f of [...readdirSync(ROOT).filter((x) => x.endsWith('.html')), 'llms.txt', 'js/checkout.js', 'js/maleta.js', 'js/suplementos.js']) {
+  const s = read(f);
+  if (/preventa|\bapart(ar|arla|arlo|ado|ados)\b|\bap[áa]rtal[ao]s?\b|sin pago hoy/i.test(s) && f !== 'gestion.html' && f !== 'rastreo.html')
+    errores.push(`${f} todavía habla de preventa o de apartar`);
 }
 
 for (const a of avisos) console.log('  aviso   ' + a);

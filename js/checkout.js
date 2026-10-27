@@ -26,7 +26,7 @@ const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
 const state = {
   cant: { on: 0, mt: 0, on120: 0 },  // lo deriva la maleta (ver sincronizarDesdeMaleta)
-  apartados: [],                      // productos de preventa en la maleta: [{k, c}]
+  supl: [],                           // suplementos en la maleta: [{k, c}] (su precio sale de js/catalogo.js)
   pago: 'anticipado',                // 'anticipado' | 'contraentrega'
   dia: null, diaISO: null, hora: '', // entrega programada (solo Bogotá + anticipado)
   cupon: null,                       // {codigo, tipo, valor} validado por la API
@@ -40,7 +40,7 @@ let enviando = false;
 let ultimoEnvioTs = 0;
 
 function hashPedido(nombre, tel, dir, total) {
-  return JSON.stringify([state.cant, state.apartados, state.pago, state.diaISO, state.hora, state.cupon && state.cupon.codigo, nombre, tel, dir, total]);
+  return JSON.stringify([state.cant, state.supl, state.pago, state.diaISO, state.hora, state.cupon && state.cupon.codigo, nombre, tel, dir, total]);
 }
 
 function pedidoPrevio(hash) {
@@ -61,17 +61,17 @@ function abrirWhatsApp(url) {
 }
 
 /* --- La maleta manda: lo que hay en ella es el pedido ---
-   Las creatinas (con precio) siguen el flujo de pago de siempre. Los productos de preventa
-   no tienen precio todavía: se APARTAN, sin pagar, y se registran junto al pedido. */
+   Las creatinas llevan el combo y su precio vive aquí arriba (PRODUCTOS); los suplementos
+   traen su precio y su stock del catálogo (js/catalogo.js) y entran al mismo pedido. */
 function sincronizarDesdeMaleta() {
   const cant = { on: 0, mt: 0, on120: 0 };
-  const ap = {};
+  const supl = {};
   Maleta.items().forEach((k) => {
     const id = k.split(':')[0];
-    if (id in cant) cant[id]++; else ap[k] = (ap[k] || 0) + 1;
+    if (id in cant) cant[id]++; else supl[k] = (supl[k] || 0) + 1;
   });
   state.cant = cant;
-  state.apartados = Object.keys(ap).map((k) => ({ k, c: ap[k] }));
+  state.supl = Object.keys(supl).map((k) => ({ k, c: supl[k] }));
 }
 
 /* ?producto=mt (desde las fichas): lo mete a la maleta si todavía no está */
@@ -210,20 +210,26 @@ function calcular() {
       items.push({ k, c, nombre: PRODUCTOS[k].nombre, corto: PRODUCTOS[k].corto, valor: PRODUCTOS[k].precio * c, valorLista: PRODUCTOS[k].precio_antes * c });
     }
   }
+  /* suplementos: cada uno con su precio y su precio de antes (tachado), igual que las creatinas */
+  let unidades = tarros;
+  for (const a of state.supl) {
+    const d = Maleta.porK[a.k];
+    if (!d) continue;
+    const nombre = d.it.marca + ' ' + d.it.nombre + (d.v.sabor ? ' · ' + d.v.sabor : '');
+    subtotal += d.it.precio * a.c;
+    lista += d.it.antes * a.c;
+    unidades += a.c;
+    items.push({ k: a.k, c: a.c, nombre, corto: d.it.nombre + (d.v.sabor ? ' ' + d.v.sabor : ''), valor: d.it.precio * a.c, valorLista: d.it.antes * a.c });
+  }
+  /* el combo Gymbro es de las creatinas: un descuento por cada par de tarros */
   const pares = Math.floor(tarros / 2);
   const combo = pares * COMBO_POR_PAR;
   const esBogota = $('fCiudad').value === 'bogota';
-  /* apartados de preventa: sin precio, no entran en ningún total */
-  const apartados = state.apartados.map((a) => {
-    const d = Maleta.porK[a.k];
-    return { k: a.k, c: a.c, nombre: d.it.nombre + (d.v.sabor ? ' · ' + d.v.sabor : ''), marca: d.it.marca };
-  });
-  const solo = tarros === 0 && apartados.length > 0; // pedido solo de apartados: no hay nada que pagar
-  const esCE = state.pago === 'contraentrega' && !solo;
+  const esCE = state.pago === 'contraentrega';
   const envio = ENVIO;
   /* la entrega con día y hora a elección es EXCLUSIVA del pago anticipado
      por Bre-B en Bogotá — ni contraentrega ni pago en línea la tienen */
-  const programado = !solo && esBogota && state.pago === 'anticipado';
+  const programado = esBogota && state.pago === 'anticipado';
   /* cupón: se recalcula sobre subtotal − combo (el servidor re-valida al registrar) */
   let descuento = 0;
   if (state.cupon) {
@@ -233,11 +239,11 @@ function calcular() {
       : Math.min(state.cupon.valor, base);
   }
   const ahorro = (lista - subtotal) + combo + descuento + ENVIO_LISTA;
-  return { items, tarros, subtotal, lista, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total: subtotal - combo - descuento + envio, apartados, solo };
+  return { items, tarros, unidades, subtotal, lista, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total: subtotal - combo - descuento + envio };
 }
 
 function render() {
-  const { items, tarros, subtotal, lista, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total, apartados, solo } = calcular();
+  const { items, subtotal, lista, ahorro, pares, combo, esBogota, esCE, programado, envio, descuento, total } = calcular();
 
   $('coCombo').hidden = combo === 0;
   if (combo > 0) {
@@ -258,38 +264,28 @@ function render() {
   /* agenda de entrega programada */
   $('coProg').hidden = !programado;
 
-  /* un pedido solo de apartados no pide método de pago ni cupón */
-  $('metodosCard').hidden = solo;
-  $('cuponBox').hidden = solo;
-  $('soloApartado').hidden = !solo;
-
   /* bloques de pago */
-  const esWompi = state.pago === 'wompi' && !solo;
-  $('payAnticipado').hidden = solo || esCE || esWompi;
+  const esWompi = state.pago === 'wompi';
+  $('payAnticipado').hidden = esCE || esWompi;
   $('payCE').hidden = !esCE;
   $('payWompi').hidden = !esWompi;
   $('btnEnviar').classList.toggle('btn--wompi', esWompi);
-  $('btnEnviar').innerHTML = solo
-    ? 'Apartar mis productos por WhatsApp'
-    : esCE
-      ? 'Confirmar mi pedido contraentrega por WhatsApp'
-      : esWompi
-        ? HTML_BTN_WOMPI
-        : 'Ya pagué → Enviar mi pedido por WhatsApp';
-  textoPagar(solo ? 'Apartar ↓' : esCE ? 'Confirmar pedido ↓' : esWompi ? 'Pagar ↓' : 'Ir a pagar ↓');
-  $('coNota').innerHTML = solo
-    ? 'Tu apartado queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. <b>No pagas nada hoy</b>: te escribimos con el precio cuando llegue la tanda.'
-    : esCE
+  $('btnEnviar').innerHTML = esCE
+    ? 'Confirmar mi pedido contraentrega por WhatsApp'
+    : esWompi
+      ? HTML_BTN_WOMPI
+      : 'Ya pagué → Enviar mi pedido por WhatsApp';
+  textoPagar(esCE ? 'Confirmar pedido ↓' : esWompi ? 'Pagar ↓' : 'Ir a pagar ↓');
+  $('coNota').innerHTML = esCE
     ? 'Tu pedido queda <b>registrado con un número único</b> y se abre WhatsApp para confirmarlo. Pagas cuando lo recibas en tu puerta.'
     : esWompi
       ? 'Te llevamos a la pasarela segura de <b>Wompi (Bancolombia)</b>. Al aprobarse el pago, tu pedido queda <b>verificado automáticamente</b> y vuelves a tu página de rastreo.'
       : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día.';
 
   /* factura */
-  const filasAp = apartados.map((a) => `<p class="co__apartado"><span><b class="co__cant">${a.c}×</b> ${a.nombre}<em>apartado</em></span><span class="co__precios"><b>Sin pago hoy</b></span></p>`).join('');
-  $('resItems').innerHTML = (items.length
+  $('resItems').innerHTML = items.length
     ? items.map((i) => `<p><span><b class="co__cant">${i.c}×</b> ${i.nombre}</span><span class="co__precios"><s>${fmt(i.valorLista)}</s> <b>${fmt(i.valor)}</b></span></p>`).join('')
-    : '') + filasAp || '<p><span>Tu maleta está vacía</span><b>—</b></p>';
+    : '<p><span>Tu maleta está vacía</span><b>—</b></p>';
   $('resComboLine').hidden = combo === 0;
   $('resComboVal').textContent = '−' + fmt(combo);
   $('resCuponLine').hidden = descuento === 0;
@@ -304,8 +300,8 @@ function render() {
   $('resAhorroVal').textContent = '−' + fmt(ahorro);
   $('resTotalLista').textContent = fmt(lista + ENVIO_LISTA); /* lo que costaría a precio de lista con envío */
   $('resTotalLista').hidden = !items.length;
-  $('resTotal').textContent = solo ? 'Sin pago hoy' : fmt(total);
-  $('barTotal').textContent = solo ? 'Sin pago hoy' : fmt(total);
+  $('resTotal').textContent = fmt(total);
+  $('barTotal').textContent = fmt(total);
   intentarCuponGuardado();
 }
 
@@ -315,7 +311,7 @@ let cuponGuardadoProbado = false;
 /* el juego del scoop avisa cuando se gana un cupón: se aplica sin recargar */
 window.addEventListener('scoop:cupon', () => { cuponGuardadoProbado = false; render(); });
 function intentarCuponGuardado() {
-  if (cuponGuardadoProbado || state.cupon || !state.cant || !(state.cant.on + state.cant.mt + state.cant.on120)) return;
+  if (cuponGuardadoProbado || state.cupon || !(state.cant.on + state.cant.mt + state.cant.on120 + state.supl.length)) return;
   let c = null;
   try { c = JSON.parse(localStorage.getItem('rev_cupon_scoop')); } catch (e) { /* nada guardado */ }
   if (!c || !c.codigo || (c.vence && Date.parse(c.vence) < Date.now())) return;
@@ -631,17 +627,17 @@ function mostrarError(msg) {
 }
 
 $('btnEnviar').addEventListener('click', async () => {
-  const { items, tarros, subtotal, combo, pares, esBogota, esCE, programado, envio, descuento, total, apartados, solo } = calcular();
+  const { items, unidades, subtotal, combo, pares, esBogota, esCE, programado, envio, descuento, total } = calcular();
   const nombre = $('fNombre').value.trim();
   const tel = $('fTel').value.trim();
   const dir = $('fDir').value.trim();
   const ciudad = esBogota ? 'Bogotá' : $('fOtraCiudad').value.trim();
 
-  if (tarros === 0 && !apartados.length) return mostrarError('Tu maleta está vacía (paso 01).');
+  if (unidades === 0) return mostrarError('Tu maleta está vacía (paso 01).');
   if (!nombre) return mostrarError('Falta tu nombre completo (paso 02).');
   if (!/^3\d{9}$/.test(tel.replace(/\D/g, ''))) return mostrarError('Revisa tu número de WhatsApp: deben ser 10 dígitos empezando por 3.');
   if (!ciudad) return mostrarError('Falta la ciudad (paso 02).');
-  if (!dir && !solo) return mostrarError('Falta la dirección de entrega (paso 02).');
+  if (!dir) return mostrarError('Falta la dirección de entrega (paso 02).');
   if (programado && !state.hora) return mostrarError('Elige la hora de tu entrega programada (paso 04) ⚡');
 
   guardarPerfil();
@@ -654,7 +650,7 @@ $('btnEnviar').addEventListener('click', async () => {
   /* candado: nunca dos envios en paralelo */
   if (enviando) return;
 
-  const esWompi = state.pago === 'wompi' && !solo;
+  const esWompi = state.pago === 'wompi';
 
   /* idempotencia: mismo pedido repetido => mismo ID, sin duplicar el registro */
   const hash = hashPedido(nombre, tel, dir, total);
@@ -666,9 +662,7 @@ $('btnEnviar').addEventListener('click', async () => {
   if (previo) {
     $('coOk').hidden = false;
     $('coOk').textContent = `✅ Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp.`;
-    const txtPrevio = solo
-      ? `🦎 *APARTADO REVTILE ${previo.id}* (preventa, sin pago hoy)\n👤 ${nombre}\n\nQuiero que me avisen el precio cuando lleguen 👇`
-      : esCE
+    const txtPrevio = esCE
       ? `🦎 *PEDIDO REVTILE ${previo.id}* (contraentrega)\n\n*Total a pagar al recibir: ${fmt(total)}*\n👤 ${nombre}\n\nConfirmo mi pedido 👇`
       : `🦎 *PEDIDO REVTILE ${previo.id}*\n\n*Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})\n👤 ${nombre}\n\nAdjunto mi comprobante de pago 👇`;
     abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(txtPrevio));
@@ -701,8 +695,7 @@ $('btnEnviar').addEventListener('click', async () => {
       body: JSON.stringify({
         id,
         web: $('fWeb') ? $('fWeb').value : '', // honeypot
-        metodo_pago: solo ? 'apartado' : esCE ? 'contraentrega' : esWompi ? 'wompi' : 'anticipado',
-        apartados: apartados.map((a) => ({ k: a.k, c: a.c })),
+        metodo_pago: esCE ? 'contraentrega' : esWompi ? 'wompi' : 'anticipado',
         entrega_dia: programado ? state.diaISO : null,
         entrega_hora: programado ? state.hora : null,
         items: items.map((i) => ({ k: i.k, c: i.c, nombre: i.nombre, valor: i.valor })),
@@ -714,7 +707,7 @@ $('btnEnviar').addEventListener('click', async () => {
         nombre,
         telefono: tel.replace(/\D/g, ''),
         ciudad,
-        direccion: dir || (solo ? 'Por confirmar' : ''),
+        direccion: dir,
         vivienda,
         apto,
         porteria,
@@ -725,9 +718,9 @@ $('btnEnviar').addEventListener('click', async () => {
     });
     clearTimeout(timer);
     registrado = r.ok;
-    if (r.status === 409) { // se acabó una unidad mientras decidías: nada se registra
+    if (r.status === 409 || r.status === 400) { // se acabó una unidad o cambió un precio: nada se registra
       const d = await r.json().catch(() => ({}));
-      conflicto = d.error || 'Se agotó una unidad de tu maleta.';
+      if (r.status === 409 || d.precio) conflicto = d.error || 'Se agotó una unidad de tu maleta.';
     }
   } catch (e) { registrado = false; }
 
@@ -763,24 +756,8 @@ $('btnEnviar').addEventListener('click', async () => {
   const cierre = esCE ? 'Confirmo mi pedido contraentrega ✅' : 'Adjunto mi comprobante de pago 👇';
   const lineaRastreo = `🔎 Sigue tu pedido: revtile.com.co/rastreo?id=${id}`;
 
-  const lineasAp = apartados.map((a) => `▪ ${a.c}× ${a.nombre} (apartado, sin pago hoy)`);
   let lineas;
-  if (solo) {
-    $('coOk').hidden = false;
-    $('coOk').textContent = registrado
-      ? `Apartado ${id} registrado. Se abre WhatsApp para confirmarlo; no pagas nada hoy.`
-      : 'No pudimos registrarlo en línea, pero con el mensaje de WhatsApp queda apartado.';
-    lineas = [
-      `🦎 *APARTADO REVTILE ${id}* (preventa, sin pago hoy)`,
-      '',
-      ...lineasAp,
-      lineaRastreo.replace('Sigue tu pedido', 'Sigue tu apartado'),
-      `👤 ${nombre}`,
-      `📱 ${tel}`,
-      '',
-      'Quiero que me avisen el precio cuando lleguen ✅',
-    ];
-  } else if (registrado) {
+  if (registrado) {
     $('coOk').hidden = false;
     $('coOk').textContent = esCE
       ? `Pedido ${id} registrado. Confírmalo en WhatsApp y pagas al recibir.`
@@ -789,7 +766,6 @@ $('btnEnviar').addEventListener('click', async () => {
       `🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`,
       '',
       ...items.map((i) => `▪ ${i.c}× ${i.corto}`),
-      ...lineasAp,
       ...(descuento ? [`▪ Cupón ${state.cupon.codigo}: −${fmt(descuento)}`] : []),
       lineaTotal,
       lineaEntrega,
@@ -802,7 +778,6 @@ $('btnEnviar').addEventListener('click', async () => {
   } else {
     lineas = [`🦎 *PEDIDO REVTILE ${id}*${esCE ? ' (contraentrega)' : ''}`, ''];
     items.forEach((i) => lineas.push(`▪ ${i.c}× ${i.nombre} — ${fmt(i.valor)}`));
-    lineasAp.forEach((l) => lineas.push(l));
     if (combo) lineas.push(`▪ Combo Gymbro (${pares} par${pares > 1 ? 'es' : ''}): −${fmt(combo)}`);
     if (descuento) lineas.push(`▪ Cupón ${state.cupon.codigo}: −${fmt(descuento)}`);
     lineas.push(
@@ -825,7 +800,7 @@ $('btnEnviar').addEventListener('click', async () => {
 
   render(); // el botón vuelve a su texto según la maleta
 
-  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { tarros, total, registrado, metodo: esCE ? 'contraentrega' : 'anticipado' });
+  if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { unidades, total, registrado, metodo: esCE ? 'contraentrega' : 'anticipado' });
 
   abrirWhatsApp('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lineas.join('\n')));
   cerrarPedido();

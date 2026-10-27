@@ -1,8 +1,8 @@
 /* La maleta: el carrito de REVTILE.
    Un solo estado (localStorage) que comparten todas las páginas: lo que se añade en una ficha
    aparece en el menú y en el pedido. Los datos de los productos vienen de js/catalogo.js, que
-   genera tools/build-preventa.mjs desde productos.json; el stock de preventa se pide en vivo a
-   /api/stock (unidades de la tanda menos lo ya apartado).
+   genera tools/build-suplementos.mjs desde productos.json; el stock de los suplementos se pide en vivo a
+   /api/stock (unidades que hay menos las ya vendidas).
 
    API pública: window.Maleta
      items() cant(k) restante(k) add(k, origen) remove(k) vaciar() on(fn) contar()
@@ -265,7 +265,7 @@
       el.className = 'mal-it';
       el.dataset.id = it.id;
       el.innerHTML =
-        '<div class="mal-it__top"><span class="mal-mono">' + it.cat + '</span>' + (it.pre ? '<span class="mal-tag">Preventa</span>' : '') + '</div>' +
+        '<div class="mal-it__top"><span class="mal-mono">' + it.cat + '</span>' + (it.antes && it.antes > it.precio ? '<span class="mal-tag">−' + Math.round((1 - it.precio / it.antes) * 100) + ' %</span>' : '') + '</div>' +
         '<div class="mal-it__foto"><img alt="' + it.marca + ' ' + it.nombre + '"></div>' +
         '<p class="mal-mono mal-it__marca">' + it.marca + '</p>' +
         '<h3 class="mal-it__nom">' + it.nombre + '</h3><p class="mal-it__tam">' + it.tam + '</p>' +
@@ -292,15 +292,14 @@
     $$('.mal-sab__b', el).forEach(function (b) { var on = b.dataset.v === v.id; b.classList.toggle('is-on', on); b.setAttribute('aria-checked', String(on)); });
     var im = $('.mal-it__foto img', el);
     if (im.dataset.k !== v.k) { im.src = v.img; im.dataset.k = v.k; }
-    $('[data-cup]', el).innerHTML = it.pre ? cuposHtml(v.k) : '';
+    $('[data-cup]', el).innerHTML = it.lim ? cuposHtml(v.k) : '';
     var pr = precio(it), pe = $('[data-precio]', el);
-    pe.className = 'mal-it__precio' + (pr == null ? ' x' : '');
-    pe.textContent = pr == null ? 'Sin pago hoy' : cop(pr);
+    pe.innerHTML = cop(pr) + (it.antes && it.antes > pr ? ' <s>' + cop(it.antes) + '</s>' : '');
     var nombre = it.nombre + (v.sabor ? ' ' + v.sabor : '');
     var ctl = $('[data-ctl]', el);
     if (q === 0) {
       ctl.innerHTML = r > 0
-        ? '<button type="button" class="mal-add" data-maleta-add="' + v.k + '" aria-label="' + (it.pre ? 'Apartar ' : 'Añadir ') + nombre + '">' + ICO_MAS + '</button>'
+        ? '<button type="button" class="mal-add" data-maleta-add="' + v.k + '" aria-label="' + 'Añadir ' + nombre + '">' + ICO_MAS + '</button>'
         : '<span class="mal-mono mal-agot">Agotado</span>';
     } else {
       ctl.innerHTML = '<div class="mal-stp"><button type="button" data-maleta-menos="' + v.k + '" aria-label="Quitar uno">' + ICO_MENOS + '</button><output>' + q + '</output><button type="button" data-maleta-add="' + v.k + '" aria-label="Añadir otro"' + (r <= 0 ? ' disabled' : '') + '>' + ICO_MAS + '</button></div>';
@@ -321,7 +320,7 @@
     var origen = sel ? $(sel) : null;
     if (!origen) { var card = b.closest('.product, .mal-it, .pp-hero__inner'); origen = card && $('img', card); }
     if (!add(k, origen)) { toast('No quedan más unidades de este producto'); return; }
-    if (!document.body.classList.contains('co')) toast(porK[k].it.pre ? 'Apartado en tu maleta' : 'Añadido a la maleta', true);
+    if (!document.body.classList.contains('co')) toast('Añadido a la maleta', true);
   });
 
   function iniciar() {

@@ -152,10 +152,8 @@
     "tabla_nutricional": "pendiente de las etiquetas reales de cada presentación"
   },
   "_nota_resenas": "Reseñas: SOLO frases reales de chats de clientes. Campos: quien (nombre corto o 'Cliente en <ciudad>'), ciudad, nota (1-5), texto, fecha (AAAA-MM-DD). Tras editar: node tools/build-fichas.mjs",
-  "preventa": {
-    "_nota": "Suplementos en preventa. Cada producto genera su ficha con `node tools/build-preventa.mjs`. El stock de cada variante es el número REAL de unidades de la primera tanda: al apartar una, réstala aquí y vuelve a ejecutar la herramienta. `precio: null` mantiene el precio fuera de la página y del JSON-LD; al poner un número, aparece la oferta con disponibilidad PreOrder.",
-    "tanda": "Primera tanda",
-    "promesa": "Apartar es gratis: no pagas nada hoy. Cuando llegan te escribimos por WhatsApp con el precio definitivo y decides si la compras.",
+  "suplementos": {
+    "_nota": "Suplementos disponibles. Cada producto genera su ficha con `node tools/build-suplementos.mjs`. precio y precio_antes (el tachado) salen de aquí y se copian al servidor, al navegador, a las fichas y al JSON-LD. El stock de cada variante es el número REAL de unidades que tienes: cuando vendas, el servidor lo descuenta solo (pedidos no cancelados); si repones, súbelo aquí y vuelve a ejecutar la herramienta. En las preguntas frecuentes, {precio} y {antes} se rellenan solos.",
     "productos": [
       {
         "sku": "wgs",
@@ -166,10 +164,10 @@
         "marca": "Optimum Nutrition",
         "nombre": "Gold Standard 100% Whey",
         "formato": "2 lb · 907 g",
-        "estado": "preventa",
-        "precio": null,
-        "titulo": "Whey Gold Standard 100% Optimum Nutrition 2 lb en preventa — REVTILE",
-        "meta": "Optimum Nutrition Gold Standard 100% Whey 2 lb (907 g) en preventa en Colombia: 24 g de proteína por scoop, sabores Double Rich Chocolate y Extreme Milk Chocolate. Apártala sin pagar. Envío gratis a toda Colombia.",
+        "precio": 250000,
+        "precio_antes": 300000,
+        "titulo": "Whey Gold Standard 100% Optimum Nutrition 2 lb en Colombia — REVTILE",
+        "meta": "Optimum Nutrition Gold Standard 100% Whey 2 lb (907 g) original en Colombia: 24 g de proteína por scoop, sabores Double Rich Chocolate y Extreme Milk Chocolate. Sellada de fábrica. Envío gratis a toda Colombia.",
         "gancho": "24 g de proteína por scoop. La whey insignia de Optimum Nutrition.",
         "resumen": "La proteína insignia de Optimum Nutrition: 24 g de proteína y 5,5 g de BCAA por scoop según la etiqueta, con aislado de suero como fuente principal.",
         "descripcion": "Proteína de suero de leche en polvo Optimum Nutrition Gold Standard 100% Whey, envase de 2 lb (907 g). Aporta 24 g de proteína y 5,5 g de BCAA por scoop según la etiqueta; el aislado de proteína de suero es la fuente principal.",
@@ -260,12 +258,12 @@
         },
         "faq": [
           [
-            "¿Qué significa preventa?",
-            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+            "¿Cuánto tarda en llegar?",
+            "Enviamos a toda Colombia con envío gratis, en 2 a 3 días hábiles, con guía de la transportadora y un número RV- para rastrear tu pedido en la página."
           ],
           [
             "¿Cuánto cuesta?",
-            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+            "Cuesta {precio} COP, en lugar de {antes}. El envío es gratis a toda Colombia."
           ],
           [
             "¿Es original?",
@@ -277,7 +275,7 @@
           ],
           [
             "¿Cuántas unidades hay?",
-            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+            "Contamos las unidades de cada presentación y sabor: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
           ]
         ],
         "variantes": [
@@ -429,10 +427,10 @@
         "marca": "Nutrex Research",
         "nombre": "Outrage Ultra Stim Pre-Workout",
         "formato": "30 porciones · 7 g por scoop",
-        "estado": "preventa",
-        "precio": null,
-        "titulo": "Pre-entreno Nutrex Outrage Ultra Stim 30 porciones en preventa — REVTILE",
-        "meta": "Nutrex Outrage Ultra Stim Pre-Workout, 30 porciones, en preventa en Colombia: sabores Blue Raspberry y Fruit Punch. Pre-entreno de alta estimulación: lee el aviso antes de apartar. Envío gratis a toda Colombia.",
+        "precio": 120000,
+        "precio_antes": 170000,
+        "titulo": "Pre-entreno Nutrex Outrage Ultra Stim 30 porciones en Colombia — REVTILE",
+        "meta": "Nutrex Outrage Ultra Stim Pre-Workout original, 30 porciones, en Colombia: sabores Blue Raspberry y Fruit Punch. Pre-entreno de alta estimulación: lee el aviso antes de comprar. Envío gratis a toda Colombia.",
         "gancho": "Pre-entreno ultra estimulante. Su etiqueta avisa que es más fuerte que otros.",
         "resumen": "Un pre-entreno de alta estimulación de Nutrex Research: mezcla de beta-alanina, citrulina, creatina, cafeína, tirosina y extractos. El fabricante advierte que puede ser más fuerte que otros pre-entrenos que hayas probado.",
         "descripcion": "Pre-entreno en polvo Nutrex Research Outrage Ultra Stim, 30 porciones de 7 g. Su mezcla Ultra-Stim de 4,5 g incluye beta-alanina, L-citrulina, monohidrato de creatina, cafeína anhidra, p-sinefrina, L-tirosina, yohimbe y rauwolscina, sin declarar la cantidad de cada ingrediente.",
@@ -514,7 +512,7 @@
         },
         "aviso": {
           "tipo": "estimulante",
-          "titulo": "Léelo antes de apartar: es un pre-entreno ultra estimulante",
+          "titulo": "Léelo antes de comprarlo: es un pre-entreno ultra estimulante",
           "items": [
             "La etiqueta advierte que puede ser más fuerte que otros pre-entrenos: nunca más de un scoop y una sola porción cada 24 horas.",
             "Su mezcla incluye cafeína anhidra, yohimbe, rauwolscina y p-sinefrina. La etiqueta no declara la cantidad de cada uno.",
@@ -526,12 +524,12 @@
         },
         "faq": [
           [
-            "¿Qué significa preventa?",
-            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+            "¿Cuánto tarda en llegar?",
+            "Enviamos a toda Colombia con envío gratis, en 2 a 3 días hábiles, con guía de la transportadora y un número RV- para rastrear tu pedido en la página."
           ],
           [
             "¿Cuánto cuesta?",
-            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+            "Cuesta {precio} COP, en lugar de {antes}. El envío es gratis a toda Colombia."
           ],
           [
             "¿Es original?",
@@ -551,7 +549,7 @@
           ],
           [
             "¿Cuántas unidades hay?",
-            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+            "Contamos las unidades de cada presentación y sabor: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
           ]
         ],
         "variantes": [
@@ -677,10 +675,10 @@
         "marca": "Rule 1",
         "nombre": "BCAA 2:1:1",
         "formato": "30 porciones · 8,5 g por scoop",
-        "estado": "preventa",
-        "precio": null,
-        "titulo": "BCAA Rule 1 2:1:1 30 porciones en preventa — REVTILE",
-        "meta": "Rule 1 BCAA 2:1:1, 30 porciones, en preventa en Colombia: 5 g de BCAA por scoop con solo 25 calorías, sabores Blue Raspberry y Fruit Punch. Apártalos sin pagar. Envío gratis a toda Colombia.",
+        "precio": 120000,
+        "precio_antes": 150000,
+        "titulo": "BCAA Rule 1 2:1:1 30 porciones en Colombia — REVTILE",
+        "meta": "Rule 1 BCAA 2:1:1 original, 30 porciones, en Colombia: 5 g de BCAA por scoop con solo 25 calorías, sabores Blue Raspberry y Fruit Punch. Sellados de fábrica. Envío gratis a toda Colombia.",
         "gancho": "5 g de BCAA en proporción 2:1:1, con solo 25 calorías por scoop.",
         "resumen": "Aminoácidos de cadena ramificada de Rule One Proteins: 2,5 g de leucina, 1,25 g de isoleucina y 1,25 g de valina por scoop, en proporción 2:1:1.",
         "descripcion": "BCAA en polvo Rule 1 (Rule One Proteins), 30 porciones de 8,5 g. Cada scoop aporta 5 g de aminoácidos de cadena ramificada en proporción 2:1:1: 2,5 g de L-leucina, 1,25 g de L-isoleucina y 1,25 g de L-valina, con 25 calorías.",
@@ -776,12 +774,12 @@
         },
         "faq": [
           [
-            "¿Qué significa preventa?",
-            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+            "¿Cuánto tarda en llegar?",
+            "Enviamos a toda Colombia con envío gratis, en 2 a 3 días hábiles, con guía de la transportadora y un número RV- para rastrear tu pedido en la página."
           ],
           [
             "¿Cuánto cuesta?",
-            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+            "Cuesta {precio} COP, en lugar de {antes}. El envío es gratis a toda Colombia."
           ],
           [
             "¿Es original?",
@@ -797,7 +795,7 @@
           ],
           [
             "¿Cuántas unidades hay?",
-            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+            "Contamos las unidades de cada presentación y sabor: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
           ]
         ],
         "variantes": [
@@ -896,10 +894,10 @@
         "marca": "AllMax Nutrition",
         "nombre": "Premium Vitaform",
         "formato": "60 tabletas · 30 días",
-        "estado": "preventa",
-        "precio": null,
-        "titulo": "Multivitamínico AllMax Vitaform 60 tabletas en preventa — REVTILE",
-        "meta": "AllMax Nutrition Premium Vitaform, multivitamínico y mineral de 2 tabletas al día (60 tabletas, 30 días), en preventa en Colombia. Contiene glucosamina de mariscos: lee el aviso de alérgenos. Apártalo sin pagar.",
+        "precio": 90000,
+        "precio_antes": 120000,
+        "titulo": "Multivitamínico AllMax Vitaform 60 tabletas en Colombia — REVTILE",
+        "meta": "AllMax Nutrition Premium Vitaform original, multivitamínico y mineral de 2 tabletas al día (60 tabletas, 30 días), en Colombia. Contiene glucosamina de mariscos: lee el aviso de alérgenos. Envío gratis a toda Colombia.",
         "gancho": "Multivitamínico de 2 al día con 6 complejos. Fórmula con enfoque masculino.",
         "resumen": "Multivitamínico y mineral de AllMax Nutrition que se toma en 2 tabletas al día, con seis complejos funcionales: vitaminas esenciales, antioxidantes, enfoque mental, apoyo masculino, huesos y articulaciones, y minerales y electrolitos.",
         "descripcion": "Multivitamínico y mineral AllMax Nutrition Premium Vitaform, 60 tabletas (30 días a 2 tabletas por porción). Seis complejos funcionales: Vitaplex, Power, Cogniforce, Virimax (apoyo masculino), Multiflex y Electromax. Contiene glucosamina de origen marisco y condroitina de origen bovino.",
@@ -988,12 +986,12 @@
         },
         "faq": [
           [
-            "¿Qué significa preventa?",
-            "Que la primera tanda todavía no está en nuestras manos: viene en camino. Puedes apartar tu unidad sin pagar nada y te escribimos por WhatsApp apenas llegue, con el precio definitivo."
+            "¿Cuánto tarda en llegar?",
+            "Enviamos a toda Colombia con envío gratis, en 2 a 3 días hábiles, con guía de la transportadora y un número RV- para rastrear tu pedido en la página."
           ],
           [
             "¿Cuánto cuesta?",
-            "El precio definitivo lo confirmamos cuando llegue la tanda. Si apartas una unidad te lo enviamos por WhatsApp y decides si la compras: apartar no te obliga a nada."
+            "Cuesta {precio} COP, en lugar de {antes}. El envío es gratis a toda Colombia."
           ],
           [
             "¿Es original?",
@@ -1005,7 +1003,7 @@
           ],
           [
             "¿Es para mujeres?",
-            "La etiqueta presenta una fórmula con enfoque masculino (complejo Virimax de apoyo masculino). Si buscas un multivitamínico para mujer, escríbenos antes de apartar."
+            "La etiqueta presenta una fórmula con enfoque masculino (complejo Virimax de apoyo masculino). Si buscas un multivitamínico para mujer, escríbenos antes de comprar."
           ],
           [
             "¿Es apta para vegetarianos?",
@@ -1013,7 +1011,7 @@
           ],
           [
             "¿Cuántas unidades hay?",
-            "La primera tanda es pequeña y contamos las unidades de cada presentación: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
+            "Contamos las unidades de cada presentación y sabor: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
           ]
         ],
         "variantes": [

@@ -201,7 +201,7 @@
 }
 
 /* Portada y página índice: la cinta de anuncio y la cuadrícula */
-.nav__links a[href="#preventa"] { color: var(--accent-text); }
+.nav__links a[href="#suplementos"] { color: var(--accent-text); }
 .pre { padding-top: 0; }
 .pre__inner { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
 .pre__cinta {
@@ -288,7 +288,7 @@
 
 /* ── Fila de categorías, bajo el hero ────────────────────────────────
    Dice de una vez que REVTILE vende suplementos, no solo creatina, y qué
-   hay hoy (casilla de tinta) y qué viene en preventa (casilla roja). */
+   hay hoy (casilla de tinta) y qué más hay. */
 .cats { margin-top: 24px; }
 .cats__lista {
   list-style: none;
@@ -351,7 +351,7 @@
   .hero__label .hl-m { display: inline; }
 }
 
-/* la maleta en las fichas de preventa */
+/* la maleta en las fichas de los suplementos */
 .pre-ver {
   align-self: center; font-size: 13.5px; color: var(--ink-2);
   text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2);

@@ -1,6 +1,6 @@
-/* Fichas de preventa: elegir sabor.
+/* Fichas de suplementos: elegir sabor.
    Cambiar de sabor actualiza la galería, la tabla nutricional y a qué producto apunta el botón de
-   la maleta (y si queda stock). Los datos vienen de #preData, que genera tools/build-preventa.mjs;
+   la maleta (y si queda stock). Los datos vienen de #preData, que genera tools/build-suplementos.mjs;
    las unidades que quedan las pinta js/maleta.js en vivo. Sin JavaScript la ficha sigue completa:
    muestra el primer sabor y todas las tablas. */
 (function () {
@@ -53,21 +53,39 @@
     main.alt = v.galeria[0][1];
   }
 
-  /* El botón de la maleta apunta al sabor elegido y dice la verdad sobre el stock */
+  /* Los botones apuntan al sabor elegido y dicen la verdad sobre el stock */
+  var comprar = document.getElementById('preComprar');
   function pintarBoton() {
     var v = variante(actualId), M = window.Maleta;
     $$('[data-maleta-add]').forEach(function (b) { b.setAttribute('data-maleta-add', v.k); });
+    $$('[data-comprar]').forEach(function (b) { b.setAttribute('data-comprar', v.k); });
     if (!M || !cta) return;
     var enMaleta = M.cant(v.k), queda = M.restante(v.k), baseU = queda + enMaleta;
-    var txt = cta.querySelector('[data-cta-txt]');
     var sinStock = baseU <= 0, todoAdentro = !sinStock && queda <= 0;
+    var txt = cta.querySelector('[data-cta-txt]');
     cta.disabled = sinStock || todoAdentro;
-    if (txt) txt.textContent = sinStock ? 'Agotado' : todoAdentro ? 'Ya está en tu maleta' : (enMaleta ? 'Apartar otra unidad' : 'Apartar en mi maleta');
+    if (txt) txt.textContent = sinStock ? 'Agotado' : todoAdentro ? 'Ya está en tu maleta' : (enMaleta ? 'Añadir otra unidad' : 'Añadir a la maleta');
+    if (comprar) {
+      /* si ya está todo adentro, comprar solo lleva al pedido */
+      comprar.disabled = sinStock;
+      var t2 = comprar.querySelector('[data-cta-txt]');
+      if (t2) t2.textContent = sinStock ? 'Agotado' : (enMaleta ? 'Ir a pagar' : 'Comprar ahora');
+    }
     if (agotado) {
       agotado.hidden = !sinStock;
       if (enlaceAgotado) enlaceAgotado.href = v.wa;
     }
   }
+
+  /* «Comprar ahora»: lo mete a la maleta (si aún no está) y va directo al pedido */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-comprar]');
+    var M = window.Maleta;
+    if (!b || b.disabled) return;
+    var k = b.getAttribute('data-comprar');
+    if (M && !M.cant(k) && !M.add(k)) return;
+    location.href = 'pedido.html';
+  });
 
   function ver(id, actualizarUrl) {
     var v = variante(id);
