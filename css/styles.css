@@ -1120,25 +1120,6 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 /* ── 14 · Entregas reales ────────────────────────────────────────── */
 .testis__inner .gallery__item--chat img { aspect-ratio: 3 / 5; object-fit: contain; background: var(--surface-2); }
 
-.social-proof {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s3) var(--s5);
-  padding: var(--s3) 0;
-  border-block: 1px solid var(--line);
-  margin-bottom: var(--s4);
-}
-.social-proof__stat { display: flex; flex-direction: column; gap: 6px; }
-.social-proof__stat b {
-  font-family: 'Barlow', system-ui, sans-serif;
-  font-size: 24px;
-  font-weight: 600;
-  letter-spacing: .012em;
-  font-variant-numeric: tabular-nums;
-}
-.social-proof__stat span { font-size: 13px; color: var(--ink-dim); }
-.social-proof__src { font-size: 12px; color: var(--ink-dim); width: 100%; }
-
 /* ── 15 · Cómo comprar ───────────────────────────────────────────── */
 .steps { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--s3); }
 .step {
@@ -1624,7 +1605,6 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .benefits__grid { grid-template-columns: 1fr; }
   .benefit { padding-right: 0; }
   .gallery__item { flex-basis: 78vw; }
-  .social-proof { gap: var(--s3); }
   .buybar { padding: 10px var(--gutter); gap: 10px; }
   .buybar__text b { white-space: nowrap; font-size: 14px; }
   .buybar__text span { display: none; }
@@ -3187,3 +3167,56 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   border-style: dashed;
 }
 .adm__lista--archivo .adm__pedido .adm__ped-head { background: transparent; }
+/* ── Carga de imágenes ───────────────────────────────────────────────
+   Un fondo que respira mientras llega la foto; si falla, una caja neutra con su descripción. */
+.img-cargando { position: relative; }
+.img-cargando::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(100deg, var(--bg-soft) 30%, rgba(255, 255, 255, .7) 50%, var(--bg-soft) 70%) 0 0 / 220% 100%;
+  animation: img-respira 1.3s linear infinite;
+}
+@keyframes img-respira { to { background-position: -220% 0; } }
+.img-error { position: relative; min-height: 90px; background: var(--bg-soft); }
+.img-error img { opacity: 0; }
+.img-error::before {
+  content: attr(data-alt);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  text-align: center;
+  font: 500 11px/1.4 'DM Mono', ui-monospace, monospace;
+  letter-spacing: .08em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) { .img-cargando::after { animation: none; background: var(--bg-soft); } }
+
+/* ── Portada en el celular: el titular arriba y los frascos debajo, sobre el campo rojo ──
+   (en dos columnas el texto quedaba en 155 px y el botón partido en dos renglones) */
+@media (max-width: 860px) {
+  .hero--solo .hero__inner { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-block: 28px 0; }
+  .hero--solo h1 { font-size: clamp(34px, 10.5vw, 52px); }
+  .hero--solo .hero__sub { max-width: 40ch; }
+  .hero--solo .hero__art--trio { max-width: 440px; margin-inline: auto; padding-bottom: 26px; }
+  html.js .hero__campo, .hero__campo {
+    left: 0; right: 0; width: 100%; top: auto; bottom: 0; height: 52%;
+    transform: none; animation: none; will-change: auto;
+  }
+  .hero--solo .hero__actions .btn { white-space: nowrap; }
+}
+
+/* barra fija en el celular: dos fotos bastan y el precio se lee completo */
+@media (max-width: 640px) {
+  .buybar__thumbs picture:nth-child(n+3) { display: none; }
+  .buybar__text b { font-size: 16px; white-space: nowrap; }
+  .buybar__text span { display: none; }
+  .buybar__info { gap: 10px; }
+  .buybar__btn { padding-inline: 16px; font-size: 13px; }
+}

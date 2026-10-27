@@ -21,30 +21,72 @@ const json = (data, status = 200) =>
 
 const ESTADOS = ['nuevo', 'verificado', 'despachado', 'entregado', 'cancelado'];
 
+/* comparación en tiempo constante (para la llave de respaldo) */
+const iguales = (a, b) => {
+  a = String(a || ''); b = String(b || '');
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+};
+
+const b64u = (t) => {
+  let b = t.replace(/-/g, '+').replace(/_/g, '/');
+  b += '='.repeat((4 - (b.length % 4)) % 4);
+  return Uint8Array.from(atob(b), (c) => c.charCodeAt(0));
+};
+
+/* Verificación REAL del token de Cloudflare Access (firma RS256, audiencia y vencimiento).
+   Se activa definiendo CF_ACCESS_TEAM_DOMAIN (p. ej. miequipo.cloudflareaccess.com) y
+   CF_ACCESS_AUD (el "Application Audience (AUD) tag" de la app de Access). Con eso, aunque
+   alguien se salte Access o falsifique el header o la cookie, no entra. */
+async function correoDeJwtVerificado(env, jwt) {
+  try {
+    const [h, p, sig] = jwt.split('.');
+    const cab = JSON.parse(new TextDecoder().decode(b64u(h)));
+    const carga = JSON.parse(new TextDecoder().decode(b64u(p)));
+    if (cab.alg !== 'RS256') return '';
+    const r = await fetch('https://' + env.CF_ACCESS_TEAM_DOMAIN + '/cdn-cgi/access/certs', { cf: { cacheTtl: 3600, cacheEverything: true } });
+    const jwk = ((await r.json()).keys || []).find((k) => k.kid === cab.kid);
+    if (!jwk) return '';
+    const llave = await crypto.subtle.importKey('jwk', jwk, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
+    const ok = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', llave, b64u(sig), new TextEncoder().encode(h + '.' + p));
+    const aud = [].concat(carga.aud || []);
+    if (!ok || !aud.includes(env.CF_ACCESS_AUD) || !(carga.exp * 1000 > Date.now())) return '';
+    return String(carga.email || '').toLowerCase();
+  } catch (e) { return ''; }
+}
+
 export async function onRequest(context) {
   const { request, env, params } = context;
 
   /* candado doble: correo autenticado por Access, o llave de respaldo.
      El correo puede venir en el header directo o dentro del JWT de Access
      (solo confiamos en él porque Access bloquea esta ruta en el borde). */
-  let correoAccess = (request.headers.get('cf-access-authenticated-user-email') || '').toLowerCase();
-  if (!correoAccess) {
-    const jwt = request.headers.get('cf-access-jwt-assertion')
-      || (request.headers.get('cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1];
-    if (jwt) {
+  const jwtAccess = request.headers.get('cf-access-jwt-assertion')
+    || (request.headers.get('cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1] || '';
+  let correoAccess = '';
+  if (env.CF_ACCESS_TEAM_DOMAIN && env.CF_ACCESS_AUD) {
+    /* modo estricto: solo vale un token firmado por Cloudflare Access */
+    if (jwtAccess) correoAccess = await correoDeJwtVerificado(env, jwtAccess);
+  } else {
+    /* modo compatible (Access bloquea la ruta en el borde y confiamos en lo que reenvía) */
+    correoAccess = (request.headers.get('cf-access-authenticated-user-email') || '').toLowerCase();
+    if (!correoAccess && jwtAccess) {
       try {
-        /* base64url -> base64 CON relleno: sin los '=' finales, atob falla
-           según la longitud del token (por eso el acceso era intermitente) */
-        let b64 = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-        b64 += '='.repeat((4 - (b64.length % 4)) % 4);
-        const payload = JSON.parse(atob(b64));
+        const payload = JSON.parse(new TextDecoder().decode(b64u(jwtAccess.split('.')[1])));
         correoAccess = String(payload.email || '').toLowerCase();
       } catch (e) { /* token ilegible: seguimos sin correo */ }
     }
   }
   const permitidos = (env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
   const porAccess = !!correoAccess && permitidos.length > 0 && permitidos.includes(correoAccess);
-  const porClave = !!env.ADMIN_KEY && request.headers.get('x-admin-key') === env.ADMIN_KEY;
+  const porClave = !!env.ADMIN_KEY && iguales(request.headers.get('x-admin-key'), env.ADMIN_KEY);
+
+  /* las acciones (POST) solo aceptan JSON: un formulario de otro sitio no puede disparar una */
+  if (request.method === 'POST' && !/application\/json/i.test(request.headers.get('content-type') || '')) {
+    return json({ ok: false, error: 'Formato no admitido' }, 415);
+  }
 
   if (!porAccess && !porClave) {
     if (!env.ADMIN_KEY && !permitidos.length) {

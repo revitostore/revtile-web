@@ -69,6 +69,10 @@ async function tokenDeAcceso(sa) {
    El orden de las columnas queda fijo aquí. Si algún día se agrega un
    campo, va AL FINAL: insertarlo en medio desalinea todo lo que ya
    está escrito en la hoja. */
+/* Si un texto del cliente empieza por = + - @ Sheets lo trataría como fórmula (por ejemplo
+   =IMPORTDATA(...) para sacar datos). Se le antepone una comilla para que quede como texto. */
+const seguro = (v) => (typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? "'" + v : v);
+
 function filaDe(p) {
   let items = [];
   try { items = JSON.parse(p.items || '[]'); } catch (_) { items = []; }
@@ -76,22 +80,22 @@ function filaDe(p) {
     p.id,
     p.creado_en,
     p.estado,
-    p.nombre,
+    seguro(p.nombre),
     "'" + p.telefono,          // la comilla evita que Sheets se coma el cero inicial
-    p.ciudad,
-    p.direccion,
-    [p.vivienda, p.apto].filter(Boolean).join(' '),
+    seguro(p.ciudad),
+    seguro(p.direccion),
+    seguro([p.vivienda, p.apto].filter(Boolean).join(' ')),
     p.porteria ? 'Sí' : 'No',
-    items.map((i) => `${i.c}x ${i.nombre}`).join(' + '),
+    seguro(items.map((i) => `${i.c}x ${i.nombre}`).join(' + ')),
     p.subtotal,
     p.combo || 0,
     p.envio || 0,
     p.total,
     p.metodo_pago,
     [p.entrega_dia, p.entrega_hora].filter(Boolean).join(' '),
-    p.direccion_mapa || '',
+    seguro(p.direccion_mapa || ''),
     p.lat && p.lng ? `${p.lat},${p.lng}` : '',
-    p.nota || '',
+    seguro(p.nota || ''),
   ];
 }
 

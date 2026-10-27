@@ -143,23 +143,6 @@
     }
   }
 
-  /* ── Prueba social: números reales o nada ──────────────────────── */
-  var proof = document.getElementById('socialProof');
-  if (proof && 'fetch' in window) {
-    fetch('/api/social')
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) {
-        if (!d || !d.ok || !d.entregados_total) return;   // sin datos, no se muestra
-        var fecha = d.generado_en;
-        $$('[data-social]', proof).forEach(function (el) {
-          var k = el.getAttribute('data-social');
-          el.textContent = k === 'generado_en' ? fecha : Number(d[k] || 0).toLocaleString('es-CO');
-        });
-        proof.hidden = false;
-      })
-      .catch(function () { /* silencio: preferimos no decir nada */ });
-  }
-
   /* ── Flechas de las galerías ──────────────────────────────────────
      Se inyectan aquí y no en el HTML por dos razones: no repetir el
      mismo marcado en nueve páginas, y que sin JavaScript la galería

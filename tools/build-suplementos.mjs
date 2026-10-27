@@ -15,6 +15,7 @@ import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { footer, esc } from './comun.mjs';
+import { generar } from './ia-contenido.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const leer = (p) => readFileSync(join(ROOT, p), 'utf8');
@@ -58,7 +59,15 @@ for (const p of P) for (const v of p.variantes) {
   catalogoServidor[`${p.sku}:${v.id}`] = { stock: v.stock, precio: p.precio, nombre: `${p.marca} ${p.nombre}${v.sabor ? ' · ' + v.sabor : ''}` };
 }
 escribir('js/catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano. */\nwindow.CATALOGO = ${JSON.stringify(catalogoCliente)};\n`);
-escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.\n   Stock base y precio de cada suplemento; lo vendido se descuenta en /api/stock y /api/pedido. */\nexport const SUPLEMENTOS = ${JSON.stringify(catalogoServidor, null, 2)};\n`);
+const catalogoCreatinas = {};
+for (const p of data.productos) catalogoCreatinas[p.sku] = { precio: p.precio, nombre: `${p.marca} ${p.nombre} ${p.gramos} g` };
+escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.
+   El servidor NO confía en los precios que manda el navegador: recalcula cada pedido con esto.
+   SUPLEMENTOS: stock base y precio; lo vendido se descuenta en /api/stock y /api/pedido. */
+export const SUPLEMENTOS = ${JSON.stringify(catalogoServidor, null, 2)};
+export const CREATINAS = ${JSON.stringify(catalogoCreatinas, null, 2)};
+export const COMBO_POR_PAR = ${data.combo.descuento_por_par};
+`);
 const CAT_JS_V = hash('js/catalogo.js');
 
 
@@ -352,7 +361,7 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Todos los suplementos', 'suplementos.html')}
+${nav('← Volver a la tienda', 'index.html#productos')}
 
   <main id="ficha">
 
@@ -595,6 +604,10 @@ ${footer(data)}
 for (const p of P) { escribir(p.pagina, ficha(p)); console.log('  escrita  ' + p.pagina); }
 escribir('suplementos.html', indice()); console.log('  escrita  suplementos.html');
 
+/* ── Contenido para asistentes de IA: guía, llms-full.txt, sección de la portada y datos estructurados ── */
+const ia = generar({ data, P, SITIO, cop, esc, cabecera, nav, faqHtml, footer, jsonLd, ldFaq, ldMigas, abs, escribir, CAT_JS_V, MAL_JS_V });
+console.log('  escrita  guia-suplementos.html y llms-full.txt');
+
 /* ── Portada: tarjetas entre marcadores ───────────────────────────── */
 const INI = '<!-- tienda:tarjetas:inicio -->';
 const FIN = '<!-- tienda:tarjetas:fin -->';
@@ -621,6 +634,8 @@ if (index.includes(INI) && index.includes(FIN)) {
   index = index.replace(/<!-- barra:inicio -->[\s\S]*?<!-- barra:fin -->/, () => `<!-- barra:inicio -->
       ${barra}
       <!-- barra:fin -->`);
+  index = index.replace(/<!-- eleccion:inicio -->[\s\S]*?<!-- eleccion:fin -->/, () => ia.eleccion);
+  index = index.replace(/<!-- ld:tienda:inicio -->[\s\S]*?<!-- ld:tienda:fin -->/, () => ia.ldPortada);
   escribir('index.html', versionar(index));
   console.log('  portada  tarjetas de suplementos al día');
 } else console.log('  AVISO    index.html no tiene los marcadores de suplementos');
@@ -643,12 +658,22 @@ escribir('llms.txt', llms);
 console.log('  llms.txt bloque de suplementos al día');
 
 /* ── sitemap.xml ──────────────────────────────────────────────────── */
-const urlsMapa = [['suplementos.html', '0.8'], ...P.map((p) => [p.pagina, '0.7'])]
+const urlsMapa = [['suplementos.html', '0.8'], ['guia-suplementos.html', '0.8'], ...P.map((p) => [p.pagina, '0.7'])]
   .map(([u, pr]) => `  <url>\n    <loc>${SITIO}${u}</loc>\n    <priority>${pr}</priority>\n  </url>`).join('\n');
 let mapa = leer('sitemap.xml');
 const MI = '<!-- suplementos:inicio -->', MF = '<!-- suplementos:fin -->';
 if (mapa.includes(MI)) mapa = mapa.replace(new RegExp(`${MI}[\\s\\S]*?${MF}`), `${MI}\n${urlsMapa}\n  ${MF}`);
 else mapa = mapa.replace('</urlset>', `  ${MI}\n${urlsMapa}\n  ${MF}\n</urlset>`);
+/* fecha de modificación en cada URL, y fuera las páginas privadas */
+const hoy = new Date().toISOString().slice(0, 10);
+mapa = mapa.split('</url>').map((bloque) => {
+  if (!bloque.includes('<loc>')) return bloque;
+  if (/\/(rastreo|pedido|gestion)(\.html)?<\/loc>/.test(bloque)) return '';
+  let b = bloque;
+  if (b.includes('<lastmod>')) b = b.slice(0, b.indexOf('<lastmod>')).trimEnd() + b.slice(b.indexOf('</lastmod>') + 10);
+  return b.replace('</loc>', `</loc>
+    <lastmod>${hoy}</lastmod>`);
+}).map((b, i, a) => (b === '' && i < a.length - 1 ? null : b)).filter((b) => b !== null).join('</url>');
 escribir('sitemap.xml', mapa);
 console.log('  sitemap  URLs de suplementos al día');
 
@@ -661,6 +686,14 @@ for (const f of ['index.html', 'terminos.html', 'guia-creatina-original.html', '
   if (nuevo !== html) escribir(f, nuevo);
 }
 console.log('  pies de página al día');
+
+/* ── El script de carga de imágenes va en todas las páginas públicas ── */
+for (const f of readdirSync(ROOT).filter((x) => x.endsWith('.html') && x !== 'gestion.html')) {
+  const html = leer(f);
+  if (html.includes('js/imagenes.js')) continue;
+  const i = html.lastIndexOf('</body>');
+  if (i > 0) escribir(f, html.slice(0, i) + '  <script src="js/imagenes.js?v=1" defer></script>\n' + html.slice(i));
+}
 
 /* ── Versiones para el cache: cada script y hoja de estilos lleva la huella de su contenido.
    (styles.css usa un número porque lo leen los demás generadores; se sube a mano al cambiarlo.) */

@@ -11,6 +11,14 @@ const sha256hex = async (texto) => {
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
 };
 
+/* comparación en tiempo constante: no filtra cuántos caracteres del checksum acertó un atacante */
+const iguales = (a, b) => {
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+};
+
 export async function onRequestPost({ request, env }) {
   if (!env.WOMPI_EVENTS) return new Response('sin configurar', { status: 503 });
 
@@ -26,7 +34,7 @@ export async function onRequestPost({ request, env }) {
   const valorDe = (ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), cuerpo.data);
   const concatenado = firma.properties.map((p) => String(valorDe(p))).join('');
   const esperado = await sha256hex(concatenado + cuerpo.timestamp + env.WOMPI_EVENTS);
-  if (esperado.toLowerCase() !== String(firma.checksum || '').toLowerCase()) {
+  if (!iguales(esperado.toLowerCase(), String(firma.checksum || '').toLowerCase())) {
     return new Response('checksum inválido', { status: 403 });
   }
 
@@ -35,6 +43,11 @@ export async function onRequestPost({ request, env }) {
     const m = tx.reference.match(/^(RV-[A-Z0-9]{4,8})/);
     if (m) {
       try {
+        /* el pedido solo se verifica si lo pagado es exactamente su total (en centavos, COP) */
+        const ped = await env.DB.prepare('SELECT total FROM pedidos WHERE id = ?').bind(m[1]).first();
+        if (!ped || Number(tx.amount_in_cents) !== Math.round(Number(ped.total)) * 100 || (tx.currency && tx.currency !== 'COP')) {
+          return new Response('monto no coincide', { status: 200 }); // 200 para que Wompi no reintente; queda sin verificar
+        }
         await env.DB.prepare(
           `UPDATE pedidos
              SET estado = CASE WHEN estado = 'nuevo' THEN 'verificado' ELSE estado END,

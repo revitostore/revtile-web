@@ -201,7 +201,7 @@ function ficha(p) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="${p.imagen}" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=80">
+  <link rel="stylesheet" href="css/styles.css?v=83">
   <link rel="stylesheet" href="css/maleta.css?v=${huella('css/maleta.css')}">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>

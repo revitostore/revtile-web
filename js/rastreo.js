@@ -106,6 +106,7 @@ function pintar(p) {
     $('rasGuia').hidden = true;
   }
 
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   /* productos (sin datos personales) */
   /* el pedido en grande, con la foto de cada tarro */
   const imgDe = (nombre) => {
@@ -118,7 +119,7 @@ function pintar(p) {
     return 'assets/on.png';
   };
   $('rasItems').innerHTML = '<p class="ras__items-titulo">Tu pedido</p>' + (p.items || [])
-    .map((i) => `<div class="ras__item"><img src="${imgDe(i.nombre)}" alt="" width="56" height="56" loading="lazy"><span><b>${i.c}×</b> ${i.nombre}${i.pre ? ' <em style="font:500 9.5px DM Mono,monospace;letter-spacing:.12em;text-transform:uppercase;font-style:normal;background:#14140F;color:#fff;padding:2px 5px;margin-left:6px;vertical-align:1px">apartado</em>' : ''}</span></div>`)
+    .map((i) => `<div class="ras__item"><img src="${imgDe(i.nombre)}" alt="" width="56" height="56" loading="lazy"><span><b>${esc(i.c)}×</b> ${esc(i.nombre)}${i.pre ? ' <em style="font:500 9.5px DM Mono,monospace;letter-spacing:.12em;text-transform:uppercase;font-style:normal;background:#14140F;color:#fff;padding:2px 5px;margin-left:6px;vertical-align:1px">apartado</em>' : ''}</span></div>`)
     .join('') + `<p class="ras__total">${esAp ? 'Sin pago hoy' : 'Total: <b>$' + Number(p.total).toLocaleString('es-CO') + '</b>' + (p.metodo_pago === 'contraentrega' ? ' (pagas al recibir)' : '')}</p>`;
 
   $('rasWa').href = 'https://wa.me/573214569600?text=' + encodeURIComponent(`Hola Revtile 🦎, pregunta sobre mi pedido ${p.id}`);

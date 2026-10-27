@@ -1,37 +1,39 @@
-# Buscadores tradicionales
-User-agent: *
-Allow: /
+# REVTILE: tienda de suplementos deportivos originales en Colombia.
+# Buscadores y asistentes de IA son bienvenidos: pueden leer todo el sitio publico.
+# Solo se excluyen las zonas privadas (panel, API y documentacion interna).
+# Resumen del sitio para modelos de lenguaje: /llms.txt  y  /llms-full.txt
 
-# Rastreadores de asistentes de IA: bienvenidos
+User-agent: *
+User-agent: Googlebot
+User-agent: Bingbot
 User-agent: GPTBot
-Allow: /
-
 User-agent: OAI-SearchBot
-Allow: /
-
 User-agent: ChatGPT-User
-Allow: /
-
 User-agent: ClaudeBot
-Allow: /
-
+User-agent: Claude-SearchBot
 User-agent: Claude-User
-Allow: /
-
+User-agent: anthropic-ai
 User-agent: PerplexityBot
-Allow: /
-
+User-agent: Perplexity-User
 User-agent: Google-Extended
-Allow: /
-
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: Amazonbot
 User-agent: meta-externalagent
+User-agent: DuckAssistBot
+User-agent: CCBot
+User-agent: cohere-ai
 Allow: /
-
-Sitemap: https://revtile.com.co/sitemap.xml
-
-# Zonas privadas y documentacion interna
-User-agent: *
 Disallow: /gestion.html
+Disallow: /gestion
 Disallow: /api/
 Disallow: /db/
+Disallow: /tools/
+Disallow: /pedido.html
+Disallow: /pedido
+Disallow: /rastreo.html
+Disallow: /rastreo
 Disallow: /SETUP-CLOUDFLARE.md
+Disallow: /SETUP-GOOGLE-SHEETS.md
+
+Sitemap: https://revtile.com.co/sitemap.xml

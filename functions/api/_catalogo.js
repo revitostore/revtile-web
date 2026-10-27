@@ -1,5 +1,6 @@
 /* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.
-   Stock base y precio de cada suplemento; lo vendido se descuenta en /api/stock y /api/pedido. */
+   El servidor NO confía en los precios que manda el navegador: recalcula cada pedido con esto.
+   SUPLEMENTOS: stock base y precio; lo vendido se descuenta en /api/stock y /api/pedido. */
 export const SUPLEMENTOS = {
   "wgs:dobles": {
     "stock": 2,
@@ -37,3 +38,18 @@ export const SUPLEMENTOS = {
     "nombre": "AllMax Nutrition Premium Vitaform"
   }
 };
+export const CREATINAS = {
+  "on": {
+    "precio": 120000,
+    "nombre": "Optimum Nutrition Micronized Creatine Powder 300 g"
+  },
+  "mt": {
+    "precio": 140000,
+    "nombre": "MuscleTech Platinum Creatine Monohydrate 400 g"
+  },
+  "on120": {
+    "precio": 170000,
+    "nombre": "Optimum Nutrition Micronized Creatine Powder 600 g"
+  }
+};
+export const COMBO_POR_PAR = 10000;

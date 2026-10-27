@@ -136,6 +136,20 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
   else for (const p of [...data.productos, ...pv]) if (!m[1].includes(cop(p.precio))) errores.push(`La pregunta de precios de index.html no menciona ${cop(p.precio)} (${p.sku})`);
 }
 
+/* 7c · contenido para IAs: la guía y llms-full.txt traen todos los precios vigentes y la portada declara la tienda */
+{
+  const guia = read('guia-suplementos.html');
+  const full = read('llms-full.txt');
+  for (const p of [...data.productos, ...pv]) {
+    if (!guia.includes(cop(p.precio))) errores.push(`guia-suplementos.html no menciona ${cop(p.precio)} (${p.sku})`);
+    if (!full.includes(cop(p.precio))) errores.push(`llms-full.txt no menciona ${cop(p.precio)} (${p.sku})`);
+  }
+  if (!portada.includes('"@type": "OnlineStore"') || !portada.includes('hasOfferCatalog')) errores.push('index.html perdió los datos estructurados de la tienda');
+  if (!portada.includes('guia-suplementos.html')) errores.push('index.html no enlaza la guía de suplementos');
+  if (!mapa.includes('guia-suplementos.html')) errores.push('sitemap.xml no incluye guia-suplementos.html');
+  if (!llms.includes('llms-full.txt')) errores.push('llms.txt no apunta a llms-full.txt');
+}
+
 /* 8 · nunca se muestran cantidades de stock (ni 'Quedan N' en las páginas ni unidades en llms.txt)
 for (const f of [...readdirSync(ROOT).filter((x) => x.endsWith('.html')), 'llms.txt'])
   if (/Quedan\s*<?b?>?\s*\d|Unidades disponibles|unidades contadas|Contadas/.test(read(f))) errores.push(`${f} muestra cantidades de stock`);

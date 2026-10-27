@@ -305,3 +305,58 @@
 .pre-agotado { font-size: 14px; color: var(--ink-2); text-align: center; }
 .pre-agotado[hidden] { display: none; }
 .pre-agotado a { color: var(--accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── «Elige por objetivo» (portada) y guía de elección ─────────────── */
+.eleccion { padding-block: var(--s5); }
+.eleccion__lista { list-style: none; padding: 0; margin: var(--s3) 0 var(--s3); border-top: 1.5px solid var(--ink); }
+.eleccion__lista a {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+  gap: 6px 18px;
+  align-items: baseline;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+  transition: background .18s;
+}
+.eleccion__lista a:hover { background: var(--bg-soft); }
+.eleccion__obj { font: 700 16px/1.25 'Barlow', system-ui, sans-serif; }
+.eleccion__prod { color: var(--ink-2); font-size: 14.5px; }
+.eleccion__precio { font: 500 12px 'DM Mono', ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); white-space: nowrap; }
+@media (max-width: 640px) {
+  .eleccion__lista a { grid-template-columns: minmax(0, 1fr) auto; }
+  .eleccion__obj { grid-column: 1 / -1; }
+}
+
+.guia__tabla { overflow-x: auto; }
+.guia__tabla .spec th[scope="col"] { text-align: left; font: 500 11px 'DM Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); padding-bottom: 8px; }
+.guia__tabla .spec td, .guia__tabla .spec tbody th { padding: 12px 10px 12px 0; vertical-align: top; text-align: left; font-weight: 400; }
+.guia__tabla .spec tbody th a { font-weight: 700; }
+.guia__tabla s { color: var(--ink-dim); font-size: 12.5px; margin-left: 4px; }
+.guia__costo { display: block; font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+@media (max-width: 640px) { .guia__tabla .spec { font-size: 13.5px; } .guia__tabla .spec td:nth-child(2) { min-width: 120px; } }
+.guia__lista { display: grid; gap: var(--s3); margin-top: var(--s3); }
+.guia__obj { padding-bottom: var(--s3); border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+.guia__obj h3 { font: 700 20px/1.2 'Barlow', system-ui, sans-serif; }
+.guia__nota { color: var(--ink-2); font-size: 14.5px; }
+
+/* En el celular nada de texto por debajo de 11 px: las etiquetas de las tarjetas y del pie se leen bien */
+@media (max-width: 640px) {
+  .product__brand, .product__flag, .footer__legal .k { font-size: 11px; }
+  .pre-chip { font-size: 12.5px; padding: 7px 10px; }
+}
+
+/* cuatro datos en el celular: dos por fila (tres + uno dejaba uno huérfano) */
+@media (max-width: 640px) { .pp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.guia__cab { display: flex; flex-direction: column; gap: var(--s2); }
+/* la tabla comparativa en el celular: cada producto es una tarjeta apilada, sin desplazamiento lateral */
+@media (max-width: 640px) {
+  .guia__tabla { overflow: visible; }
+  .guia__tabla .spec, .guia__tabla .spec tbody, .guia__tabla .spec tr, .guia__tabla .spec th, .guia__tabla .spec td { display: block; width: 100%; }
+  .guia__tabla .spec thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .guia__tabla .spec tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .guia__tabla .spec tbody th, .guia__tabla .spec td { padding: 0; }
+  .guia__tabla .spec td { margin-top: 4px; color: var(--ink-2); }
+  .guia__tabla .spec td:nth-child(2) { min-width: 0; }
+  .guia__tabla .spec td:last-child { color: var(--ink); }
+}

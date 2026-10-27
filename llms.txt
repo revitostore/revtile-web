@@ -15,12 +15,16 @@ Estado: disponibles para comprar, con envío gratis a toda Colombia. Todos los p
 - [Rule 1 BCAA 2:1:1, 30 porciones, 8,5 g por scoop](https://revtile.com.co/bcaa-rule-1.html): $120.000 COP (antes $150.000). 5 g de BCAA en proporción 2:1:1, con solo 25 calorías por scoop. Sabores: Blue Raspberry, Fruit Punch. Antes de usarlo.
 - [AllMax Nutrition Premium Vitaform, 60 tabletas, 30 días](https://revtile.com.co/multivitaminico-allmax-vitaform.html): $90.000 COP (antes $120.000). Multivitamínico de 2 al día con 6 complejos. Fórmula con enfoque masculino. Importante si tienes alergias o dieta especial.
 
+## Informacion completa
+- [llms-full.txt](https://revtile.com.co/llms-full.txt): descripcion completa de la tienda, politicas, precios y advertencias de cada producto en texto plano
+
 ## Paginas clave
-- [Tienda](https://revtile.com.co/): catalogo, garantia de originalidad con fotos y videos reales, calculadora de duracion, preguntas frecuentes
+- [Tienda](https://revtile.com.co/): catalogo con precios, garantia de originalidad con fotos y videos reales, preguntas frecuentes
 - [Hacer pedido](https://revtile.com.co/pedido.html): checkout con pago anticipado Bre-B y registro de pedido
 - [Terminos, envios y privacidad](https://revtile.com.co/terminos.html)
 
 ## Guias educativas
+- [Que suplemento elegir](https://revtile.com.co/guia-suplementos.html): comparativa de todos los suplementos con precio y costo por porcion, y recomendacion segun el objetivo
 - [Como saber si tu creatina es original](https://revtile.com.co/guia-creatina-original.html): 7 senales con fotos reales de sellos, lotes, codigo QR y prueba de disolucion
 - [Creatina para principiantes](https://revtile.com.co/guia-creatina-principiantes.html): que es, dosis de 5 g diarios, que esperar y mitos comunes
 - [ON vs MuscleTech](https://revtile.com.co/on-vs-muscletech.html): comparativa de precio por servicio, tamanos y verificacion

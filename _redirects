@@ -5,6 +5,16 @@
 /README.md               /404.html   404
 /SUBIR-A-LA-WEB.bat      /404.html   404
 /tools/*                 /404.html   404
+/_to_delete/*            /404.html   404
+/node_modules/*          /404.html   404
+/_pf.py                  /404.html   404
+/_pn.py                  /404.html   404
+/.claude/*               /404.html   404
+/productos.json          /404.html   404
+/package.json            /404.html   404
+/package-lock.json       /404.html   404
+/.gitignore              /404.html   404
+/.gitattributes          /404.html   404
 
 # La preventa terminó: los suplementos ya se venden. Conservamos los enlaces viejos.
 /preventa.html           /suplementos.html   301

@@ -87,3 +87,21 @@ que nunca se paga sigue reservando su unidad hasta que lo canceles.
 tachado) o el `stock` de cada variante en `productos.json` (clave `suplementos`) y ejecuta
 `node tools/build-suplementos.mjs` y luego `node tools/check.mjs`. Eso regenera las fichas, la portada,
 `llms.txt`, el sitemap y el catálogo del servidor. Después sube los cambios y Cloudflare los publica.
+
+---
+
+## Seguridad (recomendado)
+
+El servidor ya recalcula cada pedido (precios, combo, cupón y total salen del catálogo, no del
+navegador), escapa todo lo que escribe el cliente, limita 5 pedidos por teléfono cada 10 minutos y solo
+acepta JSON. Para cerrar lo que no se puede hacer desde el código:
+
+1. **Panel con el token de Access verificado.** Pages → Settings → Variables and Secrets:
+   `CF_ACCESS_TEAM_DOMAIN` = tu dominio de Zero Trust (p. ej. `miequipo.cloudflareaccess.com`) y
+   `CF_ACCESS_AUD` = el *Application Audience (AUD) Tag* de la app de Access de `/gestion.html` y
+   `/api/admin/*`. Luego **Retry deployment**. Con eso el panel solo acepta un token firmado por
+   Cloudflare; aunque alguien falsifique el header o la cookie, no entra.
+2. **Límite de peticiones.** Cloudflare → Security → WAF → Rate limiting: una regla para `/api/*`
+   (por ejemplo 30 peticiones por minuto por IP). Frena a quien pruebe cupones o pedidos en masa.
+3. **Bot Fight Mode** (Security → Bots) activado.
+4. **Wompi:** el webhook solo verifica un pedido si el monto pagado es exactamente su total.

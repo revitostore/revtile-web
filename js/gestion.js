@@ -98,6 +98,10 @@ function statsDe(lista) {
   $('stMes').textContent = fmt(lista.filter((p) => esMes(p.creado_en) && p.estado !== 'cancelado').reduce((a, p) => a + (p.total || 0), 0));
 }
 
+/* Todo lo que escribe el cliente (nombre, dirección, notas…) se escapa antes de pintarlo:
+   nunca debe poder convertirse en HTML dentro del panel. */
+const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
 function tarjetaPedido(p) {
   const [icono] = ESTADO_INFO[p.estado] || ESTADO_INFO.nuevo;
   let items = [];
@@ -109,28 +113,28 @@ function tarjetaPedido(p) {
   el.className = 'adm__pedido adm__pedido--' + p.estado;
   el.innerHTML = `
     <div class="adm__ped-head">
-      <b>${icono} ${p.id}</b>
+      <b>${icono} ${esc(p.id)}</b>
       <span>${fecha}</span>
       <b class="adm__ped-total">${fmt(p.total)}</b>
     </div>
     <div class="adm__ped-body">
-      <p>👤 <b>${p.nombre}</b> · <a href="https://wa.me/57${p.telefono}" target="_blank" rel="noopener">📱 ${p.telefono}</a></p>
-      <p>📍 ${p.direccion}, ${p.ciudad}${p.apto ? ' · ' + p.apto : ''}${p.porteria ? ' · deja en portería ✓' : ''}</p>
-      <p>🛒 ${items.map((i) => `${i.c}× ${i.nombre}${i.pre ? ' (apartado)' : ''}`).join(' + ') || p.items}</p>
+      <p>👤 <b>${esc(p.nombre)}</b> · <a href="https://wa.me/57${esc(String(p.telefono).replace(/\D/g, ''))}" target="_blank" rel="noopener">📱 ${esc(p.telefono)}</a></p>
+      <p>📍 ${esc(p.direccion)}, ${esc(p.ciudad)}${p.apto ? ' · ' + esc(p.apto) : ''}${p.porteria ? ' · deja en portería ✓' : ''}</p>
+      <p>🛒 ${items.map((i) => `${esc(i.c)}× ${esc(i.nombre)}`).join(' + ') || esc(p.items)}</p>
       <p>${p.metodo_pago === 'apartado' ? '📌 APARTADO de preventa — sin pago; avisar el precio cuando llegue' : p.metodo_pago === 'contraentrega' ? '🚚 CONTRAENTREGA — cobrar ' + fmt(p.total) + ' al entregar' : p.metodo_pago === 'wompi' ? '💳 Pagado en línea (Wompi)' : '⚡ Anticipado Bre-B'}
-         ${p.entrega_dia ? ` · 📦 <b>${p.entrega_dia} ${p.entrega_hora || ''}</b>` : ''}
-         ${p.cupon ? ` · 🎟 ${p.cupon} (−${fmt(p.descuento)})` : ''}</p>
-      ${p.direccion_mapa ? `<p>🗺 Según el mapa: ${p.direccion_mapa}${p.lat ? ` · <a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">ver punto</a>` : ''}</p>` : ''}
+         ${p.entrega_dia ? ` · 📦 <b>${esc(p.entrega_dia)} ${esc(p.entrega_hora)}</b>` : ''}
+         ${p.cupon ? ` · 🎟 ${esc(p.cupon)} (−${fmt(p.descuento)})` : ''}</p>
+      ${p.direccion_mapa ? `<p>🗺 Según el mapa: ${esc(p.direccion_mapa)}${p.lat ? ` · <a href="https://www.google.com/maps?q=${Number(p.lat)},${Number(p.lng)}" target="_blank" rel="noopener">ver punto</a>` : ''}</p>` : ''}
     </div>
     <div class="adm__ped-ctrl">
       <select data-campo="estado">
         ${Object.entries(ESTADO_INFO).map(([v, [ic, tx]]) => `<option value="${v}" ${p.estado === v ? 'selected' : ''}>${ic} ${tx}</option>`).join('')}
       </select>
-      <input type="text" data-campo="guia" placeholder="N° de guía" value="${p.guia || ''}">
+      <input type="text" data-campo="guia" placeholder="N° de guía" value="${esc(p.guia)}">
       <select data-campo="transportadora">
         ${TRANSPORTADORAS.map((t) => `<option value="${t}" ${(p.transportadora || '') === t ? 'selected' : ''}>${t || 'Transportadora…'}</option>`).join('')}
       </select>
-      <input type="text" data-campo="nota" placeholder="Nota interna" value="${p.nota || ''}">
+      <input type="text" data-campo="nota" placeholder="Nota interna" value="${esc(p.nota)}">
       <button type="button" class="btn btn--primary adm__guardar">Guardar</button>
       <button type="button" class="adm__avisar">📲 Avisar</button>
       <button type="button" class="adm__archivar">${verArchivo ? 'Devolver a la lista' : 'Archivar'}</button>
@@ -243,7 +247,7 @@ async function cargar(conLoader = true) {
     }
     pedidos.forEach((p) => cont.appendChild(tarjetaPedido(p)));
   } catch (e) {
-    cont.innerHTML = '<p class="adm__vacio">Error cargando pedidos: ' + e.message + '</p>';
+    cont.innerHTML = '<p class="adm__vacio">Error cargando pedidos: ' + esc(e.message) + '</p>';
   }
 }
 
@@ -274,11 +278,11 @@ async function cargarCupones() {
     $('admCupones').innerHTML = data.cupones.length
       ? data.cupones.map((c) => `
           <div class="adm__cupon ${c.activo ? '' : 'is-off'}">
-            <b>${c.codigo}</b>
+            <b>${esc(c.codigo)}</b>
             <span>${c.tipo === 'porcentaje' ? c.valor + '%' : fmt(c.valor)} de descuento</span>
             <span>${c.usos}${c.max_usos ? '/' + c.max_usos : ''} usos</span>
             ${c.min_total ? `<span>mín. ${fmt(c.min_total)}</span>` : ''}
-            <button type="button" class="adm__cupon-toggle" data-codigo="${c.codigo}" data-activo="${c.activo}">${c.activo ? 'Desactivar' : 'Activar'}</button>
+            <button type="button" class="adm__cupon-toggle" data-codigo="${esc(c.codigo)}" data-activo="${c.activo}">${c.activo ? 'Desactivar' : 'Activar'}</button>
           </div>`).join('')
       : '<p class="adm__vacio">Sin cupones aún — crea el primero arriba.</p>';
 
