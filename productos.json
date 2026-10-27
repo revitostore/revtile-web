@@ -434,30 +434,30 @@
         "rol": "Pre-entreno",
         "marca": "Nutrex Research",
         "nombre": "Outrage Ultra Stim Pre-Workout",
-        "formato": "30 porciones · 15,9 g por medida",
+        "formato": "30 porciones · 7 g por scoop",
         "precio": 120000,
         "precio_antes": 170000,
         "titulo": "Pre-entreno Nutrex Outrage Ultra Stim 30 porciones en Colombia — REVTILE",
         "meta": "Nutrex Outrage Ultra Stim Pre-Workout original, 30 porciones, en Colombia: sabores Blue Raspberry y Fruit Punch. Pre-entreno de alta estimulación: lee el aviso antes de comprar. Envío gratis a toda Colombia.",
-        "gancho": "Pre-entreno con 355 mg de cafeína por porción, beta-alanina, taurina y vitaminas. Sin azúcar.",
-        "resumen": "Un pre-entreno de alta estimulación: cada porción trae 355 mg de cafeína, 4,18 g de beta-alanina, 4,18 g de L-arginina, 1,5 g de taurina, L-tirosina y vitaminas B y C. Sin calorías, sin azúcar y sin grasa.",
-        "descripcion": "Pre-entreno en polvo Nutrex Outrage Ultra Stim en envase de 30 porciones. Según su tabla nutricional, cada porción (1 medida dosificadora de 15,9 g, disuelta en 250 ml de agua fría) aporta 355,28 mg de cafeína (300 mg de cafeína anhidra y 55,28 mg de Coffea arabica), 4.180 mg de beta-alanina, 4.180 mg de L-arginina, 1.500 mg de taurina, 500 mg de L-metionina, 200 mg de L-tirosina y vitaminas C, B3, B6, B9 y B12, con 0 kcal.",
+        "gancho": "Pre-entreno ultra estimulante: el fabricante lo anuncia con 400 mg de cafeína y la advertencia «no para principiantes».",
+        "resumen": "Un pre-entreno de alta estimulación de Nutrex Research: mezcla de beta-alanina, citrulina, creatina, cafeína, tirosina y extractos. El fabricante lo anuncia con 400 mg de cafeína y advierte que puede ser más fuerte que otros pre-entrenos; no es para principiantes.",
+        "descripcion": "Pre-entreno en polvo Nutrex Research Outrage Ultra Stim, 30 porciones de 7 g. Su mezcla Ultra-Stim de 4,5 g incluye beta-alanina, L-citrulina, monohidrato de creatina, cafeína anhidra, p-sinefrina, L-tirosina, yohimbe y rauwolscina, sin declarar la cantidad de cada ingrediente.",
         "destacados": [
           [
             "30",
             "Porciones"
           ],
           [
-            "15,9 g",
-            "Por medida"
+            "7 g",
+            "Por scoop"
           ],
           [
-            "355 mg",
-            "Cafeína por porción"
+            "400 mg",
+            "Cafeína por scoop, según el fabricante"
           ],
           [
-            "4,18 g",
-            "Beta-alanina"
+            "4,5 g",
+            "Mezcla Ultra-Stim"
           ]
         ],
         "datos": [
@@ -479,54 +479,55 @@
           ],
           [
             "Porción",
-            "1 medida dosificadora (15,9 g) en 250 ml de agua fría"
+            "1 scoop (7 g)"
           ],
           [
             "Sabores",
             "Blue Raspberry · Fruit Punch"
           ],
           [
-            "Cafeína por porción",
-            "355,28 mg (300 mg anhidra + 55,28 mg de Coffea arabica)"
+            "Mezcla",
+            "Outrage Ultra-Stim Preworkout Blend, 4,5 g (las cantidades individuales no se declaran)"
           ],
           [
-            "Energía, azúcares y grasa",
-            "0 por porción, según la tabla"
+            "Origen",
+            "Hecho en EE. UU., según el gráfico de la etiqueta"
           ],
           [
-            "Endulzante",
-            "Sucralosa"
+            "Sellos que muestra el fabricante",
+            "Prácticas GMP certificadas, probado por terceros y sin colorantes artificiales (etiqueta del sabor Fruit Punch)"
           ]
         ],
         "uso": {
           "titulo": "Con cabeza",
           "pasos": [
             [
-              "1 medida",
-              "Disuelta en 250 ml de agua fría",
-              "La tabla indica una medida dosificadora (15,9 g) o 3 cucharaditas de té, disueltas en 250 ml de agua fría."
+              "1 scoop",
+              "Con 240 ml de agua fría",
+              "El fabricante indica agitar bien el envase y mezclar un scoop al ras con 8 oz (unos 240 ml) de agua fría."
             ],
             [
-              "355 mg",
-              "De cafeína en cada porción",
-              "Es bastante más que una taza de café. Si no estás acostumbrado, empieza con media porción."
+              "30–45",
+              "Minutos antes de entrenar",
+              "Tómalo entre 30 y 45 minutos antes de tu entrenamiento y toma bastante agua durante el día."
             ],
             [
-              "Con tiempo",
-              "Evita tomarlo tarde",
-              "No lo tomes cerca de la hora de dormir ni lo combines con otros productos con cafeína."
+              "1×",
+              "Una vez cada 24 horas",
+              "No excedas un scoop ni tomes más de una porción en 24 horas."
             ]
           ]
         },
         "aviso": {
           "tipo": "estimulante",
-          "titulo": "Léelo antes de comprarlo: tiene 355 mg de cafeína por porción",
+          "titulo": "Léelo antes de comprarlo: es un pre-entreno ultra estimulante, no para principiantes",
           "items": [
-            "Cada porción aporta 355,28 mg de cafeína (300 mg de cafeína anhidra y 55,28 mg de Coffea arabica), según la tabla nutricional.",
-            "Contiene beta-alanina (4.180 mg por porción), que puede causar hormigueo temporal en la piel.",
+            "El fabricante lo anuncia con 400 mg de cafeína y la advertencia «Extreme stimulant, not for the weak». La etiqueta avisa que puede ser más fuerte que otros pre-entrenos: nunca más de un scoop y una sola porción cada 24 horas.",
+            "Su mezcla incluye cafeína anhidra, yohimbe, rauwolscina y p-sinefrina. La etiqueta no declara la cantidad de cada ingrediente; la cifra de 400 mg de cafeína es la que anuncia el fabricante.",
             "Solo para adultos sanos. No es para menores de 18 años, embarazadas ni mujeres en lactancia. Si tienes hipertensión, problemas del corazón, ansiedad o tomas medicamentos, consulta a tu médico antes.",
             "No lo combines con otros productos con cafeína y evita tomarlo cerca de la hora de dormir.",
-            "Si nunca has usado un pre-entreno, empieza con media porción para ver cómo lo toleras. Si compites en un deporte con control antidopaje, revisa los ingredientes con tu federación."
+            "Contiene monohidrato de creatina dentro de la mezcla, sin declarar la cantidad por separado: tenlo en cuenta si ya tomas creatina.",
+            "Si nunca has usado un pre-entreno, empieza con medio scoop para ver cómo lo toleras. Si compites en un deporte con control antidopaje, revisa los ingredientes con tu federación."
           ]
         },
         "faq": [
@@ -540,19 +541,15 @@
           ],
           [
             "¿Es original?",
-            "Sí. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes esos datos con el fabricante. Las fotos de esta ficha son de referencia."
+            "Sí. Antes del despacho fotografiamos el sello, el número de lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes esos datos con el fabricante. Las fotos de esta ficha son de referencia del fabricante."
           ],
           [
             "¿Qué tan fuerte es?",
-            "Es un pre-entreno de alta estimulación: cada porción trae 355,28 mg de cafeína (300 mg anhidra y 55,28 mg de Coffea arabica) y 4.180 mg de beta-alanina, según la tabla. Si es tu primer pre-entreno, empieza con media porción."
+            "Es un pre-entreno de alta estimulación: el fabricante lo anuncia con 400 mg de cafeína y la advertencia «no para principiantes», y la etiqueta lo llama «Ultra-Stim». Incluye cafeína anhidra, yohimbe, rauwolscina y p-sinefrina sin declarar la cantidad de cada uno, así que si es tu primer pre-entreno empieza con medio scoop."
           ],
           [
-            "¿Tiene azúcar o calorías?",
-            "No: según la tabla tiene 0 kcal, 0 g de azúcares y 0 g de grasa por porción. Se endulza con sucralosa."
-          ],
-          [
-            "¿Por qué me hormiguea la piel?",
-            "La beta-alanina (4.180 mg por porción) puede causar un hormigueo temporal e inofensivo en la piel. Si te incomoda, toma menos."
+            "¿Puedo tomarlo si ya tomo creatina?",
+            "Contiene monohidrato de creatina dentro de su mezcla, sin declarar la cantidad por separado. Si ya tomas creatina aparte, estás sumando más; ante la duda, consulta a un profesional."
           ],
           [
             "¿Para quién no es?",
@@ -573,8 +570,8 @@
                 "Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry"
               ],
               [
-                "assets/tablas/tabla-outrage",
-                "Tabla nutricional original del pre-entreno: cafeína, beta-alanina, aminoácidos y vitaminas por porción"
+                "assets/pre/outrage-blue-tabla",
+                "Parte posterior del envase con la tabla Supplement Facts y las instrucciones del sabor Blue Raspberry"
               ],
               [
                 "assets/real/preentreno-frente",
@@ -590,7 +587,7 @@
               ]
             ],
             "nutricional": {
-              "foto": "assets/tablas/tabla-outrage"
+              "foto": "assets/pre/outrage-blue-tabla"
             }
           },
           {
@@ -606,8 +603,8 @@
                 "Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Fruit Punch"
               ],
               [
-                "assets/tablas/tabla-outrage",
-                "Tabla nutricional original del pre-entreno: cafeína, beta-alanina, aminoácidos y vitaminas por porción"
+                "assets/pre/outrage-fruit-tabla",
+                "Tabla Supplement Facts del sabor Fruit Punch con los sellos del fabricante"
               ],
               [
                 "assets/pre/outrage-fruit-extra",
@@ -615,161 +612,73 @@
               ]
             ],
             "nutricional": {
-              "foto": "assets/tablas/tabla-outrage"
+              "foto": "assets/pre/outrage-fruit-tabla"
             }
           }
         ],
         "nutricional": {
-          "porcion": "1 medida dosificadora (15,9 g) o 3 cucharaditas de té, disueltas en 250 ml de agua fría",
+          "porcion": "1 scoop (7 g)",
           "porciones": "30",
-          "columnas": [
-            "Por porción",
-            "Por 100 g",
-            "% DDR (*)"
-          ],
-          "grupos": [
+          "grupo": "Outrage Ultra-Stim Preworkout Blend · 4,5 g",
+          "filas": [
             [
-              "Información nutricional",
-              [
-                [
-                  "Energía (kcal)",
-                  "0",
-                  "0",
-                  "—"
-                ],
-                [
-                  "Proteínas (g)",
-                  "0",
-                  "0",
-                  "—"
-                ],
-                [
-                  "Grasa total (g)",
-                  "0",
-                  "0",
-                  "—"
-                ],
-                [
-                  "Hidratos de carbono disponibles (g)",
-                  "0",
-                  "0",
-                  "—"
-                ],
-                [
-                  "Azúcares totales (g)",
-                  "0",
-                  "0",
-                  "—"
-                ],
-                [
-                  "Sodio (mg)",
-                  "0",
-                  "0",
-                  "—"
-                ]
-              ]
+              "Beta-alanina",
+              "No declarada",
+              "—"
             ],
             [
-              "Vitaminas",
-              [
-                [
-                  "Vitamina C (mg)",
-                  "220",
-                  "1.384",
-                  "367 %"
-                ],
-                [
-                  "Niacina (mg)",
-                  "18",
-                  "113,2",
-                  "100 %"
-                ],
-                [
-                  "Vitamina B6 (mg)",
-                  "2,0",
-                  "12,6",
-                  "100 %"
-                ],
-                [
-                  "Folato (mcg)",
-                  "340",
-                  "2.138",
-                  "170 %"
-                ],
-                [
-                  "Vitamina B12 (mcg)",
-                  "12",
-                  "75,5",
-                  "1200 %"
-                ]
-              ]
+              "L-citrulina",
+              "No declarada",
+              "—"
             ],
             [
-              "Aminoácidos",
-              [
-                [
-                  "Beta-alanina (mg)",
-                  "4.180",
-                  "26.289",
-                  "†"
-                ],
-                [
-                  "L-arginina (mg)",
-                  "4.180",
-                  "26.289",
-                  "†"
-                ],
-                [
-                  "L-metionina (mg)",
-                  "500",
-                  "3.145",
-                  "†"
-                ],
-                [
-                  "Taurina (mg)",
-                  "1.500",
-                  "9.434",
-                  "†"
-                ],
-                [
-                  "L-tirosina (mg)",
-                  "200",
-                  "1.258",
-                  "†"
-                ]
-              ]
+              "Monohidrato de creatina",
+              "No declarada",
+              "—"
             ],
             [
-              "Cafeína",
-              [
-                [
-                  "Cafeína total (mg)",
-                  "355,28",
-                  "2.235",
-                  "†"
-                ],
-                [
-                  "Cafeína anhidra (mg)",
-                  "300",
-                  "1.887",
-                  "†"
-                ],
-                [
-                  "Cafeína de Coffea arabica (mg)",
-                  "55,28",
-                  "348",
-                  "†"
-                ]
-              ]
+              "Cafeína anhidra",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Mezcla de extractos de Citrus aurantium (fruto), 25 % p-sinefrina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "L-tirosina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Extracto de skullcap (raíz)",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Extracto de dendrobium (tallo y hoja)",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Extracto de Rauwolfia vomitoria (raíz), 90 % rauwolscina",
+              "No declarada",
+              "—"
+            ],
+            [
+              "Yohimbe HCl",
+              "No declarada",
+              "—"
             ]
           ],
-          "etiqueta_otros": "Ingredientes",
-          "otros": "Beta-alanina, L-arginina, taurina (**), L-metionina, cafeína anhidra, vitamina C (ácido ascórbico), L-tirosina, Coffea arabica (aporta cafeína), vitamina B3 (niacina), vitamina B6 (clorhidrato de piridoxina), ácido fólico, vitamina B12 (cianocobalamina), ácido cítrico, saborizantes naturales, sucralosa (***), ácido málico, dióxido de silicio.",
+          "etiqueta_otros": "Otros ingredientes",
+          "otros": "Sabores naturales y artificiales, ácido málico, dióxido de silicio, sucralosa, ácido cítrico, acesulfame de potasio.",
           "notas": [
-            "(*) Porcentaje en relación a la Dosis Diaria Recomendada (DDR). † No cuenta con DDR.",
-            "Cada porción es 1 medida dosificadora (15,9 g) o 3 cucharaditas de té disueltas en 250 ml de agua fría."
+            "Es una mezcla patentada: el fabricante declara el total de la mezcla (4,5 g por scoop) pero no la cantidad de cada ingrediente. Valor diario no establecido.",
+            "Uso recomendado por el fabricante: un scoop al ras con 8 oz de agua fría, 30 a 45 minutos antes de entrenar, una sola porción en 24 horas."
           ],
-          "fuente": "Transcrito de la tabla nutricional original del producto."
+          "fuente": "Transcrito del envase de Nutrex Research Outrage Ultra Stim, 30 porciones."
         },
         "corto": "Pre-entreno Outrage"
       },
