@@ -181,7 +181,7 @@ function tarjetaPedido(p) {
     lineas.push(
       `🔎 Síguelo en vivo aquí: revtile.com.co/rastreo?id=${p.id}`,
       '',
-      'Te comparto las fotos del sello y el lote de tu tarro 👇'
+      'Te comparto las fotos del sello y el lote de tu producto 👇'
     );
     window.open('https://wa.me/57' + p.telefono + '?text=' + encodeURIComponent(lineas.join('\n')), '_blank');
   });

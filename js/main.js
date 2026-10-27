@@ -143,52 +143,6 @@
     }
   }
 
-  /* ── Calculadora: cuánto dura y cuánto cuesta el día ───────────── */
-  var calc = $('.calc__box');
-  if (calc) {
-    var fmt = function (n) { return '$' + n.toLocaleString('es-CO'); };
-    var st = { gramos: 300, precio: 120000, dosis: 5 };
-
-    var render = function () {
-      var dias = Math.floor(st.gramos / st.dosis);
-      var meses = (dias / 30).toFixed(1).replace('.0', '');
-      $('#calcDias').textContent = dias;
-      $('#calcMeses').textContent = meses;
-      $('#calcDia').textContent = fmt(Math.round(st.precio / dias));
-      $('#calcNote').innerHTML = 'Tomando <b>' + st.dosis + ' g diarios</b>, este tarro te acompaña <b>' +
-        dias + ' días seguidos</b> por <b>' + fmt(Math.round(st.precio / dias)) + ' al día</b>.';
-    };
-
-    $$('.calc__tab', calc).forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        $$('.calc__tab', calc).forEach(function (t) {
-          t.classList.remove('is-active');
-          t.setAttribute('aria-selected', 'false');
-        });
-        tab.classList.add('is-active');
-        tab.setAttribute('aria-selected', 'true');
-        st.gramos = parseInt(tab.dataset.servGramos, 10);
-        st.precio = parseInt(tab.dataset.precio, 10);
-        render();
-      });
-    });
-
-    $$('.calc__dosebtn', calc).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        $$('.calc__dosebtn', calc).forEach(function (b) {
-          b.classList.remove('is-active');
-          b.setAttribute('aria-pressed', 'false');
-        });
-        btn.classList.add('is-active');
-        btn.setAttribute('aria-pressed', 'true');
-        st.dosis = parseInt(btn.dataset.g, 10);
-        render();
-      });
-    });
-
-    render();
-  }
-
   /* ── Prueba social: números reales o nada ──────────────────────── */
   var proof = document.getElementById('socialProof');
   if (proof && 'fetch' in window) {

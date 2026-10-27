@@ -13,7 +13,7 @@
   color: var(--ink);
   flex: none;
 }
-.nav__bolsa[hidden] { display: none; }
+.nav__bolsa-n[hidden] { display: none; }
 .nav__bolsa svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .nav__bolsa:hover { color: var(--accent-text); }
 .nav__bolsa-n {

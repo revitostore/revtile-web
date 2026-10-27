@@ -205,7 +205,7 @@ h3, h4 {
 .neon { color: var(--accent-text); }
 
 /* ── 04 · Layout ─────────────────────────────────────────────────── */
-.wrap, .products__inner, .calc__inner, .benefits__inner, .trust__inner,
+.wrap, .products__inner, .benefits__inner, .trust__inner,
 .testis__inner, .how__inner, .faq__inner, .aprende__inner, .final__inner,
 .pp-section__inner, .verify__inner {
   width: 100%;
@@ -214,7 +214,7 @@ h3, h4 {
   padding-inline: var(--gutter);
 }
 section { position: relative; }
-.products, .calc, .benefits, .trust, .testis, .how, .faq, .aprende,
+.products, .benefits, .trust, .testis, .how, .faq, .aprende,
 .final, .pp-section, .verify {
   padding-block: var(--section);
 }
@@ -842,43 +842,9 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
   .aprende__lista a { flex-wrap: wrap; gap: 6px 16px; }
   .aprende__lista .aprende__tag { flex-basis: 100%; }
 }
-
-/* ── Creatinas de la semana ──────────────────────────────────────────
-   El empujón social junto al catálogo: un dato pequeño, en chip, que
-   cambia solo cada semana (lo calcula main.js). */
-.ventas-semana {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  margin-top: 16px;
-  font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 12.5px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-}
-.ventas-semana::before {
-  content: '';
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--accent);
-  flex: 0 0 auto;
-  animation: latido-punto 2.2s ease-in-out infinite;
-}
 @keyframes latido-punto {
   0%, 100% { box-shadow: 0 0 0 0 rgba(227, 29, 54, .35); }
   50% { box-shadow: 0 0 0 7px rgba(227, 29, 54, 0); }
-}
-@media (prefers-reduced-motion: reduce) { .ventas-semana::before { animation: none; } }
-.ventas-semana b {
-  font-family: 'Anton', 'Barlow', sans-serif;
-  font-size: 24px;
-  font-weight: 400;
-  letter-spacing: .02em;
-  color: var(--accent-text);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
 }
 
 /* ── Tachado animado ─────────────────────────────────────────────────
@@ -1032,79 +998,6 @@ html.js .hero__campo { animation: campo-entra 900ms cubic-bezier(.16,.84,.28,1) 
 .combo__title { font-size: clamp(20px, 2.6vw, 26px); margin-bottom: 6px; }
 .combo__sub { color: var(--ink-dim); font-size: 14.5px; max-width: 56ch; }
 .combo__btn { flex: none; }
-
-/* ── 10 · Calculadora ────────────────────────────────────────────── */
-.calc__box {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  overflow: hidden;
-}
-.calc__tabs { display: flex; border-bottom: 1px solid var(--line); }
-.calc__tab {
-  flex: 1;
-  padding: 16px 12px;
-  font-family: 'Barlow', system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--ink-dim);
-  border-bottom: 2px solid transparent;
-  transition: color var(--t), border-color var(--t), background var(--t);
-}
-.calc__tab:hover { color: var(--ink); background: var(--surface-2); }
-.calc__tab.is-active { color: var(--ink); border-bottom-color: var(--accent-text); }
-
-.calc__dose {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  padding: var(--s3);
-  border-bottom: 1px solid var(--line);
-}
-.calc__dose > span { font-size: 14px; color: var(--ink-dim); }
-.calc__dose-btns { display: flex; gap: 8px; }
-.calc__dosebtn {
-  min-width: 62px;
-  padding: 9px 14px;
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink-dim);
-  transition: all var(--t);
-}
-.calc__dosebtn.is-active { border-color: var(--accent-text); color: var(--accent-text); background: var(--accent-wash); }
-
-.calc__result {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-}
-.calc__stat {
-  padding: var(--s3);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-right: 1px solid var(--line);
-}
-.calc__stat:last-child { border-right: 0; }
-.calc__stat b {
-  font-family: 'Barlow', system-ui, sans-serif;
-  font-size: clamp(25px, 2.9vw, 31px);
-  font-weight: 600;
-  letter-spacing: .012em;
-  line-height: 1.15;
-  font-variant-numeric: tabular-nums;
-}
-.calc__stat:last-child b { color: var(--accent-text); }
-.calc__stat span { font-size: 12.5px; color: var(--ink-dim); }
-.calc__note {
-  padding: var(--s3);
-  border-top: 1px solid var(--line);
-  font-size: 14px;
-  color: var(--ink-dim);
-}
-.calc__note b { color: var(--ink-2); font-weight: 600; }
 
 /* ── 11 · Datos (antes "beneficios") ─────────────────────────────── */
 .benefits__grid {
@@ -1720,8 +1613,6 @@ html.js .reveal.is-in { opacity: 1; transform: none; }
   .pp-back { font-size: 13px; }
   .combo { flex-direction: column; align-items: flex-start; }
   .combo__btn { width: 100%; }
-  .calc__stat { border-right: 0; border-bottom: 1px solid var(--line); }
-  .calc__stat:last-child { border-bottom: 0; }
   .pp-sticky { display: flex; }
   body.pp-sticky-on { padding-bottom: 76px; }
 }

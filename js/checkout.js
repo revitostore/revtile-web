@@ -10,7 +10,7 @@ const PRODUCTOS = {
    despacho completo. Sin recargos ni excepciones. */
 const ENVIO = 0;
 const ENVIO_LISTA = 20000; // lo que costaría por transportadora: se muestra tachado
-const COMBO_POR_PAR = 10000;         // descuento por cada PAR de tarros (2, 4, 6…)
+const COMBO_POR_PAR = 10000;         // descuento por cada PAR de creatinas (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
 /* el boton de Wompi imita al oficial de la pasarela: fondo negro y su
@@ -221,7 +221,7 @@ function calcular() {
     unidades += a.c;
     items.push({ k: a.k, c: a.c, nombre, corto: d.it.nombre + (d.v.sabor ? ' ' + d.v.sabor : ''), valor: d.it.precio * a.c, valorLista: d.it.antes * a.c });
   }
-  /* el combo Gymbro es de las creatinas: un descuento por cada par de tarros */
+  /* el combo Gymbro es de las creatinas: un descuento por cada par de creatinas */
   const pares = Math.floor(tarros / 2);
   const combo = pares * COMBO_POR_PAR;
   const esBogota = $('fCiudad').value === 'bogota';
@@ -247,7 +247,7 @@ function render() {
 
   $('coCombo').hidden = combo === 0;
   if (combo > 0) {
-    $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de tarros)`;
+    $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de creatinas)`;
   }
 
   /* tarjetas de método */
@@ -326,7 +326,7 @@ try {
     const pos = pin.getLatLng();
     state.lat = pos.lat.toFixed(6);
     state.lng = pos.lng.toFixed(6);
-    $('mapHint').textContent = '📍 Punto de entrega ajustado — irá en tu pedido.';
+    $('mapHint').textContent = 'Punto de entrega ajustado — irá en tu pedido.';
     direccionDelPin(state.lat, state.lng);
   });
   /* Leaflet pinta gris si mide el mapa antes de que el layout termine */
@@ -429,7 +429,7 @@ async function direccionDelPin(lat, lng) {
       ].filter(Boolean);
       state.dirMapa = partes.join(', ');
       $('mapDir').hidden = false;
-      $('mapDir').innerHTML = '🗺 Según el mapa, el pin está en: <b>' + state.dirMapa + '</b> — si no coincide con tu dirección, ajusta el pin.';
+      $('mapDir').innerHTML = 'Según el mapa, el pin está en: <b>' + state.dirMapa + '</b> — si no coincide con tu dirección, ajusta el pin.';
     }
   } catch (e) { /* sin reverse: no pasa nada */ }
 }
@@ -452,10 +452,10 @@ $('btnGeo').addEventListener('click', async () => {
       $('mapHint').textContent = hit.soloCiudad
         ? 'No dimos con la dirección exacta, pero centramos tu ciudad: pon el pin en tu punto — el pedido sirve igual.'
         : hit.aprox
-          ? '📍 Encontramos tu calle — desliza el pin hasta tu puerta.'
+          ? 'Encontramos tu calle — desliza el pin hasta tu puerta.'
           : hit.casa
-            ? '📍 Dirección encontrada — arrastra el pin si hay que afinarlo.'
-            : '📍 Te dejamos muy cerca — arrastra el pin hasta tu puerta exacta.';
+            ? 'Dirección encontrada — arrastra el pin si hay que afinarlo.'
+            : 'Te dejamos muy cerca — arrastra el pin hasta tu puerta exacta.';
       if (!hit.soloCiudad) direccionDelPin(state.lat, state.lng);
     } else {
       $('mapHint').textContent = 'No encontramos esa dirección — acerca el mapa y pon el pin a mano en tu punto (el pedido sirve igual).';
@@ -480,8 +480,8 @@ $('btnGps').addEventListener('click', () => {
       state.lat = latitude.toFixed(6);
       state.lng = longitude.toFixed(6);
       $('mapHint').textContent = accuracy > 120
-        ? '📍 Ubicación aproximada — arrastra el pin hasta tu puerta.'
-        : '📍 Este es tu punto — ajusta el pin si hace falta.';
+        ? 'Ubicación aproximada — arrastra el pin hasta tu puerta.'
+        : 'Este es tu punto — ajusta el pin si hace falta.';
       direccionDelPin(state.lat, state.lng);
       $('btnGps').textContent = 'Usar mi ubicación';
     },
@@ -619,7 +619,7 @@ $('btnEnviar').addEventListener('click', async () => {
   if (!/^3\d{9}$/.test(tel.replace(/\D/g, ''))) return mostrarError('Revisa tu número de WhatsApp: deben ser 10 dígitos empezando por 3.');
   if (!ciudad) return mostrarError('Falta la ciudad (paso 02).');
   if (!dir) return mostrarError('Falta la dirección de entrega (paso 02).');
-  if (programado && !state.hora) return mostrarError('Elige la hora de tu entrega programada (paso 04) ⚡');
+  if (programado && !state.hora) return mostrarError('Elige la hora de tu entrega programada (paso 04)');
 
   guardarPerfil();
 
@@ -642,7 +642,7 @@ $('btnEnviar').addEventListener('click', async () => {
   }
   if (previo) {
     $('coOk').hidden = false;
-    $('coOk').textContent = `✅ Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp.`;
+    $('coOk').textContent = `Este pedido ya estaba registrado como ${previo.id} — te reabrimos WhatsApp.`;
     const txtPrevio = esCE
       ? `🦎 *PEDIDO REVTILE ${previo.id}* (contraentrega)\n\n*Total a pagar al recibir: ${fmt(total)}*\n👤 ${nombre}\n\nConfirmo mi pedido 👇`
       : `🦎 *PEDIDO REVTILE ${previo.id}*\n\n*Total pagado: ${fmt(total)}* (Bre-B ${LLAVE_BREB})\n👤 ${nombre}\n\nAdjunto mi comprobante de pago 👇`;

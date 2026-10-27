@@ -126,7 +126,6 @@
     navEl = document.createElement('a');
     navEl.className = 'nav__bolsa';
     navEl.href = 'pedido.html';
-    navEl.hidden = true;
     navEl.setAttribute('aria-label', 'Mi canasta');
     navEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11.5c0-1.4 1-2.5 2.4-2.5h12.2c1.4 0 2.4 1.1 2.4 2.5v6.2c0 1.4-1 2.3-2.4 2.3H5.9c-1.4 0-2.4-.9-2.4-2.3z"/><path d="M8 9V7.4C8 5.5 9.8 4 12 4s4 1.5 4 3.4V9"/><path d="M3.5 13.5h17"/></svg><span class="nav__bolsa-n">0</span>';
     inner.insertBefore(navEl, $('.nav__cta', inner) || $('.nav__burger', inner) || null);
@@ -134,15 +133,16 @@
   function pintarNav() {
     if (!navEl) return;
     var n = items.length;
-    navEl.hidden = n === 0;
-    $('.nav__bolsa-n', navEl).textContent = n;
+    var num = $('.nav__bolsa-n', navEl);
+    num.hidden = n === 0;
+    num.textContent = n;
     navEl.setAttribute('aria-label', 'Mi canasta: ' + n + (n === 1 ? ' producto' : ' productos'));
   }
 
   /* el frasco vuela de la tarjeta al ícono de la canasta */
   function volar(img) {
     var r = img.getBoundingClientRect();
-    var alt = navEl && !navEl.hidden ? navEl : $('.co__bar');
+    var alt = navEl || $('.co__bar');
     if (!alt || !r.width || !img.animate) return;
     var q = alt.getBoundingClientRect();
     var c = document.createElement('img');
@@ -209,13 +209,13 @@
       return;
     }
 
-    /* filtro de la tienda */
-    var filtro = t.closest('[data-filtro]');
-    if (filtro) {
-      var f = filtro.getAttribute('data-filtro');
-      $$('[data-filtro]').forEach(function (x) { x.classList.toggle('is-on', x === filtro); x.setAttribute('aria-pressed', String(x === filtro)); });
+    /* filtro de la tienda (también desde otros enlaces: data-filtro-ir) */
+    var filtro = t.closest('[data-filtro]'), ir = t.closest('[data-filtro-ir]');
+    if (filtro || ir) {
+      var f = (filtro || ir).getAttribute(filtro ? 'data-filtro' : 'data-filtro-ir');
+      $$('[data-filtro]').forEach(function (x) { var on = x.getAttribute('data-filtro') === f; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', String(on)); });
       $$('.pre-card[data-cat]').forEach(function (c) { c.hidden = f !== 'todo' && c.getAttribute('data-cat') !== f; });
-      return;
+      if (filtro) return;
     }
 
     var b2 = t.closest('[data-maleta-add]');

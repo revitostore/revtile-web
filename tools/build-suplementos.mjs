@@ -10,7 +10,7 @@
    Para sumar un producto: agrégalo en productos.json y ejecuta
      node tools/build-suplementos.mjs   (y después `node tools/check.mjs`) */
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -280,11 +280,10 @@ ${preload ? `  <link rel="preload" as="image" href="${preload}" fetchpriority="h
 ${ld.map((o) => `  <script type="application/ld+json">\n${jsonLd(o)}\n  </script>`).join('\n')}
 </head>`;
 
-const nav = (volver, href, ctaTxt, ctaHref, ctaAttrs = '') => `  <header class="nav" id="nav">
+const nav = (volver, href) => `  <header class="nav" id="nav">
     <div class="nav__inner">
       <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
       <a class="pp-back" href="${href}">${volver}</a>
-      <a class="nav__cta" href="${ctaHref}"${ctaAttrs}>${ctaTxt}</a>
     </div>
   </header>`;
 
@@ -353,7 +352,7 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Todos los suplementos', 'suplementos.html', 'Mi canasta', 'pedido.html')}
+${nav('← Todos los suplementos', 'suplementos.html')}
 
   <main id="ficha">
 
@@ -544,14 +543,13 @@ function indice() {
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Volver a la tienda', 'index.html#productos', 'Mi canasta', 'pedido.html')}
+${nav('← Volver a la tienda', 'index.html#productos')}
 
   <main id="ficha">
 
   <section class="pp-section pre-hub">
     <div class="pp-section__inner pre-hub__grid">
       <div class="pre-hub__txt">
-        <p class="pre-tag">Suplementos</p>
         <h1>Suplementos originales<span class="accent">.</span></h1>
         <p class="section-lead">Proteína, pre-entreno, BCAA y multivitamínico de marcas originales, con descuento y envío gratis a toda Colombia.</p>
       </div>
@@ -578,7 +576,7 @@ ${pasos([
     </div>
   </section>
 
-${faqHtml(HUB_FAQ, 'Preguntas sobre los suplementos', '03')}
+${faqHtml(HUB_FAQ, 'Sobre los suplementos', '03')}
 
   </main>
 
@@ -601,17 +599,31 @@ const INI = '<!-- tienda:tarjetas:inicio -->';
 const FIN = '<!-- tienda:tarjetas:fin -->';
 /* versiones de los archivos compartidos, en las dos páginas que los cargan a mano */
 const versionar = (html) => html
-  .replace(/css\/preventa\.css\?v=\w+/g, `css/suplementos.css?v=${SUP_CSS_V}`)
+  .replace(/css\/suplementos\.css\?v=\w+/g, `css/suplementos.css?v=${SUP_CSS_V}`)
   .replace(/css\/maleta\.css\?v=\w+/g, `css/maleta.css?v=${MAL_CSS_V}`)
   .replace(/js\/catalogo\.js\?v=\w+/g, `js/catalogo.js?v=${CAT_JS_V}`)
-  .replace(/js\/maleta\.js\?v=\w+/g, `js/maleta.js?v=${MAL_JS_V}`)
+  .replace(/js\/maleta\.js\?v=\w+/g, `js/maleta.js?v=${MAL_JS_V}`);
+
+/* Barra fija de la portada: «Desde» el precio más bajo de TODA la tienda y fotos de varias categorías */
+const precios = [...data.productos.map((p) => p.precio), ...P.map((p) => p.precio)];
+const miniaturas = [data.productos[0].imagen.replace(/\.png$/, ''), P[0].variantes[0].imagen, P[1].variantes[0].imagen, P[3].variantes[0].imagen];
+const barra = `<div class="buybar__thumbs">
+        ${miniaturas.map((b) => `<picture><source srcset="${b}.webp" type="image/webp"><img width="1000" height="1000" src="${b}.png" alt="" loading="lazy"></picture>`).join('\n        ')}
+      </div>
+      <div class="buybar__text">
+        <b>Desde ${cop(Math.min(...precios))}</b>
+        <span>Envío gratis a toda Colombia · Sellados</span>
+      </div>`;
 let index = leer('index.html');
 if (index.includes(INI) && index.includes(FIN)) {
   index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), () => `${INI}\n${grillaTienda()}\n      ${FIN}`);
+  index = index.replace(/<!-- barra:inicio -->[\s\S]*?<!-- barra:fin -->/, () => `<!-- barra:inicio -->
+      ${barra}
+      <!-- barra:fin -->`);
   escribir('index.html', versionar(index));
   console.log('  portada  tarjetas de suplementos al día');
 } else console.log('  AVISO    index.html no tiene los marcadores de suplementos');
-escribir('pedido.html', versionar(leer('pedido.html')));
+for (const g of ['pedido.html', 'guia-creatina-original.html', 'guia-creatina-principiantes.html', 'on-vs-muscletech.html']) escribir(g, versionar(leer(g)));
 console.log('  pedido   versiones de la maleta al día');
 
 /* ── llms.txt: bloque de suplementos ──────────────────────────────── */
@@ -640,3 +652,13 @@ escribir('sitemap.xml', mapa);
 console.log('  sitemap  URLs de suplementos al día');
 
 console.log(`\nSuplementos generados: ${P.length} fichas + índice.`);
+
+/* ── Versiones para el cache: cada script y hoja de estilos lleva la huella de su contenido.
+   (styles.css usa un número porque lo leen los demás generadores; se sube a mano al cambiarlo.) */
+for (const f of readdirSync(ROOT).filter((x) => x.endsWith('.html'))) {
+  const html = leer(f);
+  const nuevo = html.replace(/((?:css|js)\/[\w.-]+\.(?:css|js))\?v=\w+/g, (m, ruta) =>
+    ruta === 'css/styles.css' || !existsSync(join(ROOT, ruta)) ? m : `${ruta}?v=${hash(ruta)}`);
+  if (nuevo !== html) escribir(f, nuevo);
+}
+console.log('  versiones de scripts y estilos al día');

@@ -122,11 +122,18 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
     const m = srv.match(new RegExp(`"${p.sku}:${v.id}": \\{[^}]*"precio": (\\d+)`));
     if (!m || Number(m[1]) !== p.precio) errores.push(`El precio del servidor de ${p.sku}:${v.id} no coincide con productos.json (${p.precio}); ejecuta node tools/build-suplementos.mjs`);
   }
-  for (const f of ['index.html', 'pedido.html', ...data.productos.map((p) => p.pagina), ...pv.map((p) => p.pagina), 'suplementos.html']) {
+  for (const f of ['index.html', 'pedido.html', 'guia-creatina-original.html', 'guia-creatina-principiantes.html', 'on-vs-muscletech.html', ...data.productos.map((p) => p.pagina), ...pv.map((p) => p.pagina), 'suplementos.html']) {
     const h = read(f);
     if (!h.includes('js/maleta.js') || !h.includes('js/catalogo.js')) errores.push(`${f} no carga la maleta (js/catalogo.js y js/maleta.js)`);
   }
   if (!read('pedido.html').includes('data-maleta-canasta')) errores.push('pedido.html perdió la lista de la canasta');
+}
+
+/* 7b · la pregunta «qué productos vende y a qué precio» de la portada debe traer todos los precios vigentes */
+{
+  const m = portada.match(/<summary>¿Qué productos vende REVTILE y a qué precio\?<\/summary>\s*<p>([\s\S]*?)<\/p>/);
+  if (!m) errores.push('index.html perdió la pregunta de productos y precios');
+  else for (const p of [...data.productos, ...pv]) if (!m[1].includes(cop(p.precio))) errores.push(`La pregunta de precios de index.html no menciona ${cop(p.precio)} (${p.sku})`);
 }
 
 /* 8 · nunca se muestran cantidades de stock (ni 'Quedan N' en las páginas ni unidades en llms.txt)
