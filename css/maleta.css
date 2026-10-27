@@ -2,32 +2,35 @@
    Ícono en el menú, aviso al añadir y la lista compacta del pedido. Líneas finas,
    tinta y un solo rojo. */
 
-/* ícono en el menú */
+/* ícono en el menú: un botón con borde, claramente tocable */
 .nav__bolsa {
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  margin-right: 6px;
+  width: 48px;
+  height: 48px;
+  margin-right: 8px;
   color: var(--ink);
   flex: none;
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+  border-radius: var(--radius-sm);
+  transition: background .18s, color .18s;
 }
-.nav__bolsa-n[hidden] { display: none; }
-.nav__bolsa svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.nav__bolsa:hover { color: var(--accent-text); }
+.nav__bolsa svg { width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav__bolsa:hover { background: var(--ink); color: #fff; }
 .nav__bolsa-n {
   position: absolute;
-  top: 3px;
-  right: 0;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
+  top: -8px;
+  right: -8px;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
   display: grid;
   place-items: center;
+  border-radius: 11px;
   background: var(--accent);
   color: #fff;
-  font: 500 10.5px/1 'DM Mono', ui-monospace, monospace;
+  font: 600 11.5px/1 'DM Mono', ui-monospace, monospace;
 }
 
 /* aviso breve al añadir */

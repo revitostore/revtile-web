@@ -454,6 +454,7 @@ ${nutricional(p)}
             <tbody>
               <tr><th scope="row">Precio</th><td>${cop(p.precio)} COP (antes ${cop(p.precio_antes)})</td></tr>
               <tr><th scope="row">Verificación</th><td>Fotos del sello y el lote de tu unidad antes del despacho</td></tr>
+              <tr><th scope="row">Combo</th><td>${cop(data.combo.descuento_por_par)} menos por cada par de productos</td></tr>
             </tbody>
           </table>
         </div>
@@ -653,12 +654,21 @@ console.log('  sitemap  URLs de suplementos al día');
 
 console.log(`\nSuplementos generados: ${P.length} fichas + índice.`);
 
+/* ── Un solo pie de página para todas las páginas con pie completo (el de comun.mjs) ── */
+for (const f of ['index.html', 'terminos.html', 'guia-creatina-original.html', 'guia-creatina-principiantes.html', 'on-vs-muscletech.html']) {
+  const html = leer(f);
+  const nuevo = html.replace(/  <footer class="footer">[\s\S]*?<\/footer>/, () => footer(data));
+  if (nuevo !== html) escribir(f, nuevo);
+}
+console.log('  pies de página al día');
+
 /* ── Versiones para el cache: cada script y hoja de estilos lleva la huella de su contenido.
    (styles.css usa un número porque lo leen los demás generadores; se sube a mano al cambiarlo.) */
 for (const f of readdirSync(ROOT).filter((x) => x.endsWith('.html'))) {
   const html = leer(f);
   const nuevo = html.replace(/((?:css|js)\/[\w.-]+\.(?:css|js))\?v=\w+/g, (m, ruta) =>
     ruta === 'css/styles.css' || !existsSync(join(ROOT, ruta)) ? m : `${ruta}?v=${hash(ruta)}`);
-  if (nuevo !== html) escribir(f, nuevo);
+  const conHero = nuevo.replace(/(assets\/hero-linea[\w-]*\.(?:png|webp))(?:\?v=\w+)?/g, (m, ruta) => `${ruta}?v=${hash(ruta)}`);
+  if (conHero !== html) escribir(f, conHero);
 }
 console.log('  versiones de scripts y estilos al día');

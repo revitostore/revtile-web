@@ -10,7 +10,7 @@ const PRODUCTOS = {
    despacho completo. Sin recargos ni excepciones. */
 const ENVIO = 0;
 const ENVIO_LISTA = 20000; // lo que costaría por transportadora: se muestra tachado
-const COMBO_POR_PAR = 10000;         // descuento por cada PAR de creatinas (2, 4, 6…)
+const COMBO_POR_PAR = 10000;         // descuento por cada PAR de productos, de cualquier tipo (2, 4, 6…)
 const LLAVE_BREB = '0092968559';
 const WHATSAPP = '573214569600';
 /* el boton de Wompi imita al oficial de la pasarela: fondo negro y su
@@ -61,7 +61,7 @@ function abrirWhatsApp(url) {
 }
 
 /* --- La canasta manda: lo que hay en ella es el pedido ---
-   Las creatinas llevan el combo y su precio vive aquí arriba (PRODUCTOS); los suplementos
+   Las creatinas tienen su precio aquí arriba (PRODUCTOS); los suplementos
    traen su precio y su stock del catálogo (js/catalogo.js) y entran al mismo pedido. */
 function sincronizarDesdeMaleta() {
   const cant = { on: 0, mt: 0, on120: 0 };
@@ -221,8 +221,8 @@ function calcular() {
     unidades += a.c;
     items.push({ k: a.k, c: a.c, nombre, corto: d.it.nombre + (d.v.sabor ? ' ' + d.v.sabor : ''), valor: d.it.precio * a.c, valorLista: d.it.antes * a.c });
   }
-  /* el combo Gymbro es de las creatinas: un descuento por cada par de creatinas */
-  const pares = Math.floor(tarros / 2);
+  /* combo Gymbro: un descuento por cada par de productos, mezclados como se quiera */
+  const pares = Math.floor(unidades / 2);
   const combo = pares * COMBO_POR_PAR;
   const esBogota = $('fCiudad').value === 'bogota';
   const esCE = state.pago === 'contraentrega';
@@ -247,7 +247,7 @@ function render() {
 
   $('coCombo').hidden = combo === 0;
   if (combo > 0) {
-    $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de creatinas)`;
+    $('coComboTxt').textContent = `Combo Gymbro aplicado: −${fmt(combo)} (${pares} par${pares > 1 ? 'es' : ''} de productos)`;
   }
 
   /* tarjetas de método */

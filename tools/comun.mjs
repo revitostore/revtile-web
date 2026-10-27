@@ -44,10 +44,11 @@ ${(data.suplementos ? data.suplementos.productos : []).map((p) => `        <a hr
         <a href="pedido.html">Hacer mi pedido</a>
       </nav>
       <nav class="footer__col" aria-label="Ayuda">
-        <p class="footer__title">Ayuda</p>
+        <p class="footer__title">Ayuda y guías</p>
         <a href="index.html#faq">Preguntas frecuentes</a>
         <a href="rastreo.html">Rastrear mi pedido</a>
         <a href="guia-creatina-original.html">¿Es original? Guía con fotos</a>
+        <a href="guia-creatina-principiantes.html">Creatina para principiantes</a>
         <a href="on-vs-muscletech.html">ON o MuscleTech</a>
       </nav>
       <div class="footer__col" aria-label="Contacto">
