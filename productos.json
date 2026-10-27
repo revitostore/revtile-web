@@ -294,6 +294,18 @@
               [
                 "assets/pre/wgs-dobles-extra",
                 "Proteína en polvo sabor Double Rich Chocolate junto a un scoop y trozos de chocolate"
+              ],
+              [
+                "assets/real/proteina-frente",
+                "Optimum Nutrition Gold Standard 100% Whey, sabor Double Rich Chocolate: foto real de nuestra unidad"
+              ],
+              [
+                "assets/real/proteina-tapa",
+                "Tapa del envase de Optimum Nutrition Gold Standard 100% Whey: foto real de nuestra unidad"
+              ],
+              [
+                "assets/real/proteina-sello",
+                "Envase de Gold Standard 100% Whey con la tapa abierta y el sello interno intacto: foto real"
               ]
             ],
             "nutricional": {
@@ -563,6 +575,18 @@
               [
                 "assets/tablas/tabla-outrage",
                 "Tabla nutricional original del pre-entreno: cafeína, beta-alanina, aminoácidos y vitaminas por porción"
+              ],
+              [
+                "assets/real/preentreno-frente",
+                "Nutrex Outrage Ultra Stim Pre-Workout, sabor Blue Raspberry: foto real de nuestra unidad"
+              ],
+              [
+                "assets/real/preentreno-sello",
+                "Envase de Nutrex Outrage con la tapa a un lado: foto real de nuestra unidad"
+              ],
+              [
+                "assets/real/preentreno-abierto",
+                "Nutrex Outrage Ultra Stim en la mano, con la tapa abierta: foto real de nuestra unidad"
               ]
             ],
             "nutricional": {
@@ -919,6 +943,22 @@
               [
                 "assets/pre/bcaa-extra",
                 "Panel posterior de Rule 1 BCAA con las indicaciones de uso y la proporción 2:1:1"
+              ],
+              [
+                "assets/real/bcaa-frente",
+                "Rule 1 BCAA 2:1:1, sabor Fruit Punch: foto real de nuestra unidad"
+              ],
+              [
+                "assets/real/bcaa-etiqueta",
+                "Etiqueta posterior del Rule 1 BCAA con las instrucciones y el origen: foto real"
+              ],
+              [
+                "assets/real/bcaa-etiqueta-2",
+                "Etiqueta posterior del Rule 1 BCAA con los datos del producto: foto real"
+              ],
+              [
+                "assets/real/bcaa-tapa",
+                "Tapa del envase de Rule 1 BCAA: foto real de nuestra unidad"
               ]
             ]
           }
@@ -1105,6 +1145,14 @@
               [
                 "assets/pre/vitaform-tabla",
                 "Tabla Medicinal Ingredients de AllMax Vitaform con los seis complejos: Vitaplex, Power, Cogniforce, Virimax, Multiflex y Electromax"
+              ],
+              [
+                "assets/real/vitaform-frente",
+                "AllMax Premium Vitaform, frasco de 60 tabletas: foto real de nuestra unidad"
+              ],
+              [
+                "assets/real/vitaform-sello",
+                "Frasco de AllMax Premium Vitaform con la tapa a un lado y el sello interno: foto real"
               ]
             ]
           }

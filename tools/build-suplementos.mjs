@@ -376,7 +376,7 @@ ${nav('← Volver a la tienda', 'index.html#productos')}
         <div class="pp-gal__thumbs" tabindex="0" role="group" aria-label="Fotos del producto">
 ${g0.map(([src, alt], i) => `          <button class="pp-gal__thumb${i === 0 ? ' is-active' : ''}" data-src="${src}.webp" data-alt="${esc(alt)}" aria-label="Ver foto ${i + 1}: ${esc(alt)}"><img src="${src}.webp" alt="" loading="lazy"></button>`).join('\n')}
         </div>
-        <p class="pre-ref">Fotos de referencia del fabricante. Antes del despacho te enviamos las fotos del sello y el lote de la unidad que recibes.</p>
+        <p class="pre-ref">Fotos de referencia del fabricante y de nuestras unidades. Antes del despacho te enviamos las fotos del sello y el lote de la que recibes.</p>
       </div>
 
       <div class="pp-buy">
