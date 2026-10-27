@@ -21,34 +21,14 @@
 }
 .pre-tag::before { content: ''; width: 7px; height: 7px; background: var(--accent); flex: none; }
 
-/* Unidades que quedan: una casilla roja por unidad */
-.pre-cupos {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 11.5px;
+/* Agotado: único aviso de disponibilidad (nunca se muestran cantidades) */
+.pre-agot {
+  display: inline-block;
+  font: 500 11px 'DM Mono', ui-monospace, monospace;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--ink-dim);
 }
-.pre-cupos__sq { display: inline-flex; gap: 4px; }
-.pre-cupos__sq i { display: block; width: 13px; height: 13px; background: var(--accent); }
-.pre-cupos__txt b { color: var(--ink); font-size: 1.2em; font-weight: 700; }
-.pre-cupos.is-agotado i {
-  position: relative;
-  background: transparent;
-  border: 1.5px solid var(--line-2);
-}
-.pre-cupos.is-agotado i::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(to top right, transparent 46%, var(--line-2) 47% 53%, transparent 54%);
-}
-.pre-cupos-box .pre-cupos { font-size: 12.5px; }
-.pre-cupos-box .pre-cupos__sq i { width: 18px; height: 18px; }
-.pre-cupos-box .pre-cupos__sq { gap: 5px; }
 
 /* El precio aún no existe: se dice así, como renglón de libreta */
 .pre-precio {
@@ -106,8 +86,6 @@
 .pre-sabor:hover { border-color: var(--ink-dim); }
 .pre-sabor.is-active { border-color: var(--accent-text); background: var(--accent-wash); }
 .pre-sabor__nom { font-family: 'Barlow', system-ui, sans-serif; font-size: 15px; font-weight: 700; line-height: 1.2; }
-.pre-sabor .pre-cupos { font-size: 11px; gap: 9px; }
-.pre-sabor .pre-cupos__sq i { width: 13px; height: 13px; }
 
 /* La advertencia que no se esconde: va junto al botón y se explica abajo */
 .pre-alerta {
@@ -251,7 +229,6 @@
 .pre__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .pre-card .product__info { gap: 8px; }
 .pre-card__gancho { font-size: 13.5px; line-height: 1.45; color: var(--ink-2); }
-.pre-card .pre-cupos { margin-top: auto; padding-top: 6px; }
 .pre-card .pre-precio b { font-size: 18px; }
 .pre-card .btn { margin-top: 4px; }
 
@@ -279,67 +256,35 @@
   .pre__grid { gap: 10px; }
   /* tarjetas de media columna: sin el gancho, solo lo esencial */
   .pre-card__gancho { display: none; }
-  .pre-card .pre-cupos { font-size: 10px; gap: 6px; }
-  .pre-card .pre-cupos__sq i { width: 9px; height: 9px; }
   .pre-card .pre-precio { font-size: 10px; }
   .pre-card .pre-precio b { font-size: 14px; }
   .pre-sabor { flex-basis: 100%; }
 }
 
-/* ── Fila de categorías, bajo el hero ────────────────────────────────
-   Dice de una vez que REVTILE vende suplementos, no solo creatina, y qué
-   hay hoy (casilla de tinta) y qué más hay. */
-.cats { margin-top: 24px; }
-.cats__lista {
-  list-style: none;
-  max-width: var(--maxw);
-  margin-inline: auto;
-  padding-inline: var(--gutter);
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+/* ── La tienda: filtros, fichas de sabor y tarjetas ───────────────── */
+.tf { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--s3) 0 var(--s3); }
+.tf__b {
+  padding: 9px 16px; min-height: 40px; cursor: pointer;
+  background: transparent; color: var(--ink-2);
+  font: 500 11.5px 'DM Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase;
+  box-shadow: inset 0 0 0 1.5px var(--line-2); border-radius: var(--radius-sm);
+  transition: background .18s, color .18s, box-shadow .18s;
 }
-.cats__item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px 16px 16px 0;
-  border-top: 1.5px solid var(--ink);
-  color: var(--ink);
-  text-decoration: none;
+.tf__b:hover { color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.tf__b.is-on { background: var(--ink); color: #fff; box-shadow: none; }
+.pre-card[hidden] { display: none; }
+.pre-card .product__photo a { display: block; }
+
+.pre-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pre-chip {
+  padding: 6px 9px; cursor: pointer; text-align: left;
+  font: 600 12px/1.2 'Barlow', system-ui, sans-serif; color: var(--ink-2);
+  background: transparent; box-shadow: inset 0 0 0 1px var(--line-2); border-radius: var(--radius-sm);
+  transition: box-shadow .15s, background .15s, color .15s;
 }
-.cats__lista li + li .cats__item { padding-left: 18px; border-left: 1px solid var(--line-2); }
-.cats__nom {
-  font-family: 'Anton', 'Barlow', sans-serif;
-  font-size: clamp(18px, 2.1vw, 26px);
-  line-height: 1;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-  transition: color var(--t);
-}
-.cats__est {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'DM Mono', ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-}
-.cats__est::before { content: ''; width: 8px; height: 8px; background: var(--accent); flex: none; }
-.cats__est.is-ok::before { background: var(--ink); }
-.cats__item:hover .cats__nom { color: var(--accent-text); }
-@media (max-width: 860px) {
-  .cats { margin-top: 14px; }
-  .cats__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .cats__item, .cats__lista li + li .cats__item { padding: 12px 8px 12px 0; border-left: 0; gap: 6px; }
-  .cats__lista li:nth-child(3n+2) .cats__item,
-  .cats__lista li:nth-child(3n) .cats__item { padding-left: 12px; border-left: 1px solid var(--line-2); }
-  .cats__lista li:last-child { grid-column: span 2; }
-  .cats__nom { font-size: 17px; }
-  .cats__est { font-size: 9.5px; letter-spacing: .08em; gap: 6px; }
-  .cats__est::before { width: 7px; height: 7px; }
-}
+.pre-chip:hover { box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
+.pre-chip.is-on { box-shadow: inset 0 0 0 1.5px var(--accent-text); background: var(--accent-wash); color: var(--ink); }
+.pre-chip.is-agotado { color: var(--ink-dim); text-decoration: line-through; }
 
 /* La lista de marcas del hero: completa en escritorio, resumida en celular */
 .hero__label .hl-d { white-space: nowrap; font-size: 10px; letter-spacing: .06em; }
@@ -351,7 +296,7 @@
   .hero__label .hl-m { display: inline; }
 }
 
-/* la maleta en las fichas de los suplementos */
+/* la canasta en las fichas de los suplementos */
 .pre-ver {
   align-self: center; font-size: 13.5px; color: var(--ink-2);
   text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2);

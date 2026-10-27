@@ -64,7 +64,6 @@ const CAT_JS_V = hash('js/catalogo.js');
 
 /* ── Utilidades ───────────────────────────────────────────────────── */
 const total = (p) => p.variantes.reduce((a, v) => a + v.stock, 0);
-const unidades = (n) => `${n} ${n === 1 ? 'unidad' : 'unidades'}`;
 const nombreLargo = (p) => `${p.marca} ${p.nombre}`;
 const abs = (src) => SITIO + (existsSync(join(ROOT, src + '.png')) ? src + '.png' : src + '.jpg');
 const jsonLd = (o) => JSON.stringify(o, null, 2).replace(/</g, '\\u003c');
@@ -81,10 +80,8 @@ const waUrl = (p, v) => {
   return `https://wa.me/${WA}?text=${encodeURIComponent(msg)}`;
 };
 
-/* Unidades reales que tienes, dibujadas como casillas. Nunca se inventa un número. */
-const cupos = (n) => n > 0
-  ? `<span class="pre-cupos" role="img" aria-label="Quedan ${unidades(n)}"><span class="pre-cupos__sq" aria-hidden="true">${'<i></i>'.repeat(Math.min(n, 12))}</span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>${n}</b></span></span>`
-  : `<span class="pre-cupos is-agotado" role="img" aria-label="Agotado"><span class="pre-cupos__sq" aria-hidden="true"><i></i></span><span class="pre-cupos__txt" aria-hidden="true"><b>Agotado</b></span></span>`;
+/* Nunca se muestran cantidades: solo se avisa cuando una presentación está agotada. */
+const marcaAgotado = (n) => (n > 0 ? '' : '<span class="pre-agot">Agotado</span>');
 
 const pic = (base, alt, extra = '') =>
   `<picture><source srcset="${base}.webp" type="image/webp"><img src="${base}.png" alt="${esc(alt)}" width="1000" height="1000"${extra}></picture>`;
@@ -97,35 +94,64 @@ const preciosCard = (p) => `<div class="product__pricing">
               <span class="product__price-old">${cop(p.precio_antes)}</span>
             </div>`;
 
-/* ── Tarjeta (portada, índice y "más suplementos") ────────────────── */
+/* ── Tarjetas ─────────────────────────────────────────────────────
+   Creatinas y suplementos comparten la misma tarjeta: foto, marca, nombre, tamaño, una
+   línea, precio con el de antes tachado y un solo botón «Añadir a la canasta». Los
+   suplementos con varios sabores traen sus fichas de sabor para elegir ahí mismo. */
+const CAT_ID = { wgs: 'proteina', outrage: 'preentreno', bcaa: 'bcaa', vitaform: 'multivitaminico' };
+const btnAnadir = (k) => `<button type="button" class="btn btn--primary btn--full" data-maleta-add="${k}"><span data-add-txt>Añadir</span></button>`;
+
+const chips = (p) => sabores(p).length > 1
+  ? `<div class="pre-chips" role="radiogroup" aria-label="Sabor de ${esc(p.nombre)}">${p.variantes.map((v, i) =>
+    `<button type="button" class="pre-chip${i === 0 ? ' is-on' : ''}" role="radio" aria-checked="${i === 0}" data-chip="${p.sku}:${v.id}" data-img="${v.imagen}" data-alt="${esc(v.alt)}">${esc(v.sabor)}</button>`).join('')}</div>`
+  : '';
+
 function tarjeta(p) {
   const v0 = p.variantes[0];
-  const n = total(p);
-  return `        <article class="product pre-card reveal">
+  return `        <article class="product pre-card reveal" data-cat="${CAT_ID[p.sku]}">
           <span class="product__flag">${esc(CAT_CORTA[p.sku] || p.rol)}</span>
-          <div class="product__photo">${pic(v0.imagen, v0.alt, ' loading="lazy"')}</div>
+          <div class="product__photo"><a href="${p.pagina}" tabindex="-1" aria-hidden="true">${pic(v0.imagen, v0.alt, ' loading="lazy"')}</a></div>
           <div class="product__info">
             <p class="product__brand">${esc(p.marca)}</p>
             <h3 class="product__name"><a class="product__link" href="${p.pagina}">${esc(p.nombre)}</a></h3>
             <p class="product__size">${esc(tamano(p))}</p>
             <p class="pre-card__gancho">${esc(p.gancho)}</p>
-            <span data-cupos-keys="${p.variantes.map((v) => p.sku + ':' + v.id).join(',')}">${cupos(n)}</span>
+            ${chips(p)}
             ${preciosCard(p)}
-            <a class="btn btn--primary btn--full" href="${p.pagina}">${n > 0 ? 'Comprar' : 'Ver ficha'} <span class="btn__arrow" aria-hidden="true">→</span></a>
+            ${btnAnadir(p.sku + ':' + v0.id)}
+          </div>
+        </article>`;
+}
+
+function tarjetaCreatina(c) {
+  const base = c.imagen.replace(/\.png$/, '');
+  const porServ = Math.round(c.precio / c.servicios);
+  const mejor = /mejor precio/i.test(c.rol) ? ' · el mejor precio' : '';
+  return `        <article class="product pre-card reveal" data-cat="creatina">
+          <span class="product__flag">Creatina</span>
+          <div class="product__photo"><a href="${c.pagina}" tabindex="-1" aria-hidden="true">${pic(base, c.alt, ' loading="lazy"')}</a></div>
+          <div class="product__info">
+            <p class="product__brand">${esc(c.marca)}</p>
+            <h3 class="product__name"><a class="product__link" href="${c.pagina}">${esc(c.nombre)}</a></h3>
+            <p class="product__size">${c.gramos} g · ${c.servicios} servicios</p>
+            <p class="pre-card__gancho"><b>${cop(porServ)}</b> por servicio${mejor}</p>
+            ${preciosCard(c)}
+            ${btnAnadir(c.sku + ':u')}
           </div>
         </article>`;
 }
 const grilla = (lista) => `      <div class="products__grid pre__grid">\n${lista.map(tarjeta).join('\n')}\n      </div>`;
+const grillaTienda = () => `      <div class="products__grid pre__grid">\n${[...data.productos.map(tarjetaCreatina), ...P.map(tarjeta)].join('\n')}\n      </div>`;
 
 /* ── Tabla nutricional (una por sabor; el script de la página muestra la elegida) ── */
-const filaNutri = (f) => `<tr><th scope="row">${esc(f[0])}</th><td>${esc(f[1])}</td><td>${esc(f[2])}</td></tr>`;
-const grupoNutri = (t) => `<tr class="nutri__grupo"><th colspan="3" scope="colgroup">${esc(t)}</th></tr>`;
+const filaNutri = (f) => `<tr><th scope="row">${esc(f[0])}</th>${f.slice(1).map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`;
+const grupoNutri = (t, cols = 3) => `<tr class="nutri__grupo"><th colspan="${cols}" scope="colgroup">${esc(t)}</th></tr>`;
 
 function nutricional(p) {
   const bloques = p.variantes.map((v) => {
     const n = Object.assign({}, p.nutricional, v.nutricional);
     const cuerpo = n.grupos
-      ? n.grupos.map(([t, fs]) => grupoNutri(t) + fs.map(filaNutri).join('')).join('')
+      ? n.grupos.map(([t, fs]) => grupoNutri(t, n.columnas ? 4 : 3) + fs.map(filaNutri).join('')).join('')
       : (n.grupo ? grupoNutri(n.grupo) : '') + n.filas.map(filaNutri).join('');
     const etiqueta = v.sabor && sabores(p).length > 1
       ? `<p class="pre-var__tag">Sabor ${esc(v.sabor)}</p>` : '';
@@ -140,10 +166,10 @@ function nutricional(p) {
             </tbody>
           </table>
           <table class="spec nutri__tabla">
-            <thead><tr><th scope="col">Por porción</th><th scope="col">Cantidad</th><th scope="col">Valor diario</th></tr></thead>
+            <thead><tr>${n.columnas ? `<th scope="col">Nutriente</th>${n.columnas.map((c) => `<th scope="col">${esc(c)}</th>`).join('')}` : '<th scope="col">Por porción</th><th scope="col">Cantidad</th><th scope="col">Valor diario</th>'}</tr></thead>
             <tbody>
               ${cuerpo}
-              <tr><th scope="row">${esc(n.etiqueta_otros || 'Otros ingredientes')}</th><td colspan="2">${esc(n.otros)}</td></tr>
+              <tr><th scope="row">${esc(n.etiqueta_otros || 'Otros ingredientes')}</th><td colspan="${n.columnas ? 3 : 2}">${esc(n.otros)}</td></tr>
             </tbody>
           </table>
           <ul class="nutri__notas">
@@ -172,7 +198,6 @@ ${bloques.join('\n')}
 /* ── JSON-LD ──────────────────────────────────────────────────────── */
 function ldProducto(p) {
   const props = p.datos.map(([k, v]) => ({ '@type': 'PropertyValue', name: k, value: v }));
-  props.push({ '@type': 'PropertyValue', name: 'Unidades disponibles', value: String(total(p)) });
   const o = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -194,7 +219,6 @@ function ldProducto(p) {
       additionalProperty: [
         { '@type': 'PropertyValue', name: 'Sabor', value: v.sabor },
         { '@type': 'PropertyValue', name: 'Porciones por envase', value: v.porciones },
-        { '@type': 'PropertyValue', name: 'Unidades disponibles', value: String(v.stock) },
       ],
     }));
   }
@@ -299,7 +323,7 @@ function ficha(p) {
           <div class="pre-sabores__fila">
 ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor${i === 0 ? ' is-active' : ''}" role="radio" aria-checked="${i === 0}" data-var="${v.id}">
               <span class="pre-sabor__nom">${esc(v.sabor)}</span>
-              <span data-cupos-k="${p.sku}:${v.id}">${cupos(v.stock)}</span>
+              <span data-cupos-k="${p.sku}:${v.id}">${marcaAgotado(v.stock)}</span>
             </button>`).join('\n')}
           </div>
         </div>` : '';
@@ -329,7 +353,7 @@ ${p.variantes.map((v, i) => `            <button type="button" class="pre-sabor$
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Todos los suplementos', 'suplementos.html', 'Mi maleta', 'pedido.html')}
+${nav('← Todos los suplementos', 'suplementos.html', 'Mi canasta', 'pedido.html')}
 
   <main id="ficha">
 
@@ -353,8 +377,6 @@ ${g0.map(([src, alt], i) => `          <button class="pp-gal__thumb${i === 0 ? '
         <h1>${esc(p.nombre)}</h1>
         <p class="product__size">${esc(p.formato)}</p>
 ${selector}
-${multi ? '' : `        <div class="pre-cupos-box" id="preCupos" data-cupos-k="${p.sku}:${v0.id}">${cupos(v0.stock)}</div>
-`}
         <div class="pp-buy__price">
           <span class="now">${cop(p.precio)}</span>
           <span class="was">${cop(p.precio_antes)}</span>
@@ -363,10 +385,9 @@ ${multi ? '' : `        <div class="pre-cupos-box" id="preCupos" data-cupos-k="$
         <span class="sello">Envío gratis a toda Colombia</span>
         <a class="pre-alerta pre-alerta--${p.aviso.tipo}" href="#aviso">${esc(p.aviso.titulo)}</a>
 
-        <button type="button" class="btn btn--primary btn--full btn--big" id="preComprar" data-comprar="${p.sku}:${v0.id}"><span data-cta-txt>Comprar ahora</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
-        <button type="button" class="btn btn--ghost btn--full" id="preCta" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain"><span data-cta-txt>Añadir a la maleta</span></button>
+        <button type="button" class="btn btn--primary btn--full btn--big" id="preCta" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain"><span data-cta-txt>Añadir a la canasta</span></button>
         <p class="pre-agotado" id="preAgotado" hidden>Se agotó este. <a data-wa href="${waUrl(p, { ...v0, stock: 0 })}" target="_blank" rel="noopener">Avísame si reponen</a></p>
-        <a class="pre-ver" href="pedido.html">Ir a mi maleta →</a>
+        <a class="pre-ver" href="pedido.html">Ir a mi canasta →</a>
         <p class="pp-note">Pagas por Bre-B, tarjeta, PSE o Nequi, o contraentrega en todo el país. Tu pedido queda registrado con un número único para rastrearlo.</p>
 
         <div class="pp-stats">
@@ -433,7 +454,6 @@ ${nutricional(p)}
             <caption>Tu compra</caption>
             <tbody>
               <tr><th scope="row">Precio</th><td>${cop(p.precio)} COP (antes ${cop(p.precio_antes)})</td></tr>
-              <tr><th scope="row">Unidades</th><td>Contadas: el número de arriba es el real</td></tr>
               <tr><th scope="row">Verificación</th><td>Fotos del sello y el lote de tu unidad antes del despacho</td></tr>
             </tbody>
           </table>
@@ -473,7 +493,7 @@ ${footer(data)}
       <b>${cop(p.precio)}</b>
       <span>${esc(p.marca)} · envío gratis</span>
     </div>
-    <button type="button" class="btn btn--primary" data-comprar="${p.sku}:${v0.id}" tabindex="-1">Comprar <span class="btn__arrow" aria-hidden="true">→</span></button>
+    <button type="button" class="btn btn--primary" data-maleta-add="${p.sku}:${v0.id}" data-maleta-img="#ppMain" tabindex="-1">Añadir <span class="btn__arrow" aria-hidden="true">→</span></button>
   </div>
 
   <script type="application/json" id="preData">${jsonLd(preData)}</script>
@@ -490,9 +510,8 @@ ${footer(data)}
 const HUB_FAQ = [
   ['¿Qué suplementos vende REVTILE?', 'Proteína whey Optimum Nutrition Gold Standard, pre-entreno Nutrex Outrage, BCAA Rule 1 y el multivitamínico AllMax Vitaform, además de creatina monohidratada. Todos originales y sellados de fábrica.'],
   ['¿Cuánto cuestan?', `Proteína ${cop(P[0].precio)}, pre-entreno ${cop(P[1].precio)}, BCAA ${cop(P[2].precio)} y multivitamínico ${cop(P[3].precio)}, todos con envío gratis a toda Colombia. Cada ficha muestra el precio de antes tachado.`],
-  ['¿Cómo compro?', 'Entra a la ficha, elige el sabor y toca «Comprar ahora» o «Añadir a la maleta». En tu maleta eliges cómo pagar: contraentrega, Bre-B, o tarjeta, PSE y Nequi.'],
+  ['¿Cómo compro?', 'Elige el sabor y toca «Añadir a la canasta». En tu canasta eliges cómo pagar: contraentrega, Bre-B, o tarjeta, PSE y Nequi.'],
   ['¿Cuánto tarda en llegar?', `Envío gratis a toda Colombia en ${data.envio.dias_habiles} días hábiles, con guía de la transportadora y un número RV- para rastrear tu pedido.`],
-  ['¿Cuántas unidades hay?', 'Contamos las unidades de cada producto y sabor. El número que ves en cada ficha es el real; cuando se agota, la ficha lo marca como agotado.'],
   ['¿Son originales?', 'Sí. Antes del despacho fotografiamos el sello, el lote y la fecha de vencimiento de tu unidad y te enviamos las fotos, para que contrastes los datos con el fabricante.'],
   ['¿Alguno tiene alérgenos o requiere cuidado?', 'Cada ficha trae su aviso. La whey contiene leche y soya; el multivitamínico contiene glucosamina de origen marisco y condroitina bovina; el pre-entreno es de alta estimulación y trae contraindicaciones. Léelos antes de comprar.'],
 ];
@@ -525,7 +544,7 @@ function indice() {
 
   <a class="skip-link" href="#ficha">Saltar al contenido</a>
 
-${nav('← Volver a la tienda', 'index.html#productos', 'Mi maleta', 'pedido.html')}
+${nav('← Volver a la tienda', 'index.html#productos', 'Mi canasta', 'pedido.html')}
 
   <main id="ficha">
 
@@ -534,7 +553,7 @@ ${nav('← Volver a la tienda', 'index.html#productos', 'Mi maleta', 'pedido.htm
       <div class="pre-hub__txt">
         <p class="pre-tag">Suplementos</p>
         <h1>Suplementos originales<span class="accent">.</span></h1>
-        <p class="section-lead">Proteína, pre-entreno, BCAA y multivitamínico de marcas originales, con descuento y envío gratis. Cada unidad está contada: el número que ves en cada ficha es el real.</p>
+        <p class="section-lead">Proteína, pre-entreno, BCAA y multivitamínico de marcas originales, con descuento y envío gratis a toda Colombia.</p>
       </div>
 ${hayFamilia ? `      <div class="pre-hub__img"><picture><source srcset="assets/pre/familia.webp" type="image/webp"><img src="assets/pre/familia.png" alt="Los cuatro suplementos de REVTILE: Gold Standard Whey, Nutrex Outrage, Rule 1 BCAA y AllMax Vitaform" width="1800" height="900" fetchpriority="high"></picture></div>` : ''}
     </div>
@@ -552,8 +571,8 @@ ${grilla(P)}
       <p class="section-eyebrow reveal"><b>02</b> Cómo comprar</p>
       <h2 class="reveal">Tres pasos<span class="accent">.</span></h2>
 ${pasos([
-  ['01', 'Elige tu suplemento', 'Entra a la ficha, elige el sabor y toca «Comprar ahora» o «Añadir a la maleta».'],
-  ['02', 'Paga como prefieras', 'En tu maleta eliges contraentrega, Bre-B, o tarjeta, PSE y Nequi. Envío gratis a toda Colombia.'],
+  ['01', 'Elige tu suplemento', 'Elige el sabor y toca «Añadir a la canasta». Puedes seguir comprando.'],
+  ['02', 'Paga como prefieras', 'En tu canasta eliges contraentrega, Bre-B, o tarjeta, PSE y Nequi. Envío gratis a toda Colombia.'],
   ['03', 'Verificas y recibes', 'Antes del despacho te enviamos las fotos del sello y el lote de tu unidad.'],
 ])}
     </div>
@@ -578,8 +597,8 @@ for (const p of P) { escribir(p.pagina, ficha(p)); console.log('  escrita  ' + p
 escribir('suplementos.html', indice()); console.log('  escrita  suplementos.html');
 
 /* ── Portada: tarjetas entre marcadores ───────────────────────────── */
-const INI = '<!-- suplementos:tarjetas:inicio -->';
-const FIN = '<!-- suplementos:tarjetas:fin -->';
+const INI = '<!-- tienda:tarjetas:inicio -->';
+const FIN = '<!-- tienda:tarjetas:fin -->';
 /* versiones de los archivos compartidos, en las dos páginas que los cargan a mano */
 const versionar = (html) => html
   .replace(/css\/preventa\.css\?v=\w+/g, `css/suplementos.css?v=${SUP_CSS_V}`)
@@ -588,7 +607,7 @@ const versionar = (html) => html
   .replace(/js\/maleta\.js\?v=\w+/g, `js/maleta.js?v=${MAL_JS_V}`)
 let index = leer('index.html');
 if (index.includes(INI) && index.includes(FIN)) {
-  index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), () => `${INI}\n${grilla(P)}\n      ${FIN}`);
+  index = index.replace(new RegExp(`${INI}[\\s\\S]*?${FIN}`), () => `${INI}\n${grillaTienda()}\n      ${FIN}`);
   escribir('index.html', versionar(index));
   console.log('  portada  tarjetas de suplementos al día');
 } else console.log('  AVISO    index.html no tiene los marcadores de suplementos');
@@ -597,11 +616,11 @@ console.log('  pedido   versiones de la maleta al día');
 
 /* ── llms.txt: bloque de suplementos ──────────────────────────────── */
 const bloqueLlms = `## Suplementos (disponibles)
-Estado: disponibles para comprar, con envío gratis a toda Colombia. Las unidades están contadas y el número de cada ficha es el real. Todos los productos se verifican con fotos del sello y el lote antes del despacho.
-- [Índice de suplementos](${SITIO}suplementos.html): los cuatro suplementos, con precio y unidades disponibles
+Estado: disponibles para comprar, con envío gratis a toda Colombia. Todos los productos se verifican con fotos del sello y el lote antes del despacho.
+- [Índice de suplementos](${SITIO}suplementos.html): los cuatro suplementos, con su precio
 ${P.map((p) => {
-  const sab = sabores(p).map((v) => `${v.sabor} (${v.stock})`).join(', ');
-  return `- [${nombreLargo(p)}, ${p.formato.replace(' · ', ', ')}](${SITIO}${p.pagina}): ${cop(p.precio)} COP (antes ${cop(p.precio_antes)}). ${p.gancho}${sab ? ` Sabores y unidades: ${sab}.` : ` Unidades: ${total(p)}.`} ${p.aviso.titulo}.`;
+  const sab = sabores(p).map((v) => v.sabor).join(', ');
+  return `- [${nombreLargo(p)}, ${p.formato.replace(' · ', ', ')}](${SITIO}${p.pagina}): ${cop(p.precio)} COP (antes ${cop(p.precio_antes)}). ${p.gancho}${sab ? ` Sabores: ${sab}.` : ''} ${p.aviso.titulo}.`;
 }).join('\n')}
 `;
 let llms = leer('llms.txt');
@@ -620,4 +639,4 @@ else mapa = mapa.replace('</urlset>', `  ${MI}\n${urlsMapa}\n  ${MF}\n</urlset>`
 escribir('sitemap.xml', mapa);
 console.log('  sitemap  URLs de suplementos al día');
 
-console.log(`\nSuplementos generados: ${P.length} fichas + índice. Unidades en total: ${P.reduce((a, p) => a + total(p), 0)}.`);
+console.log(`\nSuplementos generados: ${P.length} fichas + índice.`);

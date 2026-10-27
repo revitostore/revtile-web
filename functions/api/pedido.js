@@ -78,7 +78,7 @@ export async function onRequestPost(context) {
     const c = Math.floor(Number(it.c));
     if (!(c >= 1)) return json({ ok: false, error: 'Cantidad inválida' }, 400);
     if (Number(it.valor) !== sup.precio * c) {
-      return json({ ok: false, precio: true, error: 'El precio de ' + sup.nombre + ' cambió. Recarga la página y revisa tu maleta.' }, 400);
+      return json({ ok: false, precio: true, error: 'El precio de ' + sup.nombre + ' cambió. Recarga la página y revisa tu canasta.' }, 400);
     }
     pedidas[k] = (pedidas[k] || 0) + c;
     items.push({ k, c, nombre: sup.nombre, valor: sup.precio * c });
@@ -165,7 +165,7 @@ export async function onRequestPost(context) {
     /* 0 filas: o el ID ya existía (reintento legítimo → idempotente) o se acabó el stock */
     if (res.meta.changes === 0) {
       const ya = await env.DB.prepare('SELECT id FROM pedidos WHERE id = ?').bind(id).first();
-      if (!ya) return json({ ok: false, error: 'Alguien compró esa unidad justo antes que tú. Revisa tu maleta.', agotado: true }, 409);
+      if (!ya) return json({ ok: false, error: 'Alguien compró esa unidad justo antes que tú. Revisa tu canasta.', agotado: true }, 409);
     }
 
     /* solo si el pedido es nuevo (no repetido): contar uso del cupón y avisar */

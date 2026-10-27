@@ -25,8 +25,8 @@ const textoPagar = (t) => document.querySelectorAll('.pagar-txt').forEach((e) =>
 const fmt = (n) => '$' + n.toLocaleString('es-CO');
 
 const state = {
-  cant: { on: 0, mt: 0, on120: 0 },  // lo deriva la maleta (ver sincronizarDesdeMaleta)
-  supl: [],                           // suplementos en la maleta: [{k, c}] (su precio sale de js/catalogo.js)
+  cant: { on: 0, mt: 0, on120: 0 },  // lo deriva la canasta (ver sincronizarDesdeMaleta)
+  supl: [],                           // suplementos en la canasta: [{k, c}] (su precio sale de js/catalogo.js)
   pago: 'anticipado',                // 'anticipado' | 'contraentrega'
   dia: null, diaISO: null, hora: '', // entrega programada (solo Bogotá + anticipado)
   cupon: null,                       // {codigo, tipo, valor} validado por la API
@@ -60,7 +60,7 @@ function abrirWhatsApp(url) {
   if (!w) location.href = url; // popup bloqueado: misma pestana
 }
 
-/* --- La maleta manda: lo que hay en ella es el pedido ---
+/* --- La canasta manda: lo que hay en ella es el pedido ---
    Las creatinas llevan el combo y su precio vive aquí arriba (PRODUCTOS); los suplementos
    traen su precio y su stock del catálogo (js/catalogo.js) y entran al mismo pedido. */
 function sincronizarDesdeMaleta() {
@@ -283,9 +283,6 @@ function render() {
       : 'Tu pedido queda <b>registrado con un número único</b> en nuestro sistema y se abre WhatsApp para que adjuntes el comprobante. Verificamos y sale el mismo día.';
 
   /* factura */
-  $('resItems').innerHTML = items.length
-    ? items.map((i) => `<p><span><b class="co__cant">${i.c}×</b> ${i.nombre}</span><span class="co__precios"><s>${fmt(i.valorLista)}</s> <b>${fmt(i.valor)}</b></span></p>`).join('')
-    : '<p><span>Tu maleta está vacía</span><b>—</b></p>';
   $('resComboLine').hidden = combo === 0;
   $('resComboVal').textContent = '−' + fmt(combo);
   $('resCuponLine').hidden = descuento === 0;
@@ -617,7 +614,7 @@ $('btnEnviar').addEventListener('click', async () => {
   const dir = $('fDir').value.trim();
   const ciudad = esBogota ? 'Bogotá' : $('fOtraCiudad').value.trim();
 
-  if (unidades === 0) return mostrarError('Tu maleta está vacía (paso 01).');
+  if (unidades === 0) return mostrarError('Tu canasta está vacía (paso 01).');
   if (!nombre) return mostrarError('Falta tu nombre completo (paso 02).');
   if (!/^3\d{9}$/.test(tel.replace(/\D/g, ''))) return mostrarError('Revisa tu número de WhatsApp: deben ser 10 dígitos empezando por 3.');
   if (!ciudad) return mostrarError('Falta la ciudad (paso 02).');
@@ -704,7 +701,7 @@ $('btnEnviar').addEventListener('click', async () => {
     registrado = r.ok;
     if (r.status === 409 || r.status === 400) { // se acabó una unidad o cambió un precio: nada se registra
       const d = await r.json().catch(() => ({}));
-      if (r.status === 409 || d.precio) conflicto = d.error || 'Se agotó una unidad de tu maleta.';
+      if (r.status === 409 || d.precio) conflicto = d.error || 'Se agotó una unidad de tu canasta.';
     }
   } catch (e) { registrado = false; }
 
@@ -782,7 +779,7 @@ $('btnEnviar').addEventListener('click', async () => {
     lineas.push('', cierre);
   }
 
-  render(); // el botón vuelve a su texto según la maleta
+  render(); // el botón vuelve a su texto según la canasta
 
   if (typeof gtag === 'function') gtag('event', 'checkout_pedido', { unidades, total, registrado, metodo: esCE ? 'contraentrega' : 'anticipado' });
 

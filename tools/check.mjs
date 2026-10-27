@@ -91,8 +91,6 @@ for (const p of pv) {
     errores.push(`${p.sku}: una ficha de suplemento necesita su aviso de seguridad`);
   for (const v of p.variantes) {
     if (!Number.isInteger(v.stock) || v.stock < 0) errores.push(`${p.sku}/${v.id}: el stock debe ser un entero >= 0`);
-    const marca = v.stock > 0 ? `Quedan ${v.stock} ${v.stock === 1 ? 'unidad' : 'unidades'}` : 'aria-label="Agotado"';
-    if (!html.includes(marca)) errores.push(`${p.pagina}: no muestra el stock real de "${v.sabor || v.id}" (${v.stock})`);
     for (const [src] of v.galeria) if (!existe(src + '.webp')) errores.push(`${p.sku}/${v.id}: falta la imagen ${src}.webp`);
     if (!existe(v.imagen + '.png')) errores.push(`${p.sku}/${v.id}: falta ${v.imagen}.png`);
   }
@@ -128,10 +126,14 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
     const h = read(f);
     if (!h.includes('js/maleta.js') || !h.includes('js/catalogo.js')) errores.push(`${f} no carga la maleta (js/catalogo.js y js/maleta.js)`);
   }
-  if (!read('pedido.html').includes('data-maleta-estante')) errores.push('pedido.html perdió el estante de la maleta');
+  if (!read('pedido.html').includes('data-maleta-canasta')) errores.push('pedido.html perdió la lista de la canasta');
 }
 
-/* 8 · la preventa terminó: ninguna página pública puede seguir hablando de apartar ni de preventa */
+/* 8 · nunca se muestran cantidades de stock (ni 'Quedan N' en las páginas ni unidades en llms.txt)
+for (const f of [...readdirSync(ROOT).filter((x) => x.endsWith('.html')), 'llms.txt'])
+  if (/Quedan\s*<?b?>?\s*\d|Unidades disponibles|unidades contadas|Contadas/.test(read(f))) errores.push(`${f} muestra cantidades de stock`);
+
+/* 9 · la preventa terminó: ninguna página pública puede seguir hablando de apartar ni de preventa */
 for (const f of [...readdirSync(ROOT).filter((x) => x.endsWith('.html')), 'llms.txt', 'js/checkout.js', 'js/maleta.js', 'js/suplementos.js']) {
   const s = read(f);
   if (/preventa|\bapart(ar|arla|arlo|ado|ados)\b|\bap[áa]rtal[ao]s?\b|sin pago hoy/i.test(s) && f !== 'gestion.html' && f !== 'rastreo.html')

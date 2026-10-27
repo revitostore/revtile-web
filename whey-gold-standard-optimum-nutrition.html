@@ -21,8 +21,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/pre/wgs-dobles.webp" fetchpriority="high">
   <link rel="stylesheet" href="css/styles.css?v=78">
-  <link rel="stylesheet" href="css/suplementos.css?v=7999f993">
-  <link rel="stylesheet" href="css/maleta.css?v=28fb8899">
+  <link rel="stylesheet" href="css/suplementos.css?v=91eebb01">
+  <link rel="stylesheet" href="css/maleta.css?v=69fad066">
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/analytics.js?v=2" defer></script>
   <script type="application/ld+json">
@@ -87,11 +87,6 @@
       "@type": "PropertyValue",
       "name": "Alérgenos",
       "value": "Contiene leche y soya"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Unidades disponibles",
-      "value": "3"
     }
   ],
   "hasVariant": [
@@ -110,11 +105,6 @@
           "@type": "PropertyValue",
           "name": "Porciones por envase",
           "value": "29"
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "Unidades disponibles",
-          "value": "2"
         }
       ]
     },
@@ -133,11 +123,6 @@
           "@type": "PropertyValue",
           "name": "Porciones por envase",
           "value": "28"
-        },
-        {
-          "@type": "PropertyValue",
-          "name": "Unidades disponibles",
-          "value": "1"
         }
       ]
     }
@@ -204,14 +189,6 @@
         "@type": "Answer",
         "text": "24 g por scoop según la etiqueta, con 5,5 g de BCAA. El scoop pesa 30,4 g en Double Rich Chocolate y 32 g en Extreme Milk Chocolate."
       }
-    },
-    {
-      "@type": "Question",
-      "name": "¿Cuántas unidades hay?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Contamos las unidades de cada presentación y sabor: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado."
-      }
     }
   ]
 }
@@ -251,7 +228,7 @@
     <div class="nav__inner">
       <a class="nav__logo" href="index.html">REVTILE<span class="nav__dot">.</span></a>
       <a class="pp-back" href="suplementos.html">← Todos los suplementos</a>
-      <a class="nav__cta" href="pedido.html">Mi maleta</a>
+      <a class="nav__cta" href="pedido.html">Mi canasta</a>
     </div>
   </header>
 
@@ -284,15 +261,14 @@
           <div class="pre-sabores__fila">
             <button type="button" class="pre-sabor is-active" role="radio" aria-checked="true" data-var="dobles">
               <span class="pre-sabor__nom">Double Rich Chocolate</span>
-              <span data-cupos-k="wgs:dobles"><span class="pre-cupos" role="img" aria-label="Quedan 2 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>2</b></span></span></span>
+              <span data-cupos-k="wgs:dobles"></span>
             </button>
             <button type="button" class="pre-sabor" role="radio" aria-checked="false" data-var="extreme">
               <span class="pre-sabor__nom">Extreme Milk Chocolate</span>
-              <span data-cupos-k="wgs:extreme"><span class="pre-cupos" role="img" aria-label="Quedan 1 unidad"><span class="pre-cupos__sq" aria-hidden="true"><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>1</b></span></span></span>
+              <span data-cupos-k="wgs:extreme"></span>
             </button>
           </div>
         </div>
-
         <div class="pp-buy__price">
           <span class="now">$250.000</span>
           <span class="was">$300.000</span>
@@ -301,10 +277,9 @@
         <span class="sello">Envío gratis a toda Colombia</span>
         <a class="pre-alerta pre-alerta--alergeno" href="#aviso">Contiene leche y soya</a>
 
-        <button type="button" class="btn btn--primary btn--full btn--big" id="preComprar" data-comprar="wgs:dobles"><span data-cta-txt>Comprar ahora</span> <span class="btn__arrow" aria-hidden="true">→</span></button>
-        <button type="button" class="btn btn--ghost btn--full" id="preCta" data-maleta-add="wgs:dobles" data-maleta-img="#ppMain"><span data-cta-txt>Añadir a la maleta</span></button>
+        <button type="button" class="btn btn--primary btn--full btn--big" id="preCta" data-maleta-add="wgs:dobles" data-maleta-img="#ppMain"><span data-cta-txt>Añadir a la canasta</span></button>
         <p class="pre-agotado" id="preAgotado" hidden>Se agotó este. <a data-wa href="https://wa.me/573214569600?text=Hola%20REVTILE%2C%20vi%20que%20se%20agot%C3%B3%3A%20Optimum%20Nutrition%20Gold%20Standard%20100%25%20Whey%20(2%20lb%20%C2%B7%20907%20g)%20%E2%80%94%20Double%20Rich%20Chocolate.%20%C2%BFMe%20avisan%20si%20llegan%20m%C3%A1s%20unidades%3F" target="_blank" rel="noopener">Avísame si reponen</a></p>
-        <a class="pre-ver" href="pedido.html">Ir a mi maleta →</a>
+        <a class="pre-ver" href="pedido.html">Ir a mi canasta →</a>
         <p class="pp-note">Pagas por Bre-B, tarjeta, PSE o Nequi, o contraentrega en todo el país. Tu pedido queda registrado con un número único para rastrearlo.</p>
 
         <div class="pp-stats">
@@ -464,7 +439,6 @@
             <caption>Tu compra</caption>
             <tbody>
               <tr><th scope="row">Precio</th><td>$250.000 COP (antes $300.000)</td></tr>
-              <tr><th scope="row">Unidades</th><td>Contadas: el número de arriba es el real</td></tr>
               <tr><th scope="row">Verificación</th><td>Fotos del sello y el lote de tu unidad antes del despacho</td></tr>
             </tbody>
           </table>
@@ -504,10 +478,6 @@
           <summary>¿Cuántos gramos de proteína tiene?</summary>
           <p>24 g por scoop según la etiqueta, con 5,5 g de BCAA. El scoop pesa 30,4 g en Double Rich Chocolate y 32 g en Extreme Milk Chocolate.</p>
         </details>
-        <details class="faq__item reveal">
-          <summary>¿Cuántas unidades hay?</summary>
-          <p>Contamos las unidades de cada presentación y sabor: el número que ves en la ficha es el real. Cuando se agota, la ficha lo marca como agotado.</p>
-        </details>
       </div>
     </div>
   </section>
@@ -517,52 +487,52 @@
     <div class="pp-section__inner">
       <p class="section-eyebrow reveal">Más suplementos</p>
       <div class="products__grid pre__grid" style="margin-top:16px">
-        <article class="product pre-card reveal">
+        <article class="product pre-card reveal" data-cat="preentreno">
           <span class="product__flag">Pre-entreno</span>
-          <div class="product__photo"><picture><source srcset="assets/pre/outrage-blue.webp" type="image/webp"><img src="assets/pre/outrage-blue.png" alt="Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__photo"><a href="preentreno-nutrex-outrage.html" tabindex="-1" aria-hidden="true"><picture><source srcset="assets/pre/outrage-blue.webp" type="image/webp"><img src="assets/pre/outrage-blue.png" alt="Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry" width="1000" height="1000" loading="lazy"></picture></a></div>
           <div class="product__info">
             <p class="product__brand">Nutrex Research</p>
             <h3 class="product__name"><a class="product__link" href="preentreno-nutrex-outrage.html">Outrage Ultra Stim Pre-Workout</a></h3>
             <p class="product__size">30 porciones · 2 sabores</p>
-            <p class="pre-card__gancho">Pre-entreno ultra estimulante. Su etiqueta avisa que es más fuerte que otros.</p>
-            <span data-cupos-keys="outrage:blue,outrage:fruit"><span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span></span>
+            <p class="pre-card__gancho">Pre-entreno con 355 mg de cafeína por porción, beta-alanina, taurina y vitaminas. Sin azúcar.</p>
+            <div class="pre-chips" role="radiogroup" aria-label="Sabor de Outrage Ultra Stim Pre-Workout"><button type="button" class="pre-chip is-on" role="radio" aria-checked="true" data-chip="outrage:blue" data-img="assets/pre/outrage-blue" data-alt="Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Blue Raspberry">Blue Raspberry</button><button type="button" class="pre-chip" role="radio" aria-checked="false" data-chip="outrage:fruit" data-img="assets/pre/outrage-fruit" data-alt="Envase de Nutrex Outrage Ultra Stim Pre-Workout sabor Fruit Punch">Fruit Punch</button></div>
             <div class="product__pricing">
               <span class="product__price">$120.000 <small>COP</small></span>
               <span class="product__price-old">$170.000</span>
             </div>
-            <a class="btn btn--primary btn--full" href="preentreno-nutrex-outrage.html">Comprar <span class="btn__arrow" aria-hidden="true">→</span></a>
+            <button type="button" class="btn btn--primary btn--full" data-maleta-add="outrage:blue"><span data-add-txt>Añadir</span></button>
           </div>
         </article>
-        <article class="product pre-card reveal">
+        <article class="product pre-card reveal" data-cat="bcaa">
           <span class="product__flag">BCAA</span>
-          <div class="product__photo"><picture><source srcset="assets/pre/bcaa-blue.webp" type="image/webp"><img src="assets/pre/bcaa-blue.png" alt="Envase de Rule 1 BCAA sabor Blue Raspberry" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__photo"><a href="bcaa-rule-1.html" tabindex="-1" aria-hidden="true"><picture><source srcset="assets/pre/bcaa-blue.webp" type="image/webp"><img src="assets/pre/bcaa-blue.png" alt="Envase de Rule 1 BCAA sabor Blue Raspberry" width="1000" height="1000" loading="lazy"></picture></a></div>
           <div class="product__info">
             <p class="product__brand">Rule 1</p>
             <h3 class="product__name"><a class="product__link" href="bcaa-rule-1.html">BCAA 2:1:1</a></h3>
             <p class="product__size">30 porciones · 2 sabores</p>
             <p class="pre-card__gancho">5 g de BCAA en proporción 2:1:1, con solo 25 calorías por scoop.</p>
-            <span data-cupos-keys="bcaa:blue,bcaa:fruit"><span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span></span>
+            <div class="pre-chips" role="radiogroup" aria-label="Sabor de BCAA 2:1:1"><button type="button" class="pre-chip is-on" role="radio" aria-checked="true" data-chip="bcaa:blue" data-img="assets/pre/bcaa-blue" data-alt="Envase de Rule 1 BCAA sabor Blue Raspberry">Blue Raspberry</button><button type="button" class="pre-chip" role="radio" aria-checked="false" data-chip="bcaa:fruit" data-img="assets/pre/bcaa-fruit" data-alt="Envase de Rule 1 BCAA sabor Fruit Punch">Fruit Punch</button></div>
             <div class="product__pricing">
               <span class="product__price">$120.000 <small>COP</small></span>
               <span class="product__price-old">$150.000</span>
             </div>
-            <a class="btn btn--primary btn--full" href="bcaa-rule-1.html">Comprar <span class="btn__arrow" aria-hidden="true">→</span></a>
+            <button type="button" class="btn btn--primary btn--full" data-maleta-add="bcaa:blue"><span data-add-txt>Añadir</span></button>
           </div>
         </article>
-        <article class="product pre-card reveal">
+        <article class="product pre-card reveal" data-cat="multivitaminico">
           <span class="product__flag">Multivitamínico</span>
-          <div class="product__photo"><picture><source srcset="assets/pre/vitaform.webp" type="image/webp"><img src="assets/pre/vitaform.png" alt="Frasco de AllMax Nutrition Premium Vitaform, multivitamínico de 60 tabletas" width="1000" height="1000" loading="lazy"></picture></div>
+          <div class="product__photo"><a href="multivitaminico-allmax-vitaform.html" tabindex="-1" aria-hidden="true"><picture><source srcset="assets/pre/vitaform.webp" type="image/webp"><img src="assets/pre/vitaform.png" alt="Frasco de AllMax Nutrition Premium Vitaform, multivitamínico de 60 tabletas" width="1000" height="1000" loading="lazy"></picture></a></div>
           <div class="product__info">
             <p class="product__brand">AllMax Nutrition</p>
             <h3 class="product__name"><a class="product__link" href="multivitaminico-allmax-vitaform.html">Premium Vitaform</a></h3>
             <p class="product__size">60 tabletas</p>
             <p class="pre-card__gancho">Multivitamínico de 2 al día con 6 complejos. Fórmula con enfoque masculino.</p>
-            <span data-cupos-keys="vitaform:unica"><span class="pre-cupos" role="img" aria-label="Quedan 3 unidades"><span class="pre-cupos__sq" aria-hidden="true"><i></i><i></i><i></i></span><span class="pre-cupos__txt" aria-hidden="true">Quedan <b>3</b></span></span></span>
+            
             <div class="product__pricing">
               <span class="product__price">$90.000 <small>COP</small></span>
               <span class="product__price-old">$120.000</span>
             </div>
-            <a class="btn btn--primary btn--full" href="multivitaminico-allmax-vitaform.html">Comprar <span class="btn__arrow" aria-hidden="true">→</span></a>
+            <button type="button" class="btn btn--primary btn--full" data-maleta-add="vitaform:unica"><span data-add-txt>Añadir</span></button>
           </div>
         </article>
       </div>
@@ -633,7 +603,7 @@
       <b>$250.000</b>
       <span>Optimum Nutrition · envío gratis</span>
     </div>
-    <button type="button" class="btn btn--primary" data-comprar="wgs:dobles" tabindex="-1">Comprar <span class="btn__arrow" aria-hidden="true">→</span></button>
+    <button type="button" class="btn btn--primary" data-maleta-add="wgs:dobles" data-maleta-img="#ppMain" tabindex="-1">Añadir <span class="btn__arrow" aria-hidden="true">→</span></button>
   </div>
 
   <script type="application/json" id="preData">{
@@ -676,9 +646,9 @@
     }
   ]
 }</script>
-  <script src="js/catalogo.js?v=58e53962" defer></script>
-  <script src="js/maleta.js?v=78ebf7ff" defer></script>
+  <script src="js/catalogo.js?v=b17c97fc" defer></script>
+  <script src="js/maleta.js?v=beeafd19" defer></script>
   <script src="js/product.js?v=3" defer></script>
-  <script src="js/suplementos.js?v=a84b5b31" defer></script>
+  <script src="js/suplementos.js?v=9a3804df" defer></script>
 </body>
 </html>

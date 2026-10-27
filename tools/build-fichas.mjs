@@ -277,8 +277,8 @@ ${c.galeria.map(([src, alt], i) => `          <button class="pp-gal__thumb${i ==
           <li class="check">Envío gratis a toda Colombia</li>
         </ul>
 
-        <a class="btn btn--primary btn--full btn--big" href="pedido.html?producto=${p.sku}">Pedir esta creatina <span class="btn__arrow" aria-hidden="true">→</span></a>
-        <button type="button" class="btn btn--ghost btn--full" data-maleta-add="${p.sku}:u" data-maleta-img="#ppMain">Añadir a la maleta</button>
+        <button type="button" class="btn btn--primary btn--full btn--big" data-maleta-add="${p.sku}:u" data-maleta-img="#ppMain">Añadir a la canasta</button>
+        <a class="pre-ver" href="pedido.html">Ir a mi canasta →</a>
         <p class="pp-note">Armas el pedido aquí y lo confirmas por WhatsApp. Contraentrega disponible en todo el país.</p>
 
         <div class="pp-stats">

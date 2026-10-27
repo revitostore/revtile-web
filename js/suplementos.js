@@ -54,38 +54,20 @@
   }
 
   /* Los botones apuntan al sabor elegido y dicen la verdad sobre el stock */
-  var comprar = document.getElementById('preComprar');
   function pintarBoton() {
     var v = variante(actualId), M = window.Maleta;
     $$('[data-maleta-add]').forEach(function (b) { b.setAttribute('data-maleta-add', v.k); });
-    $$('[data-comprar]').forEach(function (b) { b.setAttribute('data-comprar', v.k); });
     if (!M || !cta) return;
     var enMaleta = M.cant(v.k), queda = M.restante(v.k), baseU = queda + enMaleta;
     var sinStock = baseU <= 0, todoAdentro = !sinStock && queda <= 0;
     var txt = cta.querySelector('[data-cta-txt]');
     cta.disabled = sinStock || todoAdentro;
-    if (txt) txt.textContent = sinStock ? 'Agotado' : todoAdentro ? 'Ya está en tu maleta' : (enMaleta ? 'Añadir otra unidad' : 'Añadir a la maleta');
-    if (comprar) {
-      /* si ya está todo adentro, comprar solo lleva al pedido */
-      comprar.disabled = sinStock;
-      var t2 = comprar.querySelector('[data-cta-txt]');
-      if (t2) t2.textContent = sinStock ? 'Agotado' : (enMaleta ? 'Ir a pagar' : 'Comprar ahora');
-    }
+    if (txt) txt.textContent = sinStock ? 'Agotado' : todoAdentro ? 'Ya está en tu canasta' : (enMaleta ? 'Añadir otra unidad' : 'Añadir a la canasta');
     if (agotado) {
       agotado.hidden = !sinStock;
       if (enlaceAgotado) enlaceAgotado.href = v.wa;
     }
   }
-
-  /* «Comprar ahora»: lo mete a la maleta (si aún no está) y va directo al pedido */
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('[data-comprar]');
-    var M = window.Maleta;
-    if (!b || b.disabled) return;
-    var k = b.getAttribute('data-comprar');
-    if (M && !M.cant(k) && !M.add(k)) return;
-    location.href = 'pedido.html';
-  });
 
   function ver(id, actualizarUrl) {
     var v = variante(id);
