@@ -12,8 +12,8 @@ import {
   fechaBase, fechaRecompra, fechaBogota, hoyBogota, sumarDias, diasEntre,
 } from './calculos.ts';
 import type { AgregadoCliente } from './calculos.ts';
-import { SUPLEMENTOS, CREATINAS, DURACION } from '../_catalogo.js';
-import { reservadas } from '../stock.js';
+import { SUPLEMENTOS, CREATINAS, DURACION } from '../_catalogo.ts';
+import { reservadas } from '../stock.ts';
 
 type Catalogo = Record<string, { nombre: string; precio: number; stock?: number }>;
 const SUP = SUPLEMENTOS as Catalogo;
@@ -171,7 +171,7 @@ export async function inventario(env: Env): Promise<Response> {
     const hoy = hoyBogota();
     const ajustes = await leerAjustes(env);
     const costos = await leerCostos(env);
-    const vendido = (await reservadas(env.DB)) as Record<string, number>;
+    const vendido = await reservadas(env.DB);
     const filas = await todos<{ k: string; dia: string; n: number }>(env,
       `SELECT json_extract(j.value, '$.k') k, ${BOGOTA} dia, SUM(CAST(json_extract(j.value, '$.c') AS INTEGER)) n
          FROM pedidos p, ${ITEMS}

@@ -6,34 +6,43 @@
    URL a registrar en el panel de Wompi (Eventos):
      https://revtile.com.co/api/wompi */
 
+import type { Env } from './_ops/tipos.ts';
 import { registrarEstado } from './_ops/envios.ts';
+import { registrarError } from './_ops/log.ts';
 
-const sha256hex = async (texto) => {
+interface Transaccion { id?: string; status?: string; reference?: string; amount_in_cents?: number; currency?: string }
+interface EventoWompi {
+  data?: { transaction?: Transaccion } & Record<string, unknown>;
+  signature?: { properties?: string[]; checksum?: string };
+  timestamp?: number | string;
+}
+
+const sha256hex = async (texto: string): Promise<string> => {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
 };
 
 /* comparación en tiempo constante: no filtra cuántos caracteres del checksum acertó un atacante */
-const iguales = (a, b) => {
+const iguales = (a: string, b: string): boolean => {
   if (a.length !== b.length) return false;
   let d = 0;
   for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return d === 0;
 };
 
-export async function onRequestPost({ request, env }) {
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!env.WOMPI_EVENTS) return new Response('sin configurar', { status: 503 });
 
-  const cuerpo = await request.json().catch(() => null);
+  const cuerpo = (await request.json().catch(() => null)) as EventoWompi | null;
   const tx = cuerpo && cuerpo.data && cuerpo.data.transaction;
   const firma = cuerpo && cuerpo.signature;
-  if (!tx || !firma || !Array.isArray(firma.properties) || cuerpo.timestamp == null) {
+  if (!cuerpo || !tx || !firma || !Array.isArray(firma.properties) || cuerpo.timestamp == null) {
     return new Response('cuerpo inválido', { status: 400 });
   }
 
   /* checksum: los valores de signature.properties (rutas sobre `data`),
      concatenados en orden, más el timestamp y el secreto de eventos */
-  const valorDe = (ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), cuerpo.data);
+  const valorDe = (ruta: string): unknown => ruta.split('.').reduce<unknown>((a, k) => (a == null ? a : (a as Record<string, unknown>)[k]), cuerpo.data);
   const concatenado = firma.properties.map((p) => String(valorDe(p))).join('');
   const esperado = await sha256hex(concatenado + cuerpo.timestamp + env.WOMPI_EVENTS);
   if (!iguales(esperado.toLowerCase(), String(firma.checksum || '').toLowerCase())) {
@@ -46,7 +55,7 @@ export async function onRequestPost({ request, env }) {
     if (m) {
       try {
         /* el pedido solo se verifica si lo pagado es exactamente su total (en centavos, COP) */
-        const ped = await env.DB.prepare('SELECT total, estado FROM pedidos WHERE id = ?').bind(m[1]).first();
+        const ped = await env.DB.prepare('SELECT total, estado FROM pedidos WHERE id = ?').bind(m[1]).first<{ total: number; estado: string }>();
         if (!ped || Number(tx.amount_in_cents) !== Math.round(Number(ped.total)) * 100 || (tx.currency && tx.currency !== 'COP')) {
           return new Response('monto no coincide', { status: 200 }); // 200 para que Wompi no reintente; queda sin verificar
         }
@@ -58,10 +67,11 @@ export async function onRequestPost({ request, env }) {
         ).bind(String(tx.id || ''), m[1]).run();
         if (ped.estado === 'nuevo') await registrarEstado(env, m[1], 'verificado');
       } catch (e) { /* si la base falla, Wompi reintenta al no recibir 200 */
+        await registrarError(env, 'wompi', e);
         return new Response('db', { status: 500 });
       }
     }
   }
   /* DECLINED / VOIDED / ERROR: no se toca nada — el cliente puede reintentar */
   return new Response('ok', { status: 200 });
-}
+};

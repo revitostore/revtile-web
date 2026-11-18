@@ -1,0 +1,41 @@
+name: CI
+
+# Cada cambio (push o pull request) pasa por las mismas puertas que corres en tu computador:
+# regenerar las páginas, verificar coherencia, revisar tipos y correr todas las pruebas.
+on:
+  push:
+  pull_request:
+
+jobs:
+  calidad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Regenerar las páginas y comprobar que lo generado está en el repositorio
+        # Si alguien edita productos.json y olvida correr las herramientas, aquí se nota.
+        # (sitemap.xml se excluye: su fecha sale del último commit)
+        run: |
+          npm run construir
+          git diff --exit-code -- . ':!sitemap.xml'
+
+      - name: Verificar coherencia de precios, enlaces y textos
+        run: npm run verificar
+
+      - name: Revisar tipos (TypeScript estricto)
+        run: npm run tipos
+
+      - name: Pruebas unitarias
+        run: npm run test:unidad
+
+      - name: Pruebas de integración (sitio completo con D1 local)
+        run: npm run test:integracion

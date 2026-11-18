@@ -17,24 +17,21 @@ import { rutasOps } from '../_ops/rutas.ts';
 import { registrarEstado } from '../_ops/envios.ts';
 import { registrarError } from '../_ops/log.ts';
 
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-  });
+import type { Env } from '../_ops/tipos.ts';
+import { json } from '../_ops/http.ts';
 
 const ESTADOS = ['nuevo', 'verificado', 'despachado', 'entregado', 'cancelado'];
 
 /* comparación en tiempo constante (para la llave de respaldo) */
-const iguales = (a, b) => {
-  a = String(a || ''); b = String(b || '');
-  if (a.length !== b.length) return false;
+const iguales = (a: unknown, b: unknown): boolean => {
+  const x = String(a || ''); const y = String(b || '');
+  if (x.length !== y.length) return false;
   let d = 0;
-  for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < x.length; i++) d |= x.charCodeAt(i) ^ y.charCodeAt(i);
   return d === 0;
 };
 
-const b64u = (t) => {
+const b64u = (t: string): Uint8Array => {
   let b = t.replace(/-/g, '+').replace(/_/g, '/');
   b += '='.repeat((4 - (b.length % 4)) % 4);
   return Uint8Array.from(atob(b), (c) => c.charCodeAt(0));
@@ -44,24 +41,24 @@ const b64u = (t) => {
    Se activa definiendo CF_ACCESS_TEAM_DOMAIN (p. ej. miequipo.cloudflareaccess.com) y
    CF_ACCESS_AUD (el "Application Audience (AUD) tag" de la app de Access). Con eso, aunque
    alguien se salte Access o falsifique el header o la cookie, no entra. */
-async function correoDeJwtVerificado(env, jwt) {
+async function correoDeJwtVerificado(env: Env, jwt: string): Promise<string> {
   try {
     const [h, p, sig] = jwt.split('.');
     const cab = JSON.parse(new TextDecoder().decode(b64u(h)));
     const carga = JSON.parse(new TextDecoder().decode(b64u(p)));
     if (cab.alg !== 'RS256') return '';
     const r = await fetch('https://' + env.CF_ACCESS_TEAM_DOMAIN + '/cdn-cgi/access/certs', { cf: { cacheTtl: 3600, cacheEverything: true } });
-    const jwk = ((await r.json()).keys || []).find((k) => k.kid === cab.kid);
+    const jwk = (((await r.json()) as { keys?: (JsonWebKey & { kid?: string })[] }).keys || []).find((k) => k.kid === cab.kid);
     if (!jwk) return '';
     const llave = await crypto.subtle.importKey('jwk', jwk, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
     const ok = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', llave, b64u(sig), new TextEncoder().encode(h + '.' + p));
-    const aud = [].concat(carga.aud || []);
-    if (!ok || !aud.includes(env.CF_ACCESS_AUD) || !(carga.exp * 1000 > Date.now())) return '';
+    const aud: string[] = ([] as string[]).concat(carga.aud || []);
+    if (!ok || !aud.includes(env.CF_ACCESS_AUD ?? '') || !(carga.exp * 1000 > Date.now())) return '';
     return String(carga.email || '').toLowerCase();
   } catch (e) { return ''; }
 }
 
-export async function onRequest(context) {
+export async function onRequest(context: EventContext<Env, 'path', unknown>): Promise<Response> {
   const { request, env, params } = context;
 
   /* candado doble: correo autenticado por Access, o llave de respaldo.
@@ -99,7 +96,7 @@ export async function onRequest(context) {
     return json({ ok: false, error: 'Acceso denegado' }, 401);
   }
 
-  const ruta = (params.path || []).join('/');
+  const ruta = ([] as string[]).concat(params.path || []).join('/');
   const url = new URL(request.url);
 
   try {
@@ -135,7 +132,7 @@ export async function onRequest(context) {
     }
 
     if (ruta === 'pedido' && request.method === 'POST') {
-      const b = await request.json();
+      const b = (await request.json()) as Record<string, any>;
       const id = String(b.id || '').trim().toUpperCase();
       if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
 
@@ -165,7 +162,7 @@ export async function onRequest(context) {
        Un pedido archivado sale de la lista pero sigue completo en la
        base de datos. Reversible con un clic. */
     if (ruta === 'archivar' && request.method === 'POST') {
-      const b = await request.json();
+      const b = (await request.json()) as Record<string, any>;
       const id = String(b.id || '').trim().toUpperCase();
       if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
       const volver = b.deshacer === true;
@@ -183,7 +180,7 @@ export async function onRequest(context) {
        para poder atender una solicitud de supresion de datos, que el
        titular puede pedir (Ley 1581 de 2012). */
     if (ruta === 'eliminar' && request.method === 'POST') {
-      const b = await request.json();
+      const b = (await request.json()) as Record<string, any>;
       const id = String(b.id || '').trim().toUpperCase();
       if (!/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
       if (String(b.confirmar || '').trim().toUpperCase() !== id) {
@@ -206,7 +203,7 @@ export async function onRequest(context) {
     }
 
     if (ruta === 'cupon' && request.method === 'POST') {
-      const b = await request.json();
+      const b = (await request.json()) as Record<string, any>;
       const codigo = String(b.codigo || '').trim().toUpperCase();
       if (!/^[A-Z0-9]{3,20}$/.test(codigo)) return json({ ok: false, error: 'Código: 3-20 letras/números, sin espacios' }, 400);
       const tipo = b.tipo === 'fijo' ? 'fijo' : 'porcentaje';

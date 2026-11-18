@@ -8,29 +8,26 @@
      WOMPI_INTEGRITY (secreto) secreto de integridad
      WOMPI_EVENTS    (secreto) secreto de eventos (lo usa /api/wompi) */
 
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-  });
+import type { Env } from '../_ops/tipos.ts';
+import { json } from '../_ops/http.ts';
 
-const sha256hex = async (texto) => {
+const sha256hex = async (texto: string): Promise<string> => {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
 };
 
-export async function onRequestGet({ env }) {
+export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   return json({ ok: true, activo: !!(env.WOMPI_PUBLIC && env.WOMPI_INTEGRITY) });
-}
+};
 
-export async function onRequestPost({ request, env }) {
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!env.WOMPI_PUBLIC || !env.WOMPI_INTEGRITY) {
     return json({ ok: false, error: 'Pagos en línea aún no disponibles' }, 503);
   }
-  const { id } = await request.json().catch(() => ({}));
-  if (!/^RV-[A-Z0-9]{4,8}$/.test(id || '')) return json({ ok: false, error: 'ID inválido' }, 400);
+  const { id } = (await request.json().catch(() => ({}))) as { id?: string };
+  if (!id || !/^RV-[A-Z0-9]{4,8}$/.test(id)) return json({ ok: false, error: 'ID inválido' }, 400);
 
-  const p = await env.DB.prepare('SELECT total, estado FROM pedidos WHERE id = ?').bind(id).first();
+  const p = await env.DB.prepare('SELECT total, estado FROM pedidos WHERE id = ?').bind(id).first<{ total: number; estado: string }>();
   if (!p) return json({ ok: false, error: 'Pedido no encontrado' }, 404);
   if (p.estado === 'cancelado') return json({ ok: false, error: 'Pedido cancelado' }, 409);
 
@@ -48,4 +45,4 @@ export async function onRequestPost({ request, env }) {
   u.searchParams.set('redirect-url', 'https://revtile.com.co/rastreo?id=' + id);
 
   return json({ ok: true, url: u.toString() });
-}
+};

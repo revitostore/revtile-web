@@ -8,7 +8,11 @@ import { fileURLToPath } from 'node:url';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 /* versión para el cache: huella corta del contenido del archivo */
-export const huella = (ruta) => createHash('md5').update(readFileSync(join(RAIZ, ruta))).digest('hex').slice(0, 8);
+export const huella = (ruta) => {
+  const bytes = readFileSync(join(RAIZ, ruta));
+  const texto = /\.(css|js|mjs|html|json|txt|svg)$/.test(ruta);
+  return createHash('md5').update(texto ? Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n')) : bytes).digest('hex').slice(0, 8);
+};
 
 export const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

@@ -13,6 +13,7 @@ import { spawn, execSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TMP = join(RAIZ, 'tests', '.tmp');
@@ -20,6 +21,7 @@ const PERSISTIR = join(TMP, 'd1');
 const TOML = join(RAIZ, 'wrangler.toml');
 const PUERTO = 8788;
 const LLAVE = 'llave-de-prueba-123456';
+const SECRETO_WOMPI = 'secreto-eventos-prueba';
 const MIGRACIONES = ['db/schema.sql', 'db/schema-v2.sql', 'db/schema-v4.sql', 'db/schema-v6.sql'];
 
 let bien = 0;
@@ -67,7 +69,7 @@ function levantar() {
   rmSync(PERSISTIR, { recursive: true, force: true });
   mkdirSync(TMP, { recursive: true });
   migrar();
-  servidor = spawn('npx', ['wrangler', 'pages', 'dev', '.', '--port', String(PUERTO), '--persist-to', PERSISTIR, '--binding', `ADMIN_KEY=${LLAVE}`], { cwd: RAIZ, shell: true, stdio: 'ignore' });
+  servidor = spawn('npx', ['wrangler', 'pages', 'dev', '.', '--port', String(PUERTO), '--persist-to', PERSISTIR, '--binding', `ADMIN_KEY=${LLAVE}`, '--binding', `WOMPI_EVENTS=${SECRETO_WOMPI}`], { cwd: RAIZ, shell: true, stdio: 'ignore' });
 }
 function apagar() {
   try {
@@ -181,6 +183,29 @@ async function pruebas() {
   r = await req('POST', '/api/pedido', pedido('RV-RC002', [['mt', 1]], { telefono: telR }));
   r = await admin('GET', 'ops/recompras');
   chequear('si el cliente ya volvió a comprar, deja de aparecer', !(r.json.recompras || []).some((x) => x.id === 'RV-RC001'), r.json);
+
+  console.log('\n── Webhook de Wompi ──');
+  const evento = (ref, monto, estado = 'APPROVED', secreto = SECRETO_WOMPI) => {
+    const data = { transaction: { id: 'T-' + ref, status: estado, reference: ref, amount_in_cents: monto, currency: 'COP' } };
+    const props = ['transaction.id', 'transaction.status', 'transaction.amount_in_cents'];
+    const ts = 1700000000;
+    const concat = props.map((p) => p.split('.').reduce((acc, k) => acc[k], data)).join('');
+    return { data, signature: { properties: props, checksum: createHash('sha256').update(concat + ts + secreto).digest('hex') }, timestamp: ts };
+  };
+  const estadoDe = (id) => ((sql(`SELECT estado FROM pedidos WHERE id='${id}'`).match(/"estado":\s*"(\w+)"/) || [])[1]);
+  r = await req('POST', '/api/pedido', pedido('RV-WP001', [['mt', 1]]));
+  r = await req('POST', '/api/wompi', evento('RV-WP001-ABC', 14000000, 'APPROVED', 'secreto-equivocado'));
+  chequear('un evento con checksum falso se rechaza (403)', r.status === 403, r.status);
+  chequear('y el pedido no cambia', estadoDe('RV-WP001') === 'nuevo', estadoDe('RV-WP001'));
+  r = await req('POST', '/api/wompi', evento('RV-WP001-ABC', 5000, 'APPROVED'));
+  chequear('un pago por un monto distinto al del pedido no lo verifica', r.status === 200 && estadoDe('RV-WP001') === 'nuevo', estadoDe('RV-WP001'));
+  r = await req('POST', '/api/wompi', evento('RV-WP001-ABC', 14000000, 'DECLINED'));
+  chequear('un pago rechazado no cambia el pedido', estadoDe('RV-WP001') === 'nuevo');
+  r = await req('POST', '/api/wompi', evento('RV-WP001-ABC', 14000000, 'APPROVED'));
+  chequear('un pago aprobado por el monto exacto verifica el pedido', r.status === 200 && estadoDe('RV-WP001') === 'verificado', estadoDe('RV-WP001'));
+  chequear('y la verificación queda en el historial', /verificado/.test(sql("SELECT estado FROM estados_log WHERE pedido_id='RV-WP001'")));
+  r = await req('POST', '/api/wompi', { hola: 'mundo' });
+  chequear('un cuerpo sin la forma de Wompi se rechaza (400)', r.status === 400, r.status);
 
   console.log('\n── Eventos anónimos y embudo ──');
   const ev = (cuerpo, cab) => req('POST', '/api/e', cuerpo, cab);

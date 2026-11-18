@@ -103,7 +103,7 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
 /* 7 · la maleta: catálogo del navegador, catálogo del servidor y páginas que los cargan */
 {
   const cat = read('js/catalogo.js');
-  const srv = read('functions/api/_catalogo.js');
+  const srv = read('functions/api/_catalogo.ts');
   const claves = [
     ...data.productos.map((p) => `${p.sku}:u`),
     ...pv.flatMap((p) => p.variantes.map((v) => `${p.sku}:${v.id}`)),
@@ -115,7 +115,7 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
   }
   for (const p of pv) for (const v of p.variantes) {
     const m = srv.match(new RegExp(`"${p.sku}:${v.id}": \\{\\s*"stock": (\\d+)`));
-    if (!m) errores.push(`functions/api/_catalogo.js no tiene ${p.sku}:${v.id}`);
+    if (!m) errores.push(`functions/api/_catalogo.ts no tiene ${p.sku}:${v.id}`);
     else if (Number(m[1]) !== v.stock) errores.push(`El stock del servidor de ${p.sku}:${v.id} (${m[1]}) no coincide con productos.json (${v.stock}); ejecuta node tools/build-suplementos.mjs`);
   }
   for (const p of pv) for (const v of p.variantes) {

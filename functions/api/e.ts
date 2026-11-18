@@ -10,7 +10,7 @@
 
 import type { Env } from './_ops/tipos.ts';
 import { propio } from './_ops/http.ts';
-import { SUPLEMENTOS, CREATINAS } from './_catalogo.js';
+import { SUPLEMENTOS, CREATINAS } from './_catalogo.ts';
 
 const TIPOS = ['vista', 'producto', 'canasta', 'pedido_inicio'];
 const MAX_POR_HORA = 150;   // eventos por sesión: frena a quien intente llenar la tabla

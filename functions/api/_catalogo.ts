@@ -1,7 +1,9 @@
 /* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.
    El servidor NO confía en los precios que manda el navegador: recalcula cada pedido con esto.
    SUPLEMENTOS: stock base y precio; lo vendido se descuenta en /api/stock y /api/pedido. */
-export const SUPLEMENTOS = {
+export interface Suplemento { stock: number; precio: number; nombre: string }
+export interface Creatina { precio: number; nombre: string }
+export const SUPLEMENTOS: Record<string, Suplemento> = {
   "wgs:dobles": {
     "stock": 2,
     "precio": 250000,
@@ -38,7 +40,7 @@ export const SUPLEMENTOS = {
     "nombre": "AllMax Nutrition Premium Vitaform"
   }
 };
-export const CREATINAS = {
+export const CREATINAS: Record<string, Creatina> = {
   "on": {
     "precio": 120000,
     "nombre": "Optimum Nutrition Micronized Creatine Powder 300 g"
@@ -52,9 +54,9 @@ export const CREATINAS = {
     "nombre": "Optimum Nutrition Micronized Creatine Powder 600 g"
   }
 };
-export const COMBO_POR_PAR = 10000;
+export const COMBO_POR_PAR: number = 10000;
 /* Cuántos días dura una unidad (una porción por día): sirve para avisar cuándo se le acaba al cliente. */
-export const DURACION = {
+export const DURACION: Record<string, number> = {
   "on": 60,
   "mt": 80,
   "on120": 120,

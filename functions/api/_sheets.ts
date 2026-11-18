@@ -15,20 +15,22 @@
  * acceso a tu correo ni a tu Drive.
  */
 
+import type { Env } from './_ops/tipos.ts';
+
 const HOJA_ID = '1vn0I59DdCXerw-XuiVihQrcr54SbP78CvtfZ8h9o2Qw';
 const PESTANA = 'Pedidos';
 
 /* ── Firma del token, sin librerías ──────────────────────────────────
    Workers trae WebCrypto, así que se puede firmar el JWT a mano y
    evitar meter una dependencia entera para esto. */
-function b64url(datos) {
+function b64url(datos: string | ArrayBuffer | Uint8Array): string {
   const bin = typeof datos === 'string' ? new TextEncoder().encode(datos) : new Uint8Array(datos);
   let s = '';
   for (const b of bin) s += String.fromCharCode(b);
   return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function pemABuffer(pem) {
+function pemABuffer(pem: string): ArrayBuffer {
   const cuerpo = pem.replace(/-----(BEGIN|END) PRIVATE KEY-----/g, '').replace(/\s/g, '');
   const bin = atob(cuerpo);
   const buf = new Uint8Array(bin.length);
@@ -36,7 +38,7 @@ function pemABuffer(pem) {
   return buf.buffer;
 }
 
-async function tokenDeAcceso(sa) {
+async function tokenDeAcceso(sa: { client_email: string; private_key: string }): Promise<string> {
   const ahora = Math.floor(Date.now() / 1000);
   const cabecera = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
   const cuerpo = b64url(JSON.stringify({
@@ -62,7 +64,7 @@ async function tokenDeAcceso(sa) {
     }),
   });
   if (!r.ok) throw new Error('Google rechazó la credencial: ' + r.status);
-  return (await r.json()).access_token;
+  return ((await r.json()) as { access_token: string }).access_token;
 }
 
 /* ── La fila ─────────────────────────────────────────────────────────
@@ -71,10 +73,10 @@ async function tokenDeAcceso(sa) {
    está escrito en la hoja. */
 /* Si un texto del cliente empieza por = + - @ Sheets lo trataría como fórmula (por ejemplo
    =IMPORTDATA(...) para sacar datos). Se le antepone una comilla para que quede como texto. */
-const seguro = (v) => (typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? "'" + v : v);
+const seguro = (v: unknown): unknown => (typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? "'" + v : v);
 
-function filaDe(p) {
-  let items = [];
+function filaDe(p: Record<string, any>): (string | number)[] {
+  let items: { c: number; nombre: string }[] = [];
   try { items = JSON.parse(p.items || '[]'); } catch (_) { items = []; }
   return [
     p.id,
@@ -102,7 +104,7 @@ function filaDe(p) {
 /* ── Lo que se llama desde el checkout ───────────────────────────────
    Nunca lanza: si Google falla, el pedido ya quedó guardado en D1 y
    eso es lo que importa. El error se registra y se sigue. */
-export async function copiarAHoja(env, pedido) {
+export async function copiarAHoja(env: Env, pedido: Record<string, any>): Promise<{ ok: boolean; motivo?: string }> {
   if (!env.GOOGLE_SA_JSON) return { ok: false, motivo: 'sin credencial' };
   try {
     const sa = JSON.parse(env.GOOGLE_SA_JSON);
@@ -118,7 +120,7 @@ export async function copiarAHoja(env, pedido) {
     if (!r.ok) throw new Error('Sheets respondió ' + r.status + ': ' + (await r.text()).slice(0, 200));
     return { ok: true };
   } catch (e) {
-    console.error('[sheets] no se pudo copiar el pedido', pedido && pedido.id, e.message);
-    return { ok: false, motivo: e.message };
+    console.error('[sheets] no se pudo copiar el pedido', pedido && pedido.id, (e as Error).message);
+    return { ok: false, motivo: (e as Error).message };
   }
 }

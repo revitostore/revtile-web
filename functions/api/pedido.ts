@@ -7,22 +7,24 @@
    del servidor (_catalogo.js), y subtotal, combo, cupón y total se RECALCULAN aquí. Si el total
    que manda el navegador no coincide, el pedido se rechaza. */
 
-import { validarCupon } from './cupon.js';
-import { copiarAHoja } from './_sheets.js';
-import { SUPLEMENTOS, CREATINAS, COMBO_POR_PAR } from './_catalogo.js';
+import type { Env } from './_ops/tipos.ts';
+import { json, propio } from './_ops/http.ts';
+import { validarCupon } from './cupon.ts';
+import { copiarAHoja } from './_sheets.ts';
+import { SUPLEMENTOS, CREATINAS, COMBO_POR_PAR } from './_catalogo.ts';
 import { registrarEstado } from './_ops/envios.ts';
 import { registrarError } from './_ops/log.ts';
-import { reservadas } from './stock.js';
+import { reservadas } from './stock.ts';
 
-const json = (data, status = 200) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-  });
+const fmt = (n: unknown): string => '$' + Number(n || 0).toLocaleString('es-CO');
+const ENTIDADES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (v: unknown): string => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ENTIDADES[c]);
 
-const fmt = (n) => '$' + Number(n || 0).toLocaleString('es-CO');
-const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const propio = (obj, k) => Object.prototype.hasOwnProperty.call(obj, k);
+interface LineaPedido { k: string; c: number; nombre: string; valor: number }
+interface AvisoPedido {
+  id: string; metodo_pago: string; items: LineaPedido[]; total: number; nombre: string; telefono: string;
+  ciudad: string; direccion: string; entrega_dia?: string; entrega_hora?: string; cupon: string | null; descuento: number;
+}
 
 const MAX_LINEAS = 20;       // líneas distintas por pedido
 const MAX_POR_LINEA = 10;    // unidades de un mismo producto
@@ -30,7 +32,7 @@ const MAX_POR_TELEFONO = 5;  // pedidos nuevos del mismo teléfono en 10 minutos
 
 /* Aviso de pedido nuevo por email (Resend). Nunca bloquea el registro.
    Todo lo que escribe el cliente se escapa: el correo no puede llevar HTML ajeno. */
-async function avisarPedido(env, d) {
+async function avisarPedido(env: Env, d: AvisoPedido): Promise<void> {
   if (!env.RESEND_KEY || !env.NOTIF_EMAIL) return;
   const items = d.items.map((i) => `${esc(i.c)}× ${esc(i.nombre)}`).join('<br>');
   const entrega = d.entrega_dia ? `Programada: <b>${esc(d.entrega_dia)} · ${esc(d.entrega_hora)}</b>` : 'Estándar (2-3 días hábiles)';
@@ -62,7 +64,7 @@ async function avisarPedido(env, d) {
 
 /* Aviso de stock bajo: cuando una venta deja un producto en 1 unidad o menos, llega un correo.
    (Pages no tiene tareas programadas; el aviso se dispara con la propia venta.) */
-async function avisarStockBajo(env, vendidos) {
+async function avisarStockBajo(env: Env, vendidos: { k: string; c: number }[]): Promise<void> {
   if (!env.RESEND_KEY || !env.NOTIF_EMAIL || !vendidos.length) return;
   try {
     const hechos = await reservadas(env.DB);
@@ -84,11 +86,11 @@ async function avisarStockBajo(env, vendidos) {
   } catch (e) { /* el aviso nunca tumba el pedido */ }
 }
 
-export async function onRequestPost(context) {
+export async function onRequestPost(context: EventContext<Env, string, unknown>): Promise<Response> {
   const { request, env } = context;
   /* el cuerpo es JSON y nada más: así ningún formulario de otro sitio puede mandar un pedido */
   if (!/application\/json/i.test(request.headers.get('content-type') || '')) return json({ ok: false, error: 'Formato no admitido' }, 415);
-  let p;
+  let p: Record<string, any>;
   try {
     p = await request.json();
   } catch (e) {
@@ -117,8 +119,8 @@ export async function onRequestPost(context) {
   const recibidos = Array.isArray(p.items) ? p.items : [];
   if (!recibidos.length) return json({ ok: false, error: 'Pedido vacío' }, 400);
   if (recibidos.length > MAX_LINEAS) return json({ ok: false, error: 'Demasiadas líneas en el pedido' }, 400);
-  const items = [];
-  const pedidas = {};
+  const items: LineaPedido[] = [];
+  const pedidas: Record<string, number> = {};
   let unidades = 0;
   let subtotal = 0;
   for (const it of recibidos) {
@@ -151,7 +153,7 @@ export async function onRequestPost(context) {
 
     /* freno contra el abuso: muchos pedidos nuevos desde el mismo teléfono en pocos minutos */
     try {
-      const rec = await env.DB.prepare("SELECT COUNT(*) AS n FROM pedidos WHERE telefono = ? AND creado_en > datetime('now', '-10 minutes')").bind(telefono).first();
+      const rec = await env.DB.prepare("SELECT COUNT(*) AS n FROM pedidos WHERE telefono = ? AND creado_en > datetime('now', '-10 minutes')").bind(telefono).first<{ n: number }>();
       if (rec && rec.n >= MAX_POR_TELEFONO) return json({ ok: false, error: 'Demasiados pedidos seguidos. Espera unos minutos o escríbenos por WhatsApp.' }, 429);
     } catch (e) { /* si la consulta falla, el pedido sigue */ }
 
@@ -204,7 +206,7 @@ export async function onRequestPost(context) {
            WHERE json_extract(j.value, '$.k') = ? AND pp.estado <> 'cancelado'), 0)) >= ?`).join(' AND ')
       : '1';
     const bindStock = suplementos.flatMap((a) => [SUPLEMENTOS[a.k].stock, a.k, a.c]);
-    const ph = (n) => Array(n).fill('?').join(',');
+    const ph = (n: number) => Array(n).fill('?').join(',');
     /* El esquema de la base puede ir por detrás del código (migraciones v2 y v6 aún sin ejecutar):
        se intenta con todas las columnas y, si falta alguna, con menos. Nunca se pierde un pedido. */
     const recordar = p.recordar ? 1 : 0;
@@ -213,8 +215,8 @@ export async function onRequestPost(context) {
       { cols: ', cupon, descuento', vals: [cupon, descuento] },
       { cols: '', vals: [] },
     ];
-    let res;
-    let ultimoError;
+    let res: D1Result | undefined;
+    let ultimoError: unknown;
     for (const it of intentos) {
       try {
         res = await env.DB.prepare(
@@ -256,7 +258,7 @@ export async function onRequestPost(context) {
           const fila = await env.DB.prepare('SELECT * FROM pedidos WHERE id = ?').bind(id).first();
           if (fila) await copiarAHoja(env, fila);
         } catch (e) {
-          console.error('[sheets] fallo la copia de', id, e.message);
+          console.error('[sheets] fallo la copia de', id, (e as Error).message);
         }
       })());
     }

@@ -5,13 +5,14 @@
      · suplementos.html: el índice de la categoría (CollectionPage + ItemList)
      · las tarjetas de la portada (entre los marcadores de index.html)
      · el bloque de suplementos de llms.txt y las URLs del sitemap.xml
-     · js/catalogo.js (catálogo para el navegador: la maleta) y functions/api/_catalogo.js
+     · js/catalogo.js (catálogo para el navegador: la maleta) y functions/api/_catalogo.ts
        (stock base, nombres y PRECIOS para el servidor: valida pedidos y stock en vivo)
    Para sumar un producto: agrégalo en productos.json y ejecuta
      node tools/build-suplementos.mjs   (y después `node tools/check.mjs`) */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { execSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { footer, esc } from './comun.mjs';
@@ -25,7 +26,12 @@ const P = data.suplementos.productos;
 const SITIO = 'https://revtile.com.co/';
 const WA = data.whatsapp;
 const cop = (n) => '$' + n.toLocaleString('es-CO');
-const hash = (p) => createHash('md5').update(readFileSync(join(ROOT, p))).digest('hex').slice(0, 8);
+/* La huella ignora el tipo de salto de línea (Windows CRLF / Linux LF) para que dé lo mismo en cualquier computador y en CI. */
+const esTexto = /\.(css|js|mjs|html|json|txt|svg)$/;
+const hash = (p) => {
+  const bytes = readFileSync(join(ROOT, p));
+  return createHash('md5').update(esTexto.test(p) ? Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n')) : bytes).digest('hex').slice(0, 8);
+};
 const CSS_V = leer('index.html').match(/css\/styles\.css\?v=(\d+)/)[1];
 const SUP_CSS_V = hash('css/suplementos.css');
 const SUP_JS_V = hash('js/suplementos.js');
@@ -64,14 +70,16 @@ const duracion = {};
 for (const p of data.productos) duracion[p.sku] = p.servicios;
 for (const p of P) for (const v of p.variantes) duracion[`${p.sku}:${v.id}`] = Number(v.porciones);
 for (const p of data.productos) catalogoCreatinas[p.sku] = { precio: p.precio, nombre: `${p.marca} ${p.nombre} ${p.gramos} g` };
-escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.
+escribir('functions/api/_catalogo.ts', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.
    El servidor NO confía en los precios que manda el navegador: recalcula cada pedido con esto.
    SUPLEMENTOS: stock base y precio; lo vendido se descuenta en /api/stock y /api/pedido. */
-export const SUPLEMENTOS = ${JSON.stringify(catalogoServidor, null, 2)};
-export const CREATINAS = ${JSON.stringify(catalogoCreatinas, null, 2)};
-export const COMBO_POR_PAR = ${data.combo.descuento_por_par};
+export interface Suplemento { stock: number; precio: number; nombre: string }
+export interface Creatina { precio: number; nombre: string }
+export const SUPLEMENTOS: Record<string, Suplemento> = ${JSON.stringify(catalogoServidor, null, 2)};
+export const CREATINAS: Record<string, Creatina> = ${JSON.stringify(catalogoCreatinas, null, 2)};
+export const COMBO_POR_PAR: number = ${data.combo.descuento_por_par};
 /* Cuántos días dura una unidad (una porción por día): sirve para avisar cuándo se le acaba al cliente. */
-export const DURACION = ${JSON.stringify(duracion, null, 2)};
+export const DURACION: Record<string, number> = ${JSON.stringify(duracion, null, 2)};
 `);
 const CAT_JS_V = hash('js/catalogo.js');
 
@@ -670,7 +678,10 @@ const MI = '<!-- suplementos:inicio -->', MF = '<!-- suplementos:fin -->';
 if (mapa.includes(MI)) mapa = mapa.replace(new RegExp(`${MI}[\\s\\S]*?${MF}`), `${MI}\n${urlsMapa}\n  ${MF}`);
 else mapa = mapa.replace('</urlset>', `  ${MI}\n${urlsMapa}\n  ${MF}\n</urlset>`);
 /* fecha de modificación en cada URL, y fuera las páginas privadas */
-const hoy = new Date().toISOString().slice(0, 10);
+/* la fecha del último commit (así el sitemap no cambia solo por correr la herramienta otro día) */
+let hoy = '';
+try { hoy = execSync('git log -1 --format=%cs', { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { /* sin git */ }
+if (!hoy.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)) hoy = new Date().toISOString().slice(0, 10);
 mapa = mapa.split('</url>').map((bloque) => {
   if (!bloque.includes('<loc>')) return bloque;
   if (/\/(rastreo|pedido|gestion)(\.html)?<\/loc>/.test(bloque)) return '';

@@ -105,3 +105,25 @@ acepta JSON. Para cerrar lo que no se puede hacer desde el código:
    (por ejemplo 30 peticiones por minuto por IP). Frena a quien pruebe cupones o pedidos en masa.
 3. **Bot Fight Mode** (Security → Bots) activado.
 4. **Wompi:** el webhook solo verifica un pedido si el monto pagado es exactamente su total.
+
+---
+
+## Plataforma de datos (migración v6)
+
+Todo lo nuevo es aditivo: si no ejecutas la migración, la tienda y el panel siguen funcionando igual
+(las pestañas nuevas te avisan qué falta).
+
+1. **Migración v6.** Cloudflare → D1 → `revtile-db` → Console → pegar `db/schema-v6.sql` y ejecutar.
+   (Crea `eventos`, `costos`, `ajustes`, `estados_log`, `errores` y la columna `pedidos.recordar`.
+   Si D1 dice que `recordar` ya existe, ignóralo.)
+2. **Publicar** y abrir el Centro de mando. Pestaña **Salud** debe decir «migración v6 completa».
+3. **Cargar costos.** Pestaña Analítica → «Costos de los productos». Sin costo no hay margen (no se inventa).
+4. **Ajustar la reposición.** Pestaña Inventario: cuántos días tarda tu proveedor y cuántos días extra
+   quieres cubrir. Con eso calcula «reponer ya / pronto / bien» y cuántas unidades pedir.
+5. **Recompras.** Pestaña Clientes → «Para avisar»: los clientes que marcaron «avísame cuando se me acabe»
+   y a los que se les está acabando el producto, con el mensaje de WhatsApp listo.
+6. **Sincronizar envíos.** Pestaña Salud → botón que pone al día los pedidos con guía según Skydropx.
+
+Qué se mide y qué no: `eventos` guarda solo la sesión (número al azar de la pestaña), el tipo de evento,
+la página, el producto y si fue celular o computador. No guarda IP, agente de usuario ni datos personales, y
+no mide nada si el navegador pide no ser rastreado.
