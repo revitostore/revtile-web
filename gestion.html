@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css?v=83">
+  <link rel="stylesheet" href="css/gestion-ops.css?v=1">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="pp co adm">
@@ -55,6 +56,15 @@
         <div class="adm__stat adm__stat--oro"><b id="stMes">—</b><span>ventas del mes</span></div>
       </div>
 
+      <nav class="ops__tabs" role="tablist" aria-label="Secciones del centro de mando">
+        <button type="button" role="tab" data-tab="pedidos" aria-selected="true">Pedidos</button>
+        <button type="button" role="tab" data-tab="analitica" aria-selected="false">Analítica</button>
+        <button type="button" role="tab" data-tab="inventario" aria-selected="false">Inventario</button>
+        <button type="button" role="tab" data-tab="clientes" aria-selected="false">Clientes</button>
+        <button type="button" role="tab" data-tab="salud" aria-selected="false">Salud</button>
+      </nav>
+
+      <div data-panel="pedidos">
       <section class="co__card">
         <p class="section-eyebrow"><b>01</b> Pedidos</p>
         <div class="adm__filtros">
@@ -88,6 +98,12 @@
         </div>
         <div class="adm__cupones" id="admCupones"></div>
       </section>
+      </div>
+
+      <div data-panel="analitica" hidden><section class="co__card" id="ops_analitica"></section></div>
+      <div data-panel="inventario" hidden><section class="co__card" id="ops_inventario"></section></div>
+      <div data-panel="clientes" hidden><section class="co__card" id="ops_clientes"></section></div>
+      <div data-panel="salud" hidden><section class="co__card" id="ops_salud"></section></div>
 
 
 
@@ -98,5 +114,6 @@
   </main>
 
   <script src="js/gestion.js?v=d77cdd60" defer></script>
+  <script src="js/gestion-ops.js?v=1" defer></script>
 </body>
 </html>

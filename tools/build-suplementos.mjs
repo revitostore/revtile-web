@@ -60,6 +60,9 @@ for (const p of P) for (const v of p.variantes) {
 }
 escribir('js/catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano. */\nwindow.CATALOGO = ${JSON.stringify(catalogoCliente)};\n`);
 const catalogoCreatinas = {};
+const duracion = {};
+for (const p of data.productos) duracion[p.sku] = p.servicios;
+for (const p of P) for (const v of p.variantes) duracion[`${p.sku}:${v.id}`] = Number(v.porciones);
 for (const p of data.productos) catalogoCreatinas[p.sku] = { precio: p.precio, nombre: `${p.marca} ${p.nombre} ${p.gramos} g` };
 escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-suplementos.mjs desde productos.json. No editar a mano.
    El servidor NO confía en los precios que manda el navegador: recalcula cada pedido con esto.
@@ -67,6 +70,8 @@ escribir('functions/api/_catalogo.js', `/* GENERADO por tools/build-suplementos.
 export const SUPLEMENTOS = ${JSON.stringify(catalogoServidor, null, 2)};
 export const CREATINAS = ${JSON.stringify(catalogoCreatinas, null, 2)};
 export const COMBO_POR_PAR = ${data.combo.descuento_por_par};
+/* Cuántos días dura una unidad (una porción por día): sirve para avisar cuándo se le acaba al cliente. */
+export const DURACION = ${JSON.stringify(duracion, null, 2)};
 `);
 const CAT_JS_V = hash('js/catalogo.js');
 
@@ -687,12 +692,16 @@ for (const f of ['index.html', 'terminos.html', 'guia-creatina-original.html', '
 }
 console.log('  pies de página al día');
 
-/* ── El script de carga de imágenes va en todas las páginas públicas ── */
+/* ── Los scripts de carga de imágenes y de eventos anónimos van en todas las páginas públicas ── */
 for (const f of readdirSync(ROOT).filter((x) => x.endsWith('.html') && x !== 'gestion.html')) {
   const html = leer(f);
-  if (html.includes('js/imagenes.js')) continue;
-  const i = html.lastIndexOf('</body>');
-  if (i > 0) escribir(f, html.slice(0, i) + '  <script src="js/imagenes.js?v=1" defer></script>\n' + html.slice(i));
+  let nuevo = html;
+  for (const js of ['imagenes', 'eventos']) {
+    if (nuevo.includes(`js/${js}.js`)) continue;
+    const i = nuevo.lastIndexOf('</body>');
+    if (i > 0) nuevo = nuevo.slice(0, i) + `  <script src="js/${js}.js?v=1" defer></script>\n` + nuevo.slice(i);
+  }
+  if (nuevo !== html) escribir(f, nuevo);
 }
 
 /* ── Versiones para el cache: cada script y hoja de estilos lleva la huella de su contenido.

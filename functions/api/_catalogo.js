@@ -53,3 +53,16 @@ export const CREATINAS = {
   }
 };
 export const COMBO_POR_PAR = 10000;
+/* Cuántos días dura una unidad (una porción por día): sirve para avisar cuándo se le acaba al cliente. */
+export const DURACION = {
+  "on": 60,
+  "mt": 80,
+  "on120": 120,
+  "wgs:dobles": 29,
+  "wgs:extreme": 28,
+  "outrage:blue": 30,
+  "outrage:fruit": 30,
+  "bcaa:blue": 30,
+  "bcaa:fruit": 30,
+  "vitaform:unica": 30
+};

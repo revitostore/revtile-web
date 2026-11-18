@@ -56,6 +56,7 @@
     items.push(k);
     guardar();
     avisar();
+    try { window.dispatchEvent(new CustomEvent('maleta:add', { detail: { k: k } })); } catch (e) { /* navegador antiguo */ }
     if (origen && !reduce) volar(origen);
     return true;
   }

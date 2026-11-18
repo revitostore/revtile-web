@@ -692,6 +692,7 @@ $('btnEnviar').addEventListener('click', async () => {
         vivienda,
         apto,
         porteria,
+        recordar: $('fRecordar') ? $('fRecordar').checked : false,
         direccion_mapa: state.dirMapa || '',
         lat: state.lat,
         lng: state.lng,

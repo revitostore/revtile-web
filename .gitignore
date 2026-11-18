@@ -16,3 +16,9 @@ Claude outputs/
 *service-account*.json
 *gserviceaccount*.json
 revtile-*.json
+
+tests/.tmp/
+
+/wrangler.toml
+
+.demo/

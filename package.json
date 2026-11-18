@@ -1,0 +1,19 @@
+{
+  "name": "revtile-web",
+  "private": true,
+  "description": "REVTILE: tienda de suplementos (Cloudflare Pages + Functions + D1) con plataforma de datos y operación",
+  "scripts": {
+    "construir": "node tools/build-fichas.mjs && node tools/build-suplementos.mjs",
+    "verificar": "node tools/check.mjs",
+    "tipos": "tsc --noEmit",
+    "test:unidad": "node tests/unidad.mjs",
+    "test:integracion": "node tests/integracion.mjs",
+    "test": "npm run tipos && npm run test:unidad && npm run test:integracion",
+    "demo": "node tools/demo.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240620.0",
+    "typescript": "~5.4.5",
+    "wrangler": "3.57.0"
+  }
+}

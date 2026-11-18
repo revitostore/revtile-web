@@ -6,6 +6,8 @@
    URL a registrar en el panel de Wompi (Eventos):
      https://revtile.com.co/api/wompi */
 
+import { registrarEstado } from './_ops/envios.ts';
+
 const sha256hex = async (texto) => {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -44,7 +46,7 @@ export async function onRequestPost({ request, env }) {
     if (m) {
       try {
         /* el pedido solo se verifica si lo pagado es exactamente su total (en centavos, COP) */
-        const ped = await env.DB.prepare('SELECT total FROM pedidos WHERE id = ?').bind(m[1]).first();
+        const ped = await env.DB.prepare('SELECT total, estado FROM pedidos WHERE id = ?').bind(m[1]).first();
         if (!ped || Number(tx.amount_in_cents) !== Math.round(Number(ped.total)) * 100 || (tx.currency && tx.currency !== 'COP')) {
           return new Response('monto no coincide', { status: 200 }); // 200 para que Wompi no reintente; queda sin verificar
         }
@@ -54,6 +56,7 @@ export async function onRequestPost({ request, env }) {
                  nota = TRIM(COALESCE(nota, '') || ' · Wompi aprobado ' || ?)
            WHERE id = ?`
         ).bind(String(tx.id || ''), m[1]).run();
+        if (ped.estado === 'nuevo') await registrarEstado(env, m[1], 'verificado');
       } catch (e) { /* si la base falla, Wompi reintenta al no recibir 200 */
         return new Response('db', { status: 500 });
       }

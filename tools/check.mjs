@@ -4,7 +4,7 @@
    Falla (exit 1) si productos.json, checkout.js, las tarjetas del index,
    las fichas o el JSON-LD se contradicen. */
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -149,6 +149,12 @@ if (pv.length && !mapa.includes('suplementos.html')) errores.push('sitemap.xml n
   if (!mapa.includes('guia-suplementos.html')) errores.push('sitemap.xml no incluye guia-suplementos.html');
   if (!llms.includes('llms-full.txt')) errores.push('llms.txt no apunta a llms-full.txt');
 }
+
+/* 7d · plataforma de datos: las páginas públicas cargan el medidor anónimo y existe la migración v6 */
+for (const f of readdirSync(ROOT).filter((x) => x.endsWith('.html') && x !== 'gestion.html'))
+  if (!read(f).includes('js/eventos.js')) errores.push(`${f} no carga js/eventos.js (ejecuta node tools/build-suplementos.mjs)`);
+if (!existsSync(join(ROOT, 'db/schema-v6.sql'))) errores.push('falta db/schema-v6.sql');
+if (!read('pedido.html').includes('id="fRecordar"')) errores.push('pedido.html perdió la casilla de recordatorio');
 
 /* 8 · nunca se muestran cantidades de stock (ni 'Quedan N' en las páginas ni unidades en llms.txt)
 for (const f of [...readdirSync(ROOT).filter((x) => x.endsWith('.html')), 'llms.txt'])

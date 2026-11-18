@@ -10,6 +10,9 @@
 import { validarCupon } from './cupon.js';
 import { copiarAHoja } from './_sheets.js';
 import { SUPLEMENTOS, CREATINAS, COMBO_POR_PAR } from './_catalogo.js';
+import { registrarEstado } from './_ops/envios.ts';
+import { registrarError } from './_ops/log.ts';
+import { reservadas } from './stock.js';
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
@@ -52,6 +55,30 @@ async function avisarPedido(env, d) {
         to: [env.NOTIF_EMAIL],
         subject: `Pedido ${d.id} — ${fmt(d.total)} (${d.metodo_pago})`,
         html,
+      }),
+    });
+  } catch (e) { /* el aviso nunca tumba el pedido */ }
+}
+
+/* Aviso de stock bajo: cuando una venta deja un producto en 1 unidad o menos, llega un correo.
+   (Pages no tiene tareas programadas; el aviso se dispara con la propia venta.) */
+async function avisarStockBajo(env, vendidos) {
+  if (!env.RESEND_KEY || !env.NOTIF_EMAIL || !vendidos.length) return;
+  try {
+    const hechos = await reservadas(env.DB);
+    const bajos = vendidos
+      .map(({ k }) => ({ k, nombre: SUPLEMENTOS[k].nombre, queda: Math.max(0, SUPLEMENTOS[k].stock - (hechos[k] || 0)) }))
+      .filter((x) => x.queda <= 1);
+    if (!bajos.length) return;
+    const lista = bajos.map((x) => `<li>${esc(x.nombre)}: ${x.queda === 0 ? '<b>agotado</b>' : 'queda 1 unidad'}</li>`).join('');
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + env.RESEND_KEY },
+      body: JSON.stringify({
+        from: env.NOTIF_FROM || 'REVTILE <onboarding@resend.dev>',
+        to: [env.NOTIF_EMAIL],
+        subject: 'Stock bajo en REVTILE',
+        html: `<p>Después del último pedido:</p><ul>${lista}</ul><p>Revisa la pestaña Inventario del Centro de mando para ver cuánto reponer.</p>`,
       }),
     });
   } catch (e) { /* el aviso nunca tumba el pedido */ }
@@ -178,23 +205,28 @@ export async function onRequestPost(context) {
       : '1';
     const bindStock = suplementos.flatMap((a) => [SUPLEMENTOS[a.k].stock, a.k, a.c]);
     const ph = (n) => Array(n).fill('?').join(',');
+    /* El esquema de la base puede ir por detrás del código (migraciones v2 y v6 aún sin ejecutar):
+       se intenta con todas las columnas y, si falta alguna, con menos. Nunca se pierde un pedido. */
+    const recordar = p.recordar ? 1 : 0;
+    const intentos = [
+      { cols: ', cupon, descuento, recordar', vals: [cupon, descuento, recordar] },
+      { cols: ', cupon, descuento', vals: [cupon, descuento] },
+      { cols: '', vals: [] },
+    ];
     let res;
-    try {
-      res = await env.DB.prepare(
-        `INSERT OR IGNORE INTO pedidos
-          (id, metodo_pago, entrega_dia, entrega_hora, items, subtotal, combo, envio, total,
-           nombre, telefono, ciudad, direccion, vivienda, apto, porteria, direccion_mapa, lat, lng, cupon, descuento)
-         SELECT ${ph(21)} WHERE ${condStock}`
-      ).bind(...camposBase, cupon, descuento, ...bindStock).run();
-    } catch (e) {
-      /* base sin migrar a v2 (sin columnas cupon/descuento): guardar igual con el esquema viejo */
-      res = await env.DB.prepare(
-        `INSERT OR IGNORE INTO pedidos
-          (id, metodo_pago, entrega_dia, entrega_hora, items, subtotal, combo, envio, total,
-           nombre, telefono, ciudad, direccion, vivienda, apto, porteria, direccion_mapa, lat, lng)
-         SELECT ${ph(19)} WHERE ${condStock}`
-      ).bind(...camposBase, ...bindStock).run();
+    let ultimoError;
+    for (const it of intentos) {
+      try {
+        res = await env.DB.prepare(
+          `INSERT OR IGNORE INTO pedidos
+            (id, metodo_pago, entrega_dia, entrega_hora, items, subtotal, combo, envio, total,
+             nombre, telefono, ciudad, direccion, vivienda, apto, porteria, direccion_mapa, lat, lng${it.cols})
+           SELECT ${ph(19 + it.vals.length)} WHERE ${condStock}`
+        ).bind(...camposBase, ...it.vals, ...bindStock).run();
+        break;
+      } catch (e) { ultimoError = e; }
     }
+    if (!res) throw ultimoError;
 
     /* 0 filas: o el ID ya existía (reintento legítimo → idempotente) o se acabó el stock */
     if (res.meta.changes === 0) {
@@ -207,6 +239,8 @@ export async function onRequestPost(context) {
       if (cupon) {
         await env.DB.prepare('UPDATE cupones SET usos = usos + 1 WHERE codigo = ?').bind(cupon).run();
       }
+      context.waitUntil(registrarEstado(env, id, 'nuevo'));
+      context.waitUntil(avisarStockBajo(env, suplementos));
       context.waitUntil(avisarPedido(env, {
         id, metodo_pago: metodo, items, total, nombre, telefono, ciudad, direccion,
         entrega_dia: p.entrega_dia, entrega_hora: p.entrega_hora, cupon, descuento,
@@ -230,6 +264,7 @@ export async function onRequestPost(context) {
     return json({ ok: true, id, cupon, descuento });
   } catch (e) {
     /* DB no configurada o caída: el checkout usará el mensaje completo por WhatsApp */
+    await registrarError(env, 'pedido', e);
     return json({ ok: false, error: 'DB no disponible' }, 500);
   }
 }

@@ -13,6 +13,10 @@
    POST /api/admin/cupon    {codigo, tipo, valor, max_usos?, min_total?, activo?} → crear/editar
  */
 
+import { rutasOps } from '../_ops/rutas.ts';
+import { registrarEstado } from '../_ops/envios.ts';
+import { registrarError } from '../_ops/log.ts';
+
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
@@ -99,6 +103,12 @@ export async function onRequest(context) {
   const url = new URL(request.url);
 
   try {
+    /* --- Analítica y operación (módulo TypeScript) --- */
+    if (ruta.startsWith('ops/')) {
+      const r = await rutasOps(ruta.slice(4), request, env);
+      if (r) return r;
+    }
+
     /* --- Pedidos --- */
     if (ruta === 'pedidos' && request.method === 'GET') {
       const estado = url.searchParams.get('estado');
@@ -131,8 +141,11 @@ export async function onRequest(context) {
 
       const sets = [];
       const binds = [];
+      let estadoNuevo = null;
       if (b.estado !== undefined) {
         if (!ESTADOS.includes(b.estado)) return json({ ok: false, error: 'Estado inválido' }, 400);
+        const antes = await env.DB.prepare('SELECT estado FROM pedidos WHERE id = ?').bind(id).first();
+        if (antes && antes.estado !== b.estado) estadoNuevo = b.estado;
         sets.push('estado = ?'); binds.push(b.estado);
       }
       if (b.guia !== undefined) { sets.push('guia = ?'); binds.push(String(b.guia).trim().slice(0, 60) || null); }
@@ -142,6 +155,7 @@ export async function onRequest(context) {
 
       binds.push(id);
       const res = await env.DB.prepare(`UPDATE pedidos SET ${sets.join(', ')} WHERE id = ?`).bind(...binds).run();
+      if (estadoNuevo && res.meta.changes > 0) await registrarEstado(env, id, estadoNuevo);
 
       return json({ ok: true, actualizado: res.meta.changes > 0 });
     }
@@ -218,6 +232,7 @@ export async function onRequest(context) {
 
     return json({ ok: false, error: 'Ruta no encontrada' }, 404);
   } catch (e) {
-    return json({ ok: false, error: 'Error del sistema: ' + (e.message || 'desconocido') }, 500);
+    await registrarError(env, 'admin/' + ruta, e);
+    return json({ ok: false, error: 'Error del sistema' }, 500);
   }
 }
